@@ -2,3 +2,4 @@ test
 pnpm-lock.yaml
 coverage
 .nyc_output
+rollup.config.js
