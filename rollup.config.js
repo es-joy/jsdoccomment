@@ -1,3 +1,5 @@
+import babel from '@rollup/plugin-babel';
+
 /**
  * @external RollupConfig
  * @type {PlainObject}
@@ -23,6 +25,9 @@ function getRollupObject ({input, minifying, format = 'umd'} = {}) {
       }.${format === 'umd' ? 'c' : ''}js`
     },
     plugins: [
+      babel({
+        babelHelpers: 'bundled'
+      })
     ]
   };
   /*

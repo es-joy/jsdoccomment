@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment",
@@ -39,7 +39,11 @@
   "dependencies": {
   },
   "devDependencies": {
+    "@babel/core": "^7.14.0",
+    "@babel/plugin-syntax-class-properties": "^7.12.13",
+    "@babel/preset-env": "^7.14.0",
     "@brettz9/eslint-plugin": "^1.0.3",
+    "@rollup/plugin-babel": "^5.3.0",
     "c8": "^7.7.1",
     "eslint": "^7.25.0",
     "eslint-config-ash-nazg": "29.12.1",

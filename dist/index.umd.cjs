@@ -16,16 +16,15 @@
    * @param {Token} token - The token to check.
    * @returns {boolean} `true` if the token is a comment token.
    */
-  const isCommentToken = (token) => {
-    return token.type === 'Line' || token.type === 'Block' ||
-      token.type === 'Shebang';
+  const isCommentToken = token => {
+    return token.type === 'Line' || token.type === 'Block' || token.type === 'Shebang';
   };
 
-  const getDecorator = (node) => {
-    return node?.declaration?.decorators?.[0] || node?.decorators?.[0] ||
-        node?.parent?.decorators?.[0];
-  };
+  const getDecorator = node => {
+    var _node$declaration, _node$declaration$dec, _node$decorators, _node$parent, _node$parent$decorato;
 
+    return (node === null || node === void 0 ? void 0 : (_node$declaration = node.declaration) === null || _node$declaration === void 0 ? void 0 : (_node$declaration$dec = _node$declaration.decorators) === null || _node$declaration$dec === void 0 ? void 0 : _node$declaration$dec[0]) || (node === null || node === void 0 ? void 0 : (_node$decorators = node.decorators) === null || _node$decorators === void 0 ? void 0 : _node$decorators[0]) || (node === null || node === void 0 ? void 0 : (_node$parent = node.parent) === null || _node$parent === void 0 ? void 0 : (_node$parent$decorato = _node$parent.decorators) === null || _node$parent$decorato === void 0 ? void 0 : _node$parent$decorato[0]);
+  };
   /**
    * Check to see if its a ES6 export declaration.
    *
@@ -33,97 +32,88 @@
    * @returns {boolean} whether the given node represents an export declaration.
    * @private
    */
+
+
   const looksLikeExport = function (astNode) {
-    return astNode.type === 'ExportDefaultDeclaration' ||
-      astNode.type === 'ExportNamedDeclaration' ||
-      astNode.type === 'ExportAllDeclaration' ||
-      astNode.type === 'ExportSpecifier';
+    return astNode.type === 'ExportDefaultDeclaration' || astNode.type === 'ExportNamedDeclaration' || astNode.type === 'ExportAllDeclaration' || astNode.type === 'ExportSpecifier';
   };
 
   const getTSFunctionComment = function (astNode) {
-    const {parent} = astNode;
+    const {
+      parent
+    } = astNode;
     const grandparent = parent.parent;
     const greatGrandparent = grandparent.parent;
-    const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
+    const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent; // istanbul ignore if
 
-    // istanbul ignore if
     if (parent.type !== 'TSTypeAnnotation') {
       return astNode;
     }
 
     switch (grandparent.type) {
-    case 'ClassProperty':
-    case 'TSDeclareFunction':
-    case 'TSMethodSignature':
-    case 'TSPropertySignature':
-      return grandparent;
-    case 'ArrowFunctionExpression':
-      // istanbul ignore else
-      if (
-        greatGrandparent.type === 'VariableDeclarator'
+      case 'ClassProperty':
+      case 'TSDeclareFunction':
+      case 'TSMethodSignature':
+      case 'TSPropertySignature':
+        return grandparent;
 
-      // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
-      ) {
-        return greatGreatGrandparent.parent;
-      }
+      case 'ArrowFunctionExpression':
+        // istanbul ignore else
+        if (greatGrandparent.type === 'VariableDeclarator' // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
+        ) {
+            return greatGreatGrandparent.parent;
+          } // istanbul ignore next
 
-      // istanbul ignore next
-      return astNode;
-    case 'FunctionExpression':
-      // istanbul ignore else
-      if (greatGrandparent.type === 'MethodDefinition') {
-        return greatGrandparent;
-      }
 
-    // Fallthrough
-    default:
-      // istanbul ignore if
-      if (grandparent.type !== 'Identifier') {
-        // istanbul ignore next
         return astNode;
-      }
-    }
 
-    // istanbul ignore next
-    switch (greatGrandparent.type) {
-    case 'ArrowFunctionExpression':
-      // istanbul ignore else
-      if (
-        greatGreatGrandparent.type === 'VariableDeclarator' &&
-        greatGreatGrandparent.parent.type === 'VariableDeclaration'
-      ) {
-        return greatGreatGrandparent.parent;
-      }
-
-      // istanbul ignore next
-      return astNode;
-    case 'FunctionDeclaration':
-      return greatGrandparent;
-    case 'VariableDeclarator':
-      // istanbul ignore else
-      if (greatGreatGrandparent.type === 'VariableDeclaration') {
-        return greatGreatGrandparent;
-      }
+      case 'FunctionExpression':
+        // istanbul ignore else
+        if (greatGrandparent.type === 'MethodDefinition') {
+          return greatGrandparent;
+        }
 
       // Fallthrough
-    default:
-      // istanbul ignore next
-      return astNode;
+
+      default:
+        // istanbul ignore if
+        if (grandparent.type !== 'Identifier') {
+          // istanbul ignore next
+          return astNode;
+        }
+
+    } // istanbul ignore next
+
+
+    switch (greatGrandparent.type) {
+      case 'ArrowFunctionExpression':
+        // istanbul ignore else
+        if (greatGreatGrandparent.type === 'VariableDeclarator' && greatGreatGrandparent.parent.type === 'VariableDeclaration') {
+          return greatGreatGrandparent.parent;
+        } // istanbul ignore next
+
+
+        return astNode;
+
+      case 'FunctionDeclaration':
+        return greatGrandparent;
+
+      case 'VariableDeclarator':
+        // istanbul ignore else
+        if (greatGreatGrandparent.type === 'VariableDeclaration') {
+          return greatGreatGrandparent;
+        }
+
+      // Fallthrough
+
+      default:
+        // istanbul ignore next
+        return astNode;
     }
   };
 
-  const invokedExpression = new Set(
-    ['CallExpression', 'OptionalCallExpression', 'NewExpression']
-  );
-  const allowableCommentNode = new Set([
-    'VariableDeclaration',
-    'ExpressionStatement',
-    'MethodDefinition',
-    'Property',
-    'ObjectProperty',
-    'ClassProperty'
-  ]);
-
+  const invokedExpression = new Set(['CallExpression', 'OptionalCallExpression', 'NewExpression']);
+  const allowableCommentNode = new Set(['VariableDeclaration', 'ExpressionStatement', 'MethodDefinition', 'Property', 'ObjectProperty', 'ClassProperty']);
   /**
    * Reduces the provided node to the appropriate node for evaluating
    * JSDoc comment status.
@@ -134,57 +124,55 @@
    * JSDoc comments.
    * @private
    */
+
   const getReducedASTNode = function (node, sourceCode) {
-    let {parent} = node;
+    let {
+      parent
+    } = node;
 
     switch (node.type) {
-    case 'TSFunctionType':
-      return getTSFunctionComment(node);
-    case 'TSInterfaceDeclaration':
-    case 'TSTypeAliasDeclaration':
-    case 'TSEnumDeclaration':
-    case 'ClassDeclaration':
-    case 'FunctionDeclaration':
-      return looksLikeExport(parent) ? parent : node;
+      case 'TSFunctionType':
+        return getTSFunctionComment(node);
 
-    case 'TSDeclareFunction':
-    case 'ClassExpression':
-    case 'ObjectExpression':
-    case 'ArrowFunctionExpression':
-    case 'TSEmptyBodyFunctionExpression':
-    case 'FunctionExpression':
-      if (
-        !invokedExpression.has(parent.type)
-      ) {
-        while (
-          !sourceCode.getCommentsBefore(parent).length &&
-          !(/Function/u).test(parent.type) &&
-          !allowableCommentNode.has(parent.type)
-        ) {
-          ({parent} = parent);
+      case 'TSInterfaceDeclaration':
+      case 'TSTypeAliasDeclaration':
+      case 'TSEnumDeclaration':
+      case 'ClassDeclaration':
+      case 'FunctionDeclaration':
+        return looksLikeExport(parent) ? parent : node;
 
-          if (!parent) {
-            break;
-          }
-        }
-        if (parent && parent.type !== 'FunctionDeclaration' &&
-          parent.type !== 'Program'
-        ) {
-          if (parent.parent && parent.parent.type === 'ExportNamedDeclaration') {
-            return parent.parent;
+      case 'TSDeclareFunction':
+      case 'ClassExpression':
+      case 'ObjectExpression':
+      case 'ArrowFunctionExpression':
+      case 'TSEmptyBodyFunctionExpression':
+      case 'FunctionExpression':
+        if (!invokedExpression.has(parent.type)) {
+          while (!sourceCode.getCommentsBefore(parent).length && !/Function/u.test(parent.type) && !allowableCommentNode.has(parent.type)) {
+            ({
+              parent
+            } = parent);
+
+            if (!parent) {
+              break;
+            }
           }
 
-          return parent;
+          if (parent && parent.type !== 'FunctionDeclaration' && parent.type !== 'Program') {
+            if (parent.parent && parent.parent.type === 'ExportNamedDeclaration') {
+              return parent.parent;
+            }
+
+            return parent;
+          }
         }
-      }
 
-      return node;
+        return node;
 
-    default:
-      return node;
+      default:
+        return node;
     }
   };
-
   /**
    * Checks for the presence of a JSDoc comment for the given node and returns it.
    *
@@ -195,41 +183,45 @@
    *    for the given node or null if not found.
    * @private
    */
+
+
   const findJSDocComment = (astNode, sourceCode, settings) => {
-    const {minLines, maxLines} = settings;
+    const {
+      minLines,
+      maxLines
+    } = settings;
     let currentNode = astNode;
     let tokenBefore = null;
 
     while (currentNode) {
       const decorator = getDecorator(currentNode);
+
       if (decorator) {
         currentNode = decorator;
       }
-      tokenBefore = sourceCode.getTokenBefore(
-        currentNode, {includeComments: true}
-      );
+
+      tokenBefore = sourceCode.getTokenBefore(currentNode, {
+        includeComments: true
+      });
+
       if (!tokenBefore || !isCommentToken(tokenBefore)) {
         return null;
       }
+
       if (tokenBefore.type === 'Line') {
         currentNode = tokenBefore;
         continue;
       }
+
       break;
     }
 
-    if (
-      tokenBefore.type === 'Block' &&
-      tokenBefore.value.charAt(0) === '*' &&
-      currentNode.loc.start.line - tokenBefore.loc.end.line >= minLines &&
-      currentNode.loc.start.line - tokenBefore.loc.end.line <= maxLines
-    ) {
+    if (tokenBefore.type === 'Block' && tokenBefore.value.charAt(0) === '*' && currentNode.loc.start.line - tokenBefore.loc.end.line >= minLines && currentNode.loc.start.line - tokenBefore.loc.end.line <= maxLines) {
       return tokenBefore;
     }
 
     return null;
   };
-
   /**
    * Retrieves the JSDoc comment for a given node.
    *
@@ -240,9 +232,10 @@
    *    for the given node or null if not found.
    * @public
    */
+
+
   const getJSDocComment = function (sourceCode, node, settings) {
     const reducedNode = getReducedASTNode(node, sourceCode);
-
     return findJSDocComment(reducedNode, sourceCode, settings);
   };
 
