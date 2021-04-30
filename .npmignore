@@ -1,0 +1,4 @@
+test
+pnpm-lock.yaml
+coverage
+.nyc_output
