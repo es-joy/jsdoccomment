@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.4.1
+
+- Docs: Indicate available methods with brief summary on README
+
 ## 0.4.0
 
 - Enhancement: Expose `parseComment` and `getTokenizers`.

@@ -3,6 +3,21 @@
 This project aims to preserve and expand upon the
 `SourceCode#getJSDocComment` functionality of the deprecated ESLint method.
 
+It also exports a number of functions currently for working with JSDoc:
+
+- `parseComment` - For parsing `comment-parser` in a JSDoc-specific manner.
+- `commentHandler` - Used by `eslint-plugin-jsdoc`. Might be removed in future.
+- `commentParserToESTree`- Converts [comment-parser](https://github.com/syavorsky/comment-parser)
+    AST to ESTree/ESLint/Babel friendly AST
+- `jsdoctypeparserToESTree`- Converts [jsdoctypeparser](https://github.com/jsdoctypeparser/jsdoctypeparser)
+    AST to ESTree/ESLint/Babel friendly AST
+- `jsdocVisitorKeys` - The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
+    for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`. Might change.
+- `jsdocTypeVisitorKeys` - [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
+    for jsdoctypeparser. More likely to be subject to change.
+- `getTokenizers` - A utility. Might be removed in future.
+- `toCamelCase` - A utility. Might be removed in future.
+
 ## Installation
 
 ```shell
