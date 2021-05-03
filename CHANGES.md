@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.4.0
+
+- Enhancement: Expose `parseComment` and `getTokenizers`.
+
 ## 0.3.0
 
 - Enhancement: Expose `toCamelCase` as new method rather than within a

@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment",
@@ -38,6 +38,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "comment-parser": "^1.1.5",
     "esquery": "^1.4.0",
     "jsdoctypeparser": "^9.0.0"
   },

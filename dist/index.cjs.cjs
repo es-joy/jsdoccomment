@@ -4,10 +4,20 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var esquery = require('esquery');
 var jsdoctypeparser = require('jsdoctypeparser');
+var descriptionTokenizer = require('comment-parser/lib/parser/tokenizers/description.js');
+var util_js = require('comment-parser/lib/util.js');
+var commentParser = require('comment-parser');
+var nameTokenizer = require('comment-parser/lib/parser/tokenizers/name.js');
+var tagTokenizer = require('comment-parser/lib/parser/tokenizers/tag.js');
+var typeTokenizer = require('comment-parser/lib/parser/tokenizers/type.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var esquery__default = /*#__PURE__*/_interopDefaultLegacy(esquery);
+var descriptionTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(descriptionTokenizer);
+var nameTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(nameTokenizer);
+var tagTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(tagTokenizer);
+var typeTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(typeTokenizer);
 
 const toCamelCase = str => {
   return str.toLowerCase().replace(/^[a-z]/u, init => {
@@ -221,6 +231,88 @@ const commentHandler = settings => {
       }
     });
   };
+};
+
+/* eslint-disable prefer-named-capture-group -- Temporary */
+
+const hasSeeWithLink = spec => {
+  return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
+};
+
+const getTokenizers = () => {
+  // trim
+  return [// Tag
+  tagTokenizer__default['default'](), // Type
+  spec => {
+    if (['default', 'defaultvalue', 'see'].includes(spec.tag)) {
+      return spec;
+    }
+
+    return typeTokenizer__default['default']()(spec);
+  }, // Name
+  spec => {
+    if (spec.tag === 'template') {
+      // const preWS = spec.postTag;
+      const remainder = spec.source[0].tokens.description;
+      const pos = remainder.search(/(?<![\s,])\s/u);
+      const name = pos === -1 ? remainder : remainder.slice(0, pos);
+      const extra = remainder.slice(pos + 1);
+      const [, postName, description] = extra.match(/(\s*)(.*)/u);
+      spec.name = name;
+      spec.optional = false;
+      const {
+        tokens
+      } = spec.source[0];
+      tokens.name = name;
+      tokens.postName = postName;
+      tokens.description = description;
+      return spec;
+    }
+
+    if (['example', 'return', 'returns', 'throws', 'exception', 'access', 'version', 'since', 'license', 'author', 'default', 'defaultvalue'].includes(spec.tag) || hasSeeWithLink(spec)) {
+      return spec;
+    }
+
+    return nameTokenizer__default['default']()(spec);
+  }, // Description
+  spec => {
+    return descriptionTokenizer__default['default'](descriptionTokenizer.getJoiner('preserve'))(spec);
+  }];
+};
+/**
+ *
+ * @param {PlainObject} commentNode
+ * @param {string} indent Whitespace
+ * @returns {PlainObject}
+ */
+
+
+const parseComment = (commentNode, indent) => {
+  // Preserve JSDoc block start/end indentation.
+  return commentParser.parse(`/*${commentNode.value}*/`, {
+    // @see https://github.com/yavorskiy/comment-parser/issues/21
+    tokenizers: getTokenizers()
+  })[0] || util_js.seedBlock({
+    source: [{
+      number: 0,
+      tokens: util_js.seedTokens({
+        delimiter: '/**',
+        description: '',
+        end: '',
+        postDelimiter: '',
+        start: ''
+      })
+    }, {
+      number: 1,
+      tokens: util_js.seedTokens({
+        delimiter: '',
+        description: '',
+        end: '*/',
+        postDelimiter: '',
+        start: indent + ' '
+      })
+    }]
+  });
 };
 
 /**
@@ -464,7 +556,9 @@ exports.findJSDocComment = findJSDocComment;
 exports.getDecorator = getDecorator;
 exports.getJSDocComment = getJSDocComment;
 exports.getReducedASTNode = getReducedASTNode;
+exports.getTokenizers = getTokenizers;
 exports.jsdocTypeVisitorKeys = jsdocTypeVisitorKeys;
 exports.jsdocVisitorKeys = jsdocVisitorKeys;
 exports.jsdoctypeparserToESTree = jsdoctypeparserToESTree;
+exports.parseComment = parseComment;
 exports.toCamelCase = toCamelCase;
