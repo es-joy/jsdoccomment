@@ -1,5 +1,7 @@
 # @es-joy/jsdoccomment
 
+[![Node.js CI status](https://github.com/brettz9/getJSDocComment/workflows/Node.js%20CI/badge.svg)](https://github.com/brettz9/getJSDocComment/actions)
+
 This project aims to preserve and expand upon the
 `SourceCode#getJSDocComment` functionality of the deprecated ESLint method.
 
