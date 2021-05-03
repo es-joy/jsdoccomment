@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment",
@@ -10,9 +10,9 @@
     "sourcecode"
   ],
   "type": "module",
-  "main": "./dist/index.umd.cjs",
+  "main": "./dist/index.cjs.cjs",
   "exports": {
-    "require": "./dist/index.umd.cjs",
+    "require": "./dist/index.cjs.cjs",
     "import": "./src/index.js"
   },
   "browserslist": [
@@ -23,7 +23,8 @@
     "eslint": "eslint --ext=jd,md,html",
     "lint": "npm run eslint",
     "mocha": "mocha",
-    "test": "c8 npm run mocha"
+    "c8": "c8 npm run mocha",
+    "test": "npm run lint && npm run rollup && npm run c8"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "esquery": "^1.4.0",
+    "jsdoctypeparser": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",

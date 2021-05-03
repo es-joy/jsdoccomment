@@ -16,13 +16,14 @@ import babel from '@rollup/plugin-babel';
 function getRollupObject ({input, minifying, format = 'umd'} = {}) {
   const nonMinified = {
     input: `src/${input}`,
+    external: ['esquery', 'jsdoctypeparser'],
     output: {
       name: 'JSDocComment',
       format,
       sourcemap: minifying,
       file: `dist/${input.replace(/\.js$/u, `.${format}`)}${
         minifying ? '.min' : ''
-      }.${format === 'umd' ? 'c' : ''}js`
+      }.${format === 'cjs' || format === 'umd' ? 'c' : ''}js`
     },
     plugins: [
       babel({
@@ -40,6 +41,6 @@ function getRollupObject ({input, minifying, format = 'umd'} = {}) {
 
 export default [
   getRollupObject({
-    input: 'index.js'
+    input: 'index.js', format: 'cjs'
   })
 ];
