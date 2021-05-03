@@ -15,6 +15,13 @@
     "require": "./dist/index.cjs.cjs",
     "import": "./src/index.js"
   },
+  "c8": {
+    "checkCoverage": true,
+    "branches": 100,
+    "statements": 100,
+    "lines": 100,
+    "functions": 100
+  },
   "browserslist": [
     "cover 100%"
   ],
