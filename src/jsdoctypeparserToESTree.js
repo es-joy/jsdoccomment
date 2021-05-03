@@ -1,5 +1,5 @@
 import esquery from 'esquery';
-import {toCamelCase} from './utils.js';
+import toCamelCase from './toCamelCase.js';
 
 const jsdoctypeparserToESTree = (parsedType) => {
   // Todo: See about getting jsdoctypeparser to make these

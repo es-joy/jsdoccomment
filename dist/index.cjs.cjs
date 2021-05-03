@@ -467,3 +467,4 @@ exports.getReducedASTNode = getReducedASTNode;
 exports.jsdocTypeVisitorKeys = jsdocTypeVisitorKeys;
 exports.jsdocVisitorKeys = jsdocVisitorKeys;
 exports.jsdoctypeparserToESTree = jsdoctypeparserToESTree;
+exports.toCamelCase = toCamelCase;
