@@ -42,8 +42,8 @@ May also have the following non-visitable properties from `comment-parser`:
 
 1. `description` - Same as `descriptionLines` but as a string with newlines.
 2. `delimiter`
-3. `end`
-4. `postDelimiter`
+3. `postDelimiter`
+4. `end`
 
 ### `JSDocTag`
 
