@@ -3,3 +3,4 @@ pnpm-lock.yaml
 coverage
 .nyc_output
 rollup.config.js
+.github/workflows/node.js.yml
