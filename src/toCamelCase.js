@@ -1,5 +1,5 @@
 const toCamelCase = (str) => {
-  return str.toLowerCase().replace(/^[a-z]/u, (init) => {
+  return str.toLowerCase().replace(/^[a-z]/gu, (init) => {
     return init.toUpperCase();
   }).replace(/_(?:<wordInit>[a-z])/u, (_, n1, o, s, {wordInit}) => {
     return wordInit.toUpperCase();

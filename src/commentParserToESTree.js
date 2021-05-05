@@ -140,6 +140,7 @@ const commentParserToESTree = (jsdoc, mode) => {
 const jsdocVisitorKeys = {
   JSDocBlock: ['tags', 'descriptionLines'],
   JSDocDescriptionLine: [],
+  JSDocTypeLine: [],
   JSDocTag: ['descriptionLines', 'typeLines', 'parsedType']
 };
 

@@ -20,6 +20,94 @@ It also exports a number of functions currently for working with JSDoc:
 - `getTokenizers` - A utility. Might be removed in future.
 - `toCamelCase` - A utility. Might be removed in future.
 
+## ESLint AST produced for `comment-parser` nodes (`JSDocBlock`, `JSDocTag`, and `JSDocDescriptionLine`)
+
+### `JSDocBlock`
+
+Has two visitable properties:
+
+1. `tags` (an array of `JSDocTag`; see below)
+2. `descriptionLines` (an array of `JSDocDescriptionLine` for multiline
+    descriptions).
+
+Has the following custom non-visitable property:
+
+1. `lastDescriptionLine` - A number
+
+May also have the following non-visitable properties from `comment-parser`:
+
+1. `description` - Same as `descriptionLines` but as a string with newlines.
+2. `delimiter`
+3. `end`
+4. `postDelimiter`
+
+### `JSDocTag`
+
+Has three visitable properties:
+
+1. `parsedType` (the `jsdoctypeparser` AST representaiton of the tag's
+    type (see the `jsdoctypeparser` section below)).
+2. `descriptionLines`' (an array of `JSDocDescriptionLine` for multiline
+    descriptions)
+3. `typeLines` (an array of `JSDocDescriptionLine` for multiline type
+    strings)
+
+May also have the following non-visitable properties from `comment-parser`
+(note that all are included from `comment-parser` except `end` as that is only
+for JSDoc blocks and note that `type` is renamed to `rawType`):
+
+1. `description` - Same as `descriptionLines` but as a string with newlines.
+2. `rawType` - `comment-parser` has this named as `type`, but because of a
+    conflict with ESTree using `type` for Node type, we renamed it to
+    `rawType`. It is otherwise the same as in `comment-parser`, i.e., a string
+    with newlines, though with the initial `{` and final `}` stripped out.
+    See `typeLines` for the array version of this property.
+3. `start`
+4. `delimiter`
+5. `postDelimiter`
+6. `tag`
+7. `postTag`
+8. `name`
+9. `postName`
+10. `type`
+11. `postType`
+
+### `JSDocDescriptionLine`
+
+No visitable properties.
+
+May also have the following non-visitable properties from `comment-parser`:
+
+1. `delimiter`
+2. `postDelimiter`
+3. `start`
+4. `description`
+
+### `JSDocTypeLine`
+
+No visitable properties.
+
+May also have the following non-visitable properties from `comment-parser`:
+
+1. `delimiter`
+2. `postDelimiter`
+3. `start`
+4. `rawType` - Renamed from `comment-parser` to avoid a conflict. See
+    explanation under `JSDocTag`
+
+## ESLint AST produced for `jsdoctypeparser`
+
+The `type` has been changed for the type AST. Relative to `jsdoctypeparser`
+nodes, the type will have a `JSDocType` prefix added plus a camel-casing of the
+old type name, so, e.g., `INSTANCE_MEMBER` will become
+`JSDocTypeInstanceMember`.
+See [jsdoctypeparser](https://github.com/jsdoctypeparser/jsdoctypeparser)
+for the current list of node types which are transformed in this manner.
+
+Otherwise, the node properties are as in `jsdoctypeparser`.
+
+The `jsdoctypeparser` visitor keys are also modified accordingly.
+
 ## Installation
 
 ```shell

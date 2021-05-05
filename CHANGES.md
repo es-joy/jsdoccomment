@@ -1,5 +1,22 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.4.2
+
+- Fix: Ensure replacement of camel-casing (used in `jsdoctypeparser` nodes and
+    visitor keys is global. The practical effect is that
+    `JSDocTypeNamed_parameter` -> `JSDocTypeNamedParameter`,
+    `JSDocTypeRecord_entry` -> `JSDocTypeRecordEntry`
+    `JSDocTypeNot_nullable` -> `JSDocTypeNotNullable`
+    `JSDocTypeInner_member` -> `JSDocTypeInnerMember`
+    `JSDocTypeInstance_member` -> `JSDocTypeInstanceMember`
+    `JSDocTypeString_value` -> `JSDocTypeStringValue`
+    `JSDocTypeNumber_value` -> `JSDocTypeNumberValue`
+    `JSDocTypeFile_path` -> `JSDocTypeFilePath`
+    `JSDocTypeType_query` -> `JSDocTypeTypeQuery`
+    `JSDocTypeKey_query` -> `JSDocTypeKeyQuery`
+- Fix: Add missing `JSDocTypeLine` to visitor keys
+- Docs: Explain AST structure/differences
+
 ## 0.4.1
 
 - Docs: Indicate available methods with brief summary on README

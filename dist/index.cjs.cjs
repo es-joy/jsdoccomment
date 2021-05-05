@@ -20,7 +20,7 @@ var tagTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(tagTokenizer);
 var typeTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(typeTokenizer);
 
 const toCamelCase = str => {
-  return str.toLowerCase().replace(/^[a-z]/u, init => {
+  return str.toLowerCase().replace(/^[a-z]/gu, init => {
     return init.toUpperCase();
   }).replace(/_(?:<wordInit>[a-z])/u, (_, n1, o, s, {
     wordInit
@@ -200,6 +200,7 @@ const commentParserToESTree = (jsdoc, mode) => {
 const jsdocVisitorKeys = {
   JSDocBlock: ['tags', 'descriptionLines'],
   JSDocDescriptionLine: [],
+  JSDocTypeLine: [],
   JSDocTag: ['descriptionLines', 'typeLines', 'parsedType']
 };
 
