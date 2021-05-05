@@ -53,8 +53,7 @@ Has three visitable properties:
     type (see the `jsdoctypeparser` section below)).
 2. `descriptionLines`' (an array of `JSDocDescriptionLine` for multiline
     descriptions)
-3. `typeLines` (an array of `JSDocDescriptionLine` for multiline type
-    strings)
+3. `typeLines` (an array of `JSDocTypeLine` for multiline type strings)
 
 May also have the following non-visitable properties from `comment-parser`
 (note that all are included from `comment-parser` except `end` as that is only
