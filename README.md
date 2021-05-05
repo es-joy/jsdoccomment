@@ -22,6 +22,10 @@ It also exports a number of functions currently for working with JSDoc:
 
 ## ESLint AST produced for `comment-parser` nodes (`JSDocBlock`, `JSDocTag`, and `JSDocDescriptionLine`)
 
+Note: Although not added in this package, `@es-joy/jsdoc-eslint-parser` adds
+a `jsdoc` property to other ES nodes (using this project's `getJSDocComment`
+to determine the specific comment-block that will be attached as AST).
+
 ### `JSDocBlock`
 
 Has two visitable properties:
