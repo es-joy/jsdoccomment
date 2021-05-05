@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.4.3
+
+- npm: Ignores Github file
+
 ## 0.4.2
 
 - Fix: Ensure replacement of camel-casing (used in `jsdoctypeparser` nodes and
