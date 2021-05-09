@@ -22,7 +22,7 @@ var typeTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(typeTokenizer);
 const toCamelCase = str => {
   return str.toLowerCase().replace(/^[a-z]/gu, init => {
     return init.toUpperCase();
-  }).replace(/_(?:<wordInit>[a-z])/u, (_, n1, o, s, {
+  }).replace(/_(?<wordInit>[a-z])/gu, (_, n1, o, s, {
     wordInit
   }) => {
     return wordInit.toUpperCase();
@@ -234,7 +234,7 @@ const commentHandler = settings => {
   };
 };
 
-/* eslint-disable prefer-named-capture-group -- Temporary */
+// Todo: We ideally would use comment-parser's es6 directory, but as the repo
 
 const hasSeeWithLink = spec => {
   return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
@@ -258,7 +258,13 @@ const getTokenizers = () => {
       const pos = remainder.search(/(?<![\s,])\s/u);
       const name = pos === -1 ? remainder : remainder.slice(0, pos);
       const extra = remainder.slice(pos + 1);
-      const [, postName, description] = extra.match(/(\s*)(.*)/u);
+      let postName = '',
+          description = '';
+
+      if (pos > -1) {
+        [, postName, description] = extra.match(/(\s*)(.*)/u);
+      }
+
       spec.name = name;
       spec.optional = false;
       const {

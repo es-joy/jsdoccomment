@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment",
@@ -29,7 +29,7 @@
     "rollup": "rollup -c",
     "eslint": "eslint --ext=jd,md,html",
     "lint": "npm run eslint",
-    "mocha": "mocha",
+    "mocha": "mocha --require chai/register-expect",
     "c8": "c8 npm run mocha",
     "test": "npm run lint && npm run rollup && npm run c8"
   },
@@ -56,6 +56,7 @@
     "@brettz9/eslint-plugin": "^1.0.3",
     "@rollup/plugin-babel": "^5.3.0",
     "c8": "^7.7.1",
+    "chai": "^4.3.4",
     "eslint": "^7.25.0",
     "eslint-config-ash-nazg": "29.12.1",
     "eslint-config-standard": "^16.0.2",

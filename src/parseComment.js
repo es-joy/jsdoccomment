@@ -1,3 +1,5 @@
+// Todo: We ideally would use comment-parser's es6 directory, but as the repo
+//   is CommonJS, it will not be properly treated as ESM from here
 /* eslint-disable prefer-named-capture-group -- Temporary */
 import {
   // eslint-disable-next-line import/no-named-default -- Both together
@@ -42,7 +44,10 @@ const getTokenizers = () => {
 
         const name = pos === -1 ? remainder : remainder.slice(0, pos);
         const extra = remainder.slice(pos + 1);
-        const [, postName, description] = extra.match(/(\s*)(.*)/u);
+        let postName = '', description = '';
+        if (pos > -1) {
+          [, postName, description] = extra.match(/(\s*)(.*)/u);
+        }
 
         spec.name = name;
         spec.optional = false;

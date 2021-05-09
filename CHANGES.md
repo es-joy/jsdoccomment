@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.4.4
+
+- Fix: Avoid setting `name` and `description` for simple `@template SomeName`
+
 ## 0.4.3
 
 - npm: Ignores Github file

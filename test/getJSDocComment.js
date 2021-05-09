@@ -1,9 +1,5 @@
-import {
-  RuleTester
-} from 'eslint';
-import {
-  getJSDocComment
-} from '../src/index.js';
+import {RuleTester} from 'eslint';
+import {getJSDocComment} from '../src/index.js';
 
 const getSettings = (ctxt) => {
   return {
