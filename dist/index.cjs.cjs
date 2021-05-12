@@ -276,7 +276,7 @@ const getTokenizers = () => {
       return spec;
     }
 
-    if (['example', 'return', 'returns', 'throws', 'exception', 'access', 'version', 'since', 'license', 'author', 'default', 'defaultvalue'].includes(spec.tag) || hasSeeWithLink(spec)) {
+    if (['example', 'return', 'returns', 'throws', 'exception', 'access', 'version', 'since', 'license', 'author', 'default', 'defaultvalue', 'variation'].includes(spec.tag) || hasSeeWithLink(spec)) {
       return spec;
     }
 

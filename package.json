@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment",
@@ -26,6 +26,7 @@
     "cover 100%"
   ],
   "scripts": {
+    "prepublishOnly": "npm run rollup",
     "rollup": "rollup -c",
     "eslint": "eslint --ext=jd,md,html",
     "lint": "npm run eslint",

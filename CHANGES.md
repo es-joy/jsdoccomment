@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.5.1
+
+- Fix: Avoid setting `variation` name (just the description) (including in
+    dist)
+- npm: Add `prepublishOnly` script
+
 ## 0.5.0
 
 - Fix: Avoid setting `variation` name (just the description)
