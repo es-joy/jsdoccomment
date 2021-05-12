@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.5.0
+
+- Fix: Avoid setting `variation` name (just the description)
+
 ## 0.4.4
 
 - Fix: Avoid setting `name` and `description` for simple `@template SomeName`
