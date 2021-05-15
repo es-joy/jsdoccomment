@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.6.0
+
+- Change `comment-parser` `tag` AST to avoid initial `@`
+
 ## 0.5.1
 
 - Fix: Avoid setting `variation` name (just the description) (including in

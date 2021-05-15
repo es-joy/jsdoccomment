@@ -97,6 +97,8 @@ const commentParserToESTree = (jsdoc, mode) => {
         type: 'JSDocTag',
         typeLines: []
       };
+      tagObj.tag = tagObj.tag.replace(/^@/u, '');
+
       lastTag = tagObj;
 
       tags.push(tagObj);

@@ -68,7 +68,8 @@ for JSDoc blocks and note that `type` is renamed to `rawType`):
 3. `start`
 4. `delimiter`
 5. `postDelimiter`
-6. `tag`
+6. `tag` (this does differ from `comment-parser` now in terms of our stripping
+    the initial `@`)
 7. `postTag`
 8. `name`
 9. `postName`
