@@ -8,6 +8,8 @@ This project aims to preserve and expand upon the
 It also exports a number of functions currently for working with JSDoc:
 
 - `parseComment` - For parsing `comment-parser` in a JSDoc-specific manner.
+    Might wish to have tags with or without tags, etc. derived from a split off
+    JSON file.
 - `commentHandler` - Used by `eslint-plugin-jsdoc`. Might be removed in future.
 - `commentParserToESTree`- Converts [comment-parser](https://github.com/syavorsky/comment-parser)
     AST to ESTree/ESLint/Babel friendly AST
