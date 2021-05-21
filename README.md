@@ -21,6 +21,12 @@ It also exports a number of functions currently for working with JSDoc:
     for jsdoctypeparser. More likely to be subject to change.
 - `getTokenizers` - A utility. Might be removed in future.
 - `toCamelCase` - A utility. Might be removed in future.
+- `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
+- `defaultNoTypes` = The tags which allow no types by default:
+    `default`, `defaultvalue`, `see`;
+- `defaultNoNames` - The tags which allow no names by default:
+    `access`, `author`, `default`, `defaultvalue`, `example`, `exception`,
+    `license`, `return`, `returns`, `since`, `throws`, `version`, `variation`
 
 ## ESLint AST produced for `comment-parser` nodes (`JSDocBlock`, `JSDocTag`, and `JSDocDescriptionLine`)
 

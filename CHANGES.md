@@ -1,5 +1,12 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.7.0
+
+- Enhancement: Allow specifying `noNames` and `noTypes` on `parseComment`
+    to override (or add to) tags which should have no names or types.
+- Enhancement: Export `hasSeeWithLink` utility and `defaultNoTypes` and
+    `defaultNoNames`.
+
 ## 0.6.0
 
 - Change `comment-parser` `tag` AST to avoid initial `@`

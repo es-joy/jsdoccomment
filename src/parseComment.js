@@ -15,11 +15,26 @@ import nameTokenizer from 'comment-parser/lib/parser/tokenizers/name.js';
 import tagTokenizer from 'comment-parser/lib/parser/tokenizers/tag.js';
 import typeTokenizer from 'comment-parser/lib/parser/tokenizers/type.js';
 
-const hasSeeWithLink = (spec) => {
+export const hasSeeWithLink = (spec) => {
   return spec.tag === 'see' && (/\{@link.+?\}/u).test(spec.source[0].source);
 };
 
-const getTokenizers = () => {
+export const defaultNoTypes = ['default', 'defaultvalue', 'see'];
+
+export const defaultNoNames = [
+  'access', 'author',
+  'default', 'defaultvalue',
+  'example', 'exception',
+  'license',
+  'return', 'returns',
+  'since', 'throws',
+  'version', 'variation'
+];
+
+const getTokenizers = ({
+  noTypes = defaultNoTypes,
+  noNames = defaultNoNames
+} = {}) => {
   // trim
   return [
     // Tag
@@ -27,7 +42,7 @@ const getTokenizers = () => {
 
     // Type
     (spec) => {
-      if (['default', 'defaultvalue', 'see'].includes(spec.tag)) {
+      if (noTypes.includes(spec.tag)) {
         return spec;
       }
 
@@ -59,11 +74,7 @@ const getTokenizers = () => {
         return spec;
       }
 
-      if ([
-        'example', 'return', 'returns', 'throws', 'exception',
-        'access', 'version', 'since', 'license', 'author',
-        'default', 'defaultvalue', 'variation'
-      ].includes(spec.tag) || hasSeeWithLink(spec)) {
+      if (noNames.includes(spec.tag) || hasSeeWithLink(spec)) {
         return spec;
       }
 
