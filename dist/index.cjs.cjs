@@ -236,17 +236,21 @@ const commentHandler = settings => {
 };
 
 // Todo: We ideally would use comment-parser's es6 directory, but as the repo
-
 const hasSeeWithLink = spec => {
   return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
 };
+const defaultNoTypes = ['default', 'defaultvalue', 'see'];
+const defaultNoNames = ['access', 'author', 'default', 'defaultvalue', 'example', 'exception', 'license', 'return', 'returns', 'since', 'throws', 'version', 'variation'];
 
-const getTokenizers = () => {
+const getTokenizers = ({
+  noTypes = defaultNoTypes,
+  noNames = defaultNoNames
+} = {}) => {
   // trim
   return [// Tag
   tagTokenizer__default['default'](), // Type
   spec => {
-    if (['default', 'defaultvalue', 'see'].includes(spec.tag)) {
+    if (noTypes.includes(spec.tag)) {
       return spec;
     }
 
@@ -277,7 +281,7 @@ const getTokenizers = () => {
       return spec;
     }
 
-    if (['example', 'return', 'returns', 'throws', 'exception', 'access', 'version', 'since', 'license', 'author', 'default', 'defaultvalue', 'variation'].includes(spec.tag) || hasSeeWithLink(spec)) {
+    if (noNames.includes(spec.tag) || hasSeeWithLink(spec)) {
       return spec;
     }
 
@@ -560,11 +564,14 @@ const getJSDocComment = function (sourceCode, node, settings) {
 
 exports.commentHandler = commentHandler;
 exports.commentParserToESTree = commentParserToESTree;
+exports.defaultNoNames = defaultNoNames;
+exports.defaultNoTypes = defaultNoTypes;
 exports.findJSDocComment = findJSDocComment;
 exports.getDecorator = getDecorator;
 exports.getJSDocComment = getJSDocComment;
 exports.getReducedASTNode = getReducedASTNode;
 exports.getTokenizers = getTokenizers;
+exports.hasSeeWithLink = hasSeeWithLink;
 exports.jsdocTypeVisitorKeys = jsdocTypeVisitorKeys;
 exports.jsdocVisitorKeys = jsdocVisitorKeys;
 exports.jsdoctypeparserToESTree = jsdoctypeparserToESTree;
