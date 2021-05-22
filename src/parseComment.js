@@ -24,6 +24,7 @@ export const defaultNoTypes = ['default', 'defaultvalue', 'see'];
 export const defaultNoNames = [
   'access', 'author',
   'default', 'defaultvalue',
+  'description',
   'example', 'exception',
   'license',
   'return', 'returns',

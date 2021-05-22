@@ -25,9 +25,9 @@ It also exports a number of functions currently for working with JSDoc:
 - `defaultNoTypes` = The tags which allow no types by default:
     `default`, `defaultvalue`, `see`;
 - `defaultNoNames` - The tags which allow no names by default:
-    `access`, `author`, `default`, `defaultvalue`, `example`, `exception`,
-    `license`, `return`, `returns`, `since`, `summary`, `throws`, `version`,
-    `variation`
+    `access`, `author`, `default`, `defaultvalue`, `description`, `example`,
+    `exception`, `license`, `return`, `returns`, `since`, `summary`, `throws`,
+    `version`, `variation`
 
 ## ESLint AST produced for `comment-parser` nodes (`JSDocBlock`, `JSDocTag`, and `JSDocDescriptionLine`)
 

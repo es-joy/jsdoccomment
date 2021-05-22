@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.7.2
+
+- Fix: Add `@description` to `noNames`
+
 ## 0.7.1
 
 - Fix: Add `@summary` to `noNames`
