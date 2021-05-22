@@ -27,7 +27,8 @@ export const defaultNoNames = [
   'example', 'exception',
   'license',
   'return', 'returns',
-  'since', 'throws',
+  'since', 'summary',
+  'throws',
   'version', 'variation'
 ];
 

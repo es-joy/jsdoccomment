@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.7.1
+
+- Fix: Add `@summary` to `noNames`
+
 ## 0.7.0
 
 - Enhancement: Allow specifying `noNames` and `noTypes` on `parseComment`
