@@ -15,28 +15,18 @@ import nameTokenizer from 'comment-parser/lib/parser/tokenizers/name.js';
 import tagTokenizer from 'comment-parser/lib/parser/tokenizers/tag.js';
 import typeTokenizer from 'comment-parser/lib/parser/tokenizers/type.js';
 
+import _getDefaultTagStructureForMode from './getDefaultTagStructureForMode.js';
+
 export const hasSeeWithLink = (spec) => {
   return spec.tag === 'see' && (/\{@link.+?\}/u).test(spec.source[0].source);
 };
 
-export const defaultNoTypes = ['default', 'defaultvalue', 'see'];
-
-export const defaultNoNames = [
-  'access', 'author',
-  'default', 'defaultvalue',
-  'description',
-  'example', 'exception',
-  'license',
-  'return', 'returns',
-  'since', 'summary',
-  'throws',
-  'version', 'variation'
-];
-
 const getTokenizers = ({
-  noTypes = defaultNoTypes,
-  noNames = defaultNoNames
+  mode,
+  getDefaultTagStructureForMode = _getDefaultTagStructureForMode
 } = {}) => {
+  const defaultTagStructureForMode = getDefaultTagStructureForMode(mode);
+
   // trim
   return [
     // Tag
@@ -44,7 +34,7 @@ const getTokenizers = ({
 
     // Type
     (spec) => {
-      if (noTypes.includes(spec.tag)) {
+      if (defaultTagStructureForMode.includes(spec.tag)) {
         return spec;
       }
 

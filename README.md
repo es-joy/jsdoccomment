@@ -7,27 +7,66 @@ This project aims to preserve and expand upon the
 
 It also exports a number of functions currently for working with JSDoc:
 
-- `parseComment` - For parsing `comment-parser` in a JSDoc-specific manner.
-    Might wish to have tags with or without tags, etc. derived from a split off
-    JSON file.
-- `commentHandler` - Used by `eslint-plugin-jsdoc`. Might be removed in future.
-- `commentParserToESTree`- Converts [comment-parser](https://github.com/syavorsky/comment-parser)
-    AST to ESTree/ESLint/Babel friendly AST
-- `jsdoctypeparserToESTree`- Converts [jsdoctypeparser](https://github.com/jsdoctypeparser/jsdoctypeparser)
-    AST to ESTree/ESLint/Babel friendly AST
-- `jsdocVisitorKeys` - The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
-    for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`. Might change.
-- `jsdocTypeVisitorKeys` - [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
-    for jsdoctypeparser. More likely to be subject to change.
-- `getTokenizers` - A utility. Might be removed in future.
-- `toCamelCase` - A utility. Might be removed in future.
+## API
+
+### `parseComment`
+
+For parsing `comment-parser` in a JSDoc-specific manner.
+Might wish to have tags with or without tags, etc. derived from a split off
+JSON file.
+
+### `commentParserToESTree`
+
+Converts [comment-parser](https://github.com/syavorsky/comment-parser)
+AST to ESTree/ESLint/Babel friendly AST. See the "ESLint AST..." section below.
+
+### `jsdoctypeparserToESTree`
+
+Converts [jsdoctypeparser](https://github.com/jsdoctypeparser/jsdoctypeparser)
+AST to ESTree/ESLint/Babel friendly AST. See the "ESLint AST..." section below.
+
+### `jsdocVisitorKeys`
+
+The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
+for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`. More likely to be
+subject to change or dropped in favor of another type parser.
+
+### `jsdocTypeVisitorKeys`
+
+[VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
+for jsdoctypeparser. More likely to be subject to change or dropped in favor
+of another type parser.
+
+### `getDefaultTagStructureForMode`
+
+Provides info on JSDoc tags:
+
+- `nameContents` ('namepath-referencing'|'namepath-defining'|
+    'dual-namepath-referencing'|false) - Whether and how a name is allowed
+    following any type. Tags without a proper name (value `false`) may still
+    have a description (which can appear like a name); `descriptionAllowed`
+    in such cases would be `true`.
+    The presence of a truthy `nameContents` value is therefore only intended
+    to signify whether separate parsing should occur for a name vs. a
+    description, and what its nature should be.
+- `nameRequired` (boolean) - Whether a name must be present following any type.
+- `descriptionAllowed` (boolean) - Whether a description (following any name)
+    is allowed.
+- `typeAllowed` (boolean) - Whether the tag accepts a curly bracketed portion.
+    Even without a type, a tag may still have a name and/or description.
+- `typeRequired` (boolean) - Whether a curly bracketed type must be present.
+- `typeOrNameRequired` (boolean) - Whether either a curly bracketed type is
+    required or a name, but not necessarily both.
+
+### Miscellaneous
+
+Also currently exports these utilities, though they might be removed in the
+future:
+
+- `getTokenizers` - Used with `parseComment` (its main core)
+- `toCamelCase` - Convert to CamelCase.
 - `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
-- `defaultNoTypes` = The tags which allow no types by default:
-    `default`, `defaultvalue`, `see`;
-- `defaultNoNames` - The tags which allow no names by default:
-    `access`, `author`, `default`, `defaultvalue`, `description`, `example`,
-    `exception`, `license`, `return`, `returns`, `since`, `summary`, `throws`,
-    `version`, `variation`
+- `commentHandler` - Used by `eslint-plugin-jsdoc`. Might be removed in future.
 
 ## ESLint AST produced for `comment-parser` nodes (`JSDocBlock`, `JSDocTag`, and `JSDocDescriptionLine`)
 
