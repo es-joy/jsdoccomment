@@ -48,7 +48,7 @@
   "dependencies": {
     "comment-parser": "^1.1.5",
     "esquery": "^1.4.0",
-    "jsdoctypeparser": "^9.0.0"
+    "jsdoc-type-pratt-parser": "1.0.0-alpha.23"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",

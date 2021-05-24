@@ -1,8 +1,4 @@
-import {parse as jsdoctypeParse} from 'jsdoctypeparser';
-
-import {
-  jsdoctypeparserToESTree
-} from './jsdoctypeparserToESTree.js';
+import {parse as jsdocTypePrattParse} from 'jsdoc-type-pratt-parser';
 
 const stripEncapsulatingBrackets = (container, isArr) => {
   if (isArr) {
@@ -38,7 +34,7 @@ const commentParserToESTree = (jsdoc, mode) => {
     end: endRoot,
     postDelimiter: postDelimiterRoot,
 
-    type: 'JSDocBlock'
+    type: 'JsdocBlock'
   };
 
   const tags = [];
@@ -71,12 +67,12 @@ const commentParserToESTree = (jsdoc, mode) => {
         // With even a multiline type now in full, add parsing
         let parsedType = null;
         try {
-          parsedType = jsdoctypeParse(lastTag.rawType, {mode});
+          parsedType = jsdocTypePrattParse(lastTag.rawType, mode);
         } catch {
           // Ignore
         }
 
-        lastTag.parsedType = jsdoctypeparserToESTree(parsedType);
+        lastTag.parsedType = parsedType;
       }
 
       if (end) {
@@ -94,7 +90,7 @@ const commentParserToESTree = (jsdoc, mode) => {
         ...tkns,
         descriptionLines: [],
         rawType: '',
-        type: 'JSDocTag',
+        type: 'JsdocTag',
         typeLines: []
       };
       tagObj.tag = tagObj.tag.replace(/^@/u, '');
@@ -112,7 +108,7 @@ const commentParserToESTree = (jsdoc, mode) => {
           postDelimiter,
           rawType,
           start,
-          type: 'JSDocTypeLine'
+          type: 'JsdocTypeLine'
         }
       );
       lastTag.rawType += rawType;
@@ -125,7 +121,7 @@ const commentParserToESTree = (jsdoc, mode) => {
         description,
         postDelimiter,
         start,
-        type: 'JSDocDescriptionLine'
+        type: 'JsdocDescriptionLine'
       });
       holder.description += holder.description
         ? '\n' + description
@@ -140,10 +136,10 @@ const commentParserToESTree = (jsdoc, mode) => {
 };
 
 const jsdocVisitorKeys = {
-  JSDocBlock: ['tags', 'descriptionLines'],
-  JSDocDescriptionLine: [],
-  JSDocTypeLine: [],
-  JSDocTag: ['descriptionLines', 'typeLines', 'parsedType']
+  JsdocBlock: ['tags', 'descriptionLines'],
+  JsdocDescriptionLine: [],
+  JsdocTypeLine: [],
+  JsdocTag: ['descriptionLines', 'typeLines', 'parsedType']
 };
 
 export {commentParserToESTree, jsdocVisitorKeys};

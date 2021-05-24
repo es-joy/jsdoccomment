@@ -2,8 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+var jsdocTypePrattParser = require('jsdoc-type-pratt-parser');
 var esquery = require('esquery');
-var jsdoctypeparser = require('jsdoctypeparser');
 var descriptionTokenizer = require('comment-parser/lib/parser/tokenizers/description.js');
 var util_js = require('comment-parser/lib/util.js');
 var commentParser = require('comment-parser');
@@ -18,65 +18,6 @@ var descriptionTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(descripti
 var nameTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(nameTokenizer);
 var tagTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(tagTokenizer);
 var typeTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(typeTokenizer);
-
-const toCamelCase = str => {
-  return str.toLowerCase().replace(/^[a-z]/gu, init => {
-    return init.toUpperCase();
-  }).replace(/_(?<wordInit>[a-z])/gu, (_, n1, o, s, {
-    wordInit
-  }) => {
-    return wordInit.toUpperCase();
-  });
-};
-
-const jsdoctypeparserToESTree = parsedType => {
-  // Todo: See about getting jsdoctypeparser to make these
-  //         changes; the AST might also be rethought to use
-  //         fewer types and more properties
-  const sel = esquery__default['default'].parse('*[type]');
-  esquery__default['default'].traverse(parsedType, sel, node => {
-    const {
-      type
-    } = node;
-    node.type = `JSDocType${toCamelCase(type)}`;
-  });
-  return parsedType;
-};
-
-const typeVisitorKeys = {
-  NAME: [],
-  NAMED_PARAMETER: ['typeName'],
-  MEMBER: ['owner'],
-  UNION: ['left', 'right'],
-  INTERSECTION: ['left', 'right'],
-  VARIADIC: ['value'],
-  RECORD: ['entries'],
-  RECORD_ENTRY: ['value'],
-  TUPLE: ['entries'],
-  GENERIC: ['subject', 'objects'],
-  MODULE: ['value'],
-  OPTIONAL: ['value'],
-  NULLABLE: ['value'],
-  NOT_NULLABLE: ['value'],
-  FUNCTION: ['params', 'returns', 'this', 'new'],
-  ARROW: ['params', 'returns'],
-  ANY: [],
-  UNKNOWN: [],
-  INNER_MEMBER: ['owner'],
-  INSTANCE_MEMBER: ['owner'],
-  STRING_VALUE: [],
-  NUMBER_VALUE: [],
-  EXTERNAL: [],
-  FILE_PATH: [],
-  PARENTHESIS: ['value'],
-  TYPE_QUERY: ['name'],
-  KEY_QUERY: ['value'],
-  IMPORT: ['path']
-};
-const jsdocTypeVisitorKeys = Object.entries(typeVisitorKeys).reduce((object, [key, value]) => {
-  object[`JSDocType${toCamelCase(key)}`] = value;
-  return object;
-}, {});
 
 const stripEncapsulatingBrackets = (container, isArr) => {
   if (isArr) {
@@ -106,7 +47,7 @@ const commentParserToESTree = (jsdoc, mode) => {
     // `end` will be overwritten if there are other entries
     end: endRoot,
     postDelimiter: postDelimiterRoot,
-    type: 'JSDocBlock'
+    type: 'JsdocBlock'
   };
   const tags = [];
   let lastDescriptionLine;
@@ -140,13 +81,11 @@ const commentParserToESTree = (jsdoc, mode) => {
         let parsedType = null;
 
         try {
-          parsedType = jsdoctypeparser.parse(lastTag.rawType, {
-            mode
-          });
+          parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode);
         } catch {// Ignore
         }
 
-        lastTag.parsedType = jsdoctypeparserToESTree(parsedType);
+        lastTag.parsedType = parsedType;
       }
 
       if (end) {
@@ -161,7 +100,7 @@ const commentParserToESTree = (jsdoc, mode) => {
       const tagObj = { ...tkns,
         descriptionLines: [],
         rawType: '',
-        type: 'JSDocTag',
+        type: 'JsdocTag',
         typeLines: []
       };
       tagObj.tag = tagObj.tag.replace(/^@/u, '');
@@ -176,7 +115,7 @@ const commentParserToESTree = (jsdoc, mode) => {
         postDelimiter,
         rawType,
         start,
-        type: 'JSDocTypeLine'
+        type: 'JsdocTypeLine'
       });
       lastTag.rawType += rawType;
     }
@@ -188,7 +127,7 @@ const commentParserToESTree = (jsdoc, mode) => {
         description,
         postDelimiter,
         start,
-        type: 'JSDocDescriptionLine'
+        type: 'JsdocDescriptionLine'
       });
       holder.description += holder.description ? '\n' + description : description;
     }
@@ -199,10 +138,10 @@ const commentParserToESTree = (jsdoc, mode) => {
 };
 
 const jsdocVisitorKeys = {
-  JSDocBlock: ['tags', 'descriptionLines'],
-  JSDocDescriptionLine: [],
-  JSDocTypeLine: [],
-  JSDocTag: ['descriptionLines', 'typeLines', 'parsedType']
+  JsdocBlock: ['tags', 'descriptionLines'],
+  JsdocDescriptionLine: [],
+  JsdocTypeLine: [],
+  JsdocTag: ['descriptionLines', 'typeLines', 'parsedType']
 };
 
 /**
@@ -228,11 +167,21 @@ const commentHandler = settings => {
     const selector = esquery__default['default'].parse(commentSelector);
     const ast = commentParserToESTree(jsdoc, mode);
     return esquery__default['default'].matches(ast, selector, null, {
-      visitorKeys: { ...jsdocTypeVisitorKeys,
+      visitorKeys: { ...jsdocTypePrattParser.visitorKeys,
         ...jsdocVisitorKeys
       }
     });
   };
+};
+
+const toCamelCase = str => {
+  return str.toLowerCase().replace(/^[a-z]/gu, init => {
+    return init.toUpperCase();
+  }).replace(/_(?<wordInit>[a-z])/gu, (_, n1, o, s, {
+    wordInit
+  }) => {
+    return wordInit.toUpperCase();
+  });
 };
 
 // Todo: We ideally would use comment-parser's es6 directory, but as the repo
@@ -562,6 +511,12 @@ const getJSDocComment = function (sourceCode, node, settings) {
   return findJSDocComment(reducedNode, sourceCode, settings);
 };
 
+Object.defineProperty(exports, 'jsdocTypeVisitorKeys', {
+  enumerable: true,
+  get: function () {
+    return jsdocTypePrattParser.visitorKeys;
+  }
+});
 exports.commentHandler = commentHandler;
 exports.commentParserToESTree = commentParserToESTree;
 exports.defaultNoNames = defaultNoNames;
@@ -572,8 +527,6 @@ exports.getJSDocComment = getJSDocComment;
 exports.getReducedASTNode = getReducedASTNode;
 exports.getTokenizers = getTokenizers;
 exports.hasSeeWithLink = hasSeeWithLink;
-exports.jsdocTypeVisitorKeys = jsdocTypeVisitorKeys;
 exports.jsdocVisitorKeys = jsdocVisitorKeys;
-exports.jsdoctypeparserToESTree = jsdoctypeparserToESTree;
 exports.parseComment = parseComment;
 exports.toCamelCase = toCamelCase;

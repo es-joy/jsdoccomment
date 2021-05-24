@@ -17,7 +17,7 @@ function getRollupObject ({input, minifying, format = 'umd'} = {}) {
   const nonMinified = {
     input: `src/${input}`,
     external: [
-      'esquery', 'jsdoctypeparser', 'comment-parser',
+      'esquery', 'jsdoc-type-pratt-parser', 'comment-parser',
       'comment-parser/lib/parser/tokenizers/description.js',
       'comment-parser/lib/parser/tokenizers/name.js',
       'comment-parser/lib/parser/tokenizers/tag.js',
@@ -25,7 +25,7 @@ function getRollupObject ({input, minifying, format = 'umd'} = {}) {
       'comment-parser/lib/util.js'
     ],
     output: {
-      name: 'JSDocComment',
+      name: 'JsdocComment',
       format,
       sourcemap: minifying,
       file: `dist/${input.replace(/\.js$/u, `.${format}`)}${

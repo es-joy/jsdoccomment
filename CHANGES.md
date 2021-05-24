@@ -1,5 +1,14 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.8.0
+
+- Breaking change: Export globally as `JsdocComment`
+- Breaking change: Change `JSDoc` prefixes of all node types to `Jsdoc`
+- Breaking change: Drop `jsdoctypeparserToESTree`
+- Breaking enhancement: Switch to `jsdoc-type-pratt-parser` (toward greater
+    TypeScript expressivity and compatibility/support with catharsis)
+- Enhancement: Export `jsdocTypeVisitorKeys` (from `jsdoc-type-pratt-parser`)
+
 ## 0.7.2
 
 - Fix: Add `@description` to `noNames`

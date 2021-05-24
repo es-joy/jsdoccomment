@@ -7,18 +7,66 @@ This project aims to preserve and expand upon the
 
 It also exports a number of functions currently for working with JSDoc:
 
-- `parseComment` - For parsing `comment-parser` in a JSDoc-specific manner.
-    Might wish to have tags with or without tags, etc. derived from a split off
-    JSON file.
+## API
+
+### `parseComment`
+
+For parsing `comment-parser` in a JSDoc-specific manner.
+Might wish to have tags with or without tags, etc. derived from a split off
+JSON file.
+
+### `commentParserToESTree`
+
+Converts [comment-parser](https://github.com/syavorsky/comment-parser)
+AST to ESTree/ESLint/Babel friendly AST. See the "ESLint AST..." section below.
+
+### `jsdocVisitorKeys`
+
+The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
+for `JsdocBlock`, `JsdocDescriptionLine`, and `JsdocTag`. More likely to be
+subject to change or dropped in favor of another type parser.
+
+### `jsdocTypeVisitorKeys`
+
+Just a re-export of [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
+from [`jsdoc-type-pratt-parser`](https://github.com/simonseyock/jsdoc-type-pratt-parser/).
+
+### `getDefaultTagStructureForMode`
+
+Provides info on JSDoc tags:
+
+- `nameContents` ('namepath-referencing'|'namepath-defining'|
+    'dual-namepath-referencing'|false) - Whether and how a name is allowed
+    following any type. Tags without a proper name (value `false`) may still
+    have a description (which can appear like a name); `descriptionAllowed`
+    in such cases would be `true`.
+    The presence of a truthy `nameContents` value is therefore only intended
+    to signify whether separate parsing should occur for a name vs. a
+    description, and what its nature should be.
+- `nameRequired` (boolean) - Whether a name must be present following any type.
+- `descriptionAllowed` (boolean) - Whether a description (following any name)
+    is allowed.
+- `typeAllowed` (boolean) - Whether the tag accepts a curly bracketed portion.
+    Even without a type, a tag may still have a name and/or description.
+- `typeRequired` (boolean) - Whether a curly bracketed type must be present.
+- `typeOrNameRequired` (boolean) - Whether either a curly bracketed type is
+    required or a name, but not necessarily both.
+
+### Miscellaneous
+
+Also currently exports these utilities, though they might be removed in the
+future:
+
+- `getTokenizers` - Used with `parseComment` (its main core)
+- `toCamelCase` - Convert to CamelCase.
+- `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
 - `commentHandler` - Used by `eslint-plugin-jsdoc`. Might be removed in future.
 - `commentParserToESTree`- Converts [comment-parser](https://github.com/syavorsky/comment-parser)
-    AST to ESTree/ESLint/Babel friendly AST
-- `jsdoctypeparserToESTree`- Converts [jsdoctypeparser](https://github.com/jsdoctypeparser/jsdoctypeparser)
     AST to ESTree/ESLint/Babel friendly AST
 - `jsdocVisitorKeys` - The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
     for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`. Might change.
 - `jsdocTypeVisitorKeys` - [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
-    for jsdoctypeparser. More likely to be subject to change.
+    for `jsdoc-type-pratt-parser`.
 - `getTokenizers` - A utility. Might be removed in future.
 - `toCamelCase` - A utility. Might be removed in future.
 - `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
@@ -29,18 +77,18 @@ It also exports a number of functions currently for working with JSDoc:
     `exception`, `license`, `return`, `returns`, `since`, `summary`, `throws`,
     `version`, `variation`
 
-## ESLint AST produced for `comment-parser` nodes (`JSDocBlock`, `JSDocTag`, and `JSDocDescriptionLine`)
+## ESLint AST produced for `comment-parser` nodes (`JsdocBlock`, `JsdocTag`, and `JsdocDescriptionLine`)
 
 Note: Although not added in this package, `@es-joy/jsdoc-eslint-parser` adds
 a `jsdoc` property to other ES nodes (using this project's `getJSDocComment`
 to determine the specific comment-block that will be attached as AST).
 
-### `JSDocBlock`
+### `JsdocBlock`
 
 Has two visitable properties:
 
-1. `tags` (an array of `JSDocTag`; see below)
-2. `descriptionLines` (an array of `JSDocDescriptionLine` for multiline
+1. `tags` (an array of `JsdocTag`; see below)
+2. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
     descriptions).
 
 Has the following custom non-visitable property:
@@ -54,15 +102,15 @@ May also have the following non-visitable properties from `comment-parser`:
 3. `postDelimiter`
 4. `end`
 
-### `JSDocTag`
+### `JsdocTag`
 
 Has three visitable properties:
 
-1. `parsedType` (the `jsdoctypeparser` AST representaiton of the tag's
-    type (see the `jsdoctypeparser` section below)).
-2. `descriptionLines`' (an array of `JSDocDescriptionLine` for multiline
+1. `parsedType` (the `jsdoc-type-pratt-parser` AST representaiton of the tag's
+    type (see the `jsdoc-type-pratt-parser` section below)).
+2. `descriptionLines`' (an array of `JsdocDescriptionLine` for multiline
     descriptions)
-3. `typeLines` (an array of `JSDocTypeLine` for multiline type strings)
+3. `typeLines` (an array of `JsdocTypeLine` for multiline type strings)
 
 May also have the following non-visitable properties from `comment-parser`
 (note that all are included from `comment-parser` except `end` as that is only
@@ -85,7 +133,7 @@ for JSDoc blocks and note that `type` is renamed to `rawType`):
 10. `type`
 11. `postType`
 
-### `JSDocDescriptionLine`
+### `JsdocDescriptionLine`
 
 No visitable properties.
 
@@ -96,7 +144,7 @@ May also have the following non-visitable properties from `comment-parser`:
 3. `start`
 4. `description`
 
-### `JSDocTypeLine`
+### `JsdocTypeLine`
 
 No visitable properties.
 
@@ -106,20 +154,16 @@ May also have the following non-visitable properties from `comment-parser`:
 2. `postDelimiter`
 3. `start`
 4. `rawType` - Renamed from `comment-parser` to avoid a conflict. See
-    explanation under `JSDocTag`
+    explanation under `JsdocTag`
 
-## ESLint AST produced for `jsdoctypeparser`
+## ESLint AST produced for `jsdoc-type-pratt-parser`
 
-The `type` has been changed for the type AST. Relative to `jsdoctypeparser`
-nodes, the type will have a `JSDocType` prefix added plus a camel-casing of the
-old type name, so, e.g., `INSTANCE_MEMBER` will become
-`JSDocTypeInstanceMember`.
-See [jsdoctypeparser](https://github.com/jsdoctypeparser/jsdoctypeparser)
-for the current list of node types which are transformed in this manner.
+The AST, including `type`, remains as is from [jsdoc-type-pratt-parser](https://github.com/simonseyock/jsdoc-type-pratt-parser/).
 
-Otherwise, the node properties are as in `jsdoctypeparser`.
+The type will always begin with a `JsdocType` prefix added, along with a
+camel-cased type name, e.g., `JsdocTypeUnion`.
 
-The `jsdoctypeparser` visitor keys are also modified accordingly.
+The `jsdoc-type-pratt-parser` visitor keys are also preserved without change.
 
 ## Installation
 
@@ -144,5 +188,3 @@ MIT License, see the included [LICENSE-MIT.txt](LICENSE-MIT.txt) file.
 ## To-dos
 
 1. Get complete code coverage
-2. If `comment-parser` (and `jsdoctypeparser`) are not exporting proper
-    ESLint AST, then provide simple utilities to convert their AST

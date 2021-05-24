@@ -1,11 +1,12 @@
 import esquery from 'esquery';
 
 import {
+  visitorKeys as jsdocTypePrattParserVisitorKeys
+} from 'jsdoc-type-pratt-parser';
+
+import {
   commentParserToESTree, jsdocVisitorKeys
 } from './commentParserToESTree.js';
-import {
-  jsdocTypeVisitorKeys
-} from './jsdoctypeparserToESTree.js';
 
 /**
  * @callback CommentHandler
@@ -31,7 +32,7 @@ const commentHandler = (settings) => {
 
     return esquery.matches(ast, selector, null, {
       visitorKeys: {
-        ...jsdocTypeVisitorKeys,
+        ...jsdocTypePrattParserVisitorKeys,
         ...jsdocVisitorKeys
       }
     });
