@@ -1,6 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## 0.8.0
+## 0.8.0-alpha.2
+
+- Fix: Avoid erring with missing `typeLines`
+
+## 0.8.0-alpha.1
 
 - Breaking change: Export globally as `JsdocComment`
 - Breaking change: Change `JSDoc` prefixes of all node types to `Jsdoc`

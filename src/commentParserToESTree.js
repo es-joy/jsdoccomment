@@ -62,7 +62,9 @@ const commentParserToESTree = (jsdoc, mode) => {
         // Strip out `}` that encapsulates and is not part of
         //   the type
         stripEncapsulatingBrackets(lastTag);
-        stripEncapsulatingBrackets(lastTag.typeLines, true);
+        if (lastTag.typeLines.length) {
+          stripEncapsulatingBrackets(lastTag.typeLines, true);
+        }
 
         // With even a multiline type now in full, add parsing
         let parsedType = null;
