@@ -1,5 +1,15 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.8.0
+
+### User-impacting
+
+- npm: Update `jsdoc-type-pratt-parser` (prerelease to stable patch)
+
+### Dev-impacting
+
+- npm: Update devDeps.
+
 ## 0.8.0-alpha.2
 
 - Fix: Avoid erring with missing `typeLines`
