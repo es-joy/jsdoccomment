@@ -28,7 +28,7 @@
   "scripts": {
     "prepublishOnly": "pnpm i && npm run rollup",
     "rollup": "rollup -c",
-    "eslint": "eslint --ext=jd,md,html",
+    "eslint": "eslint --ext=js,md,html .",
     "lint": "npm run eslint",
     "mocha": "mocha --require chai/register-expect",
     "c8": "c8 npm run mocha",
