@@ -18,11 +18,11 @@ function getRollupObject ({input, minifying, format = 'umd'} = {}) {
     input: `src/${input}`,
     external: [
       'esquery', 'jsdoc-type-pratt-parser', 'comment-parser',
-      'comment-parser/lib/parser/tokenizers/description.js',
-      'comment-parser/lib/parser/tokenizers/name.js',
-      'comment-parser/lib/parser/tokenizers/tag.js',
-      'comment-parser/lib/parser/tokenizers/type.js',
-      'comment-parser/lib/util.js'
+      'comment-parser/parser/tokenizers/description',
+      'comment-parser/parser/tokenizers/name',
+      'comment-parser/parser/tokenizers/tag',
+      'comment-parser/parser/tokenizers/type',
+      'comment-parser/util'
     ],
     output: {
       name: 'JsdocComment',
