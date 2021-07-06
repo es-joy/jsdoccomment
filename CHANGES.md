@@ -1,6 +1,6 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## 0.9.0
+## 0.9.0-alpha.1
 
 ### User-impacting
 
