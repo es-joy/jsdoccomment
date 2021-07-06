@@ -43,10 +43,10 @@
   },
   "homepage": "https://github.com/brettz9/getJSDocComment",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "dependencies": {
-    "comment-parser": "^1.1.5",
+    "comment-parser": "1.1.6-beta.0",
     "esquery": "^1.4.0",
     "jsdoc-type-pratt-parser": "1.0.4"
   },

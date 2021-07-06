@@ -1,5 +1,18 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.9.0
+
+### User-impacting
+
+- Breaking change: Indicate minimum for `engines` as Node >= 12
+- npm: Bump comment-parser
+
+### Dev-impacting
+
+- npm: Lint cjs files
+- npm: Fix eslint script
+- npm: Update devDeps.
+
 ## 0.8.0
 
 ### User-impacting
