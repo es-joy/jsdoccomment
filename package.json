@@ -1,9 +1,9 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.9.0-alpha.3",
+  "version": "0.9.0-alpha.4",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
-  "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment",
+  "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment along with other jsdoc utilities",
   "license": "MIT",
   "keywords": [
     "eslint",
@@ -36,12 +36,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brettz9/getJSDocComment.git"
+    "url": "git+https://github.com/es-joy/jsdoccomment.git"
   },
   "bugs": {
-    "url": "https://github.com/brettz9/getJSDocComment/issues"
+    "url": "https://github.com/es-joy/jsdoccomment/issues"
   },
-  "homepage": "https://github.com/brettz9/getJSDocComment",
+  "homepage": "https://github.com/es-joy/jsdoccomment",
   "engines": {
     "node": ">=12.0.0"
   },

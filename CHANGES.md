@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.9.0-alpha.4
+
+- Docs: Update repo info in `package.json`
+
 ## 0.9.0-alpha.3
 
 - Fix: Due to `comment-parser` still needing changes, revert for now to alpha.1
