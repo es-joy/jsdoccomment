@@ -23,5 +23,7 @@ module.exports = {
   },
 
   rules: {
+    // https://github.com/benmosher/eslint-plugin-import/issues/1868
+    'import/no-unresolved': 'off'
   }
 };

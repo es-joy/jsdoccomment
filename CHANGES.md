@@ -1,11 +1,22 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.9.0-alpha.2
+
+### User-impacting
+
+- npm: Bump `comment-parser` (for true ESM)
+- Update: Remove extensions for packages for native ESM in `comment-parser` fix
+
+### Dev-impacting
+
+- npm: Update devDeps.
+
 ## 0.9.0-alpha.1
 
 ### User-impacting
 
 - Breaking change: Indicate minimum for `engines` as Node >= 12
-- npm: Bump comment-parser
+- npm: Bump `comment-parser`
 
 ### Dev-impacting
 
