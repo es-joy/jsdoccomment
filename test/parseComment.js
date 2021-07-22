@@ -1,4 +1,5 @@
-import {parseComment} from '../src/index.js';
+// Todo: Set for src file when can import from `comment-parser`
+import {parseComment} from '../dist/index.cjs.cjs';
 
 describe('parseComment', function () {
   it('Handle simple @template', function () {

@@ -1,17 +1,19 @@
+// Todo: We ideally would use comment-parser's es6 directory, but as the repo
+//   is CommonJS, it will not be properly treated as ESM from here
 /* eslint-disable prefer-named-capture-group -- Temporary */
 import {
   // eslint-disable-next-line import/no-named-default -- Both together
   default as descriptionTokenizer,
   getJoiner
-} from 'comment-parser/parser/tokenizers/description';
+} from 'comment-parser/lib/parser/tokenizers/description.js';
 import {
   seedBlock,
   seedTokens
-} from 'comment-parser/util';
+} from 'comment-parser/lib/util.js';
 import {parse as commentParser} from 'comment-parser';
-import nameTokenizer from 'comment-parser/parser/tokenizers/name';
-import tagTokenizer from 'comment-parser/parser/tokenizers/tag';
-import typeTokenizer from 'comment-parser/parser/tokenizers/type';
+import nameTokenizer from 'comment-parser/lib/parser/tokenizers/name.js';
+import tagTokenizer from 'comment-parser/lib/parser/tokenizers/tag.js';
+import typeTokenizer from 'comment-parser/lib/parser/tokenizers/type.js';
 
 export const hasSeeWithLink = (spec) => {
   return spec.tag === 'see' && (/\{@link.+?\}/u).test(spec.source[0].source);

@@ -4,12 +4,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var jsdocTypePrattParser = require('jsdoc-type-pratt-parser');
 var esquery = require('esquery');
-var descriptionTokenizer = require('comment-parser/parser/tokenizers/description');
-var util = require('comment-parser/util');
+var descriptionTokenizer = require('comment-parser/lib/parser/tokenizers/description.js');
+var util_js = require('comment-parser/lib/util.js');
 var commentParser = require('comment-parser');
-var nameTokenizer = require('comment-parser/parser/tokenizers/name');
-var tagTokenizer = require('comment-parser/parser/tokenizers/tag');
-var typeTokenizer = require('comment-parser/parser/tokenizers/type');
+var nameTokenizer = require('comment-parser/lib/parser/tokenizers/name.js');
+var tagTokenizer = require('comment-parser/lib/parser/tokenizers/tag.js');
+var typeTokenizer = require('comment-parser/lib/parser/tokenizers/type.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -188,7 +188,7 @@ const toCamelCase = str => {
   });
 };
 
-/* eslint-disable prefer-named-capture-group -- Temporary */
+// Todo: We ideally would use comment-parser's es6 directory, but as the repo
 const hasSeeWithLink = spec => {
   return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
 };
@@ -257,10 +257,10 @@ const parseComment = (commentNode, indent) => {
   return commentParser.parse(`/*${commentNode.value}*/`, {
     // @see https://github.com/yavorskiy/comment-parser/issues/21
     tokenizers: getTokenizers()
-  })[0] || util.seedBlock({
+  })[0] || util_js.seedBlock({
     source: [{
       number: 0,
-      tokens: util.seedTokens({
+      tokens: util_js.seedTokens({
         delimiter: '/**',
         description: '',
         end: '',
@@ -269,7 +269,7 @@ const parseComment = (commentNode, indent) => {
       })
     }, {
       number: 1,
-      tokens: util.seedTokens({
+      tokens: util_js.seedTokens({
         delimiter: '',
         description: '',
         end: '*/',
@@ -337,8 +337,8 @@ const getTSFunctionComment = function (astNode) {
       // istanbul ignore else
       if (greatGrandparent.type === 'VariableDeclarator' // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
       ) {
-        return greatGreatGrandparent.parent;
-      } // istanbul ignore next
+          return greatGreatGrandparent.parent;
+        } // istanbul ignore next
 
 
       return astNode;
