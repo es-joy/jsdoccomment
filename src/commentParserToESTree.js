@@ -20,6 +20,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
 const commentParserToESTree = (jsdoc, mode) => {
   const {tokens: {
     delimiter: delimiterRoot,
+    lineEnd: lineEndRoot,
     postDelimiter: postDelimiterRoot,
     end: endRoot,
     description: descriptionRoot
@@ -33,6 +34,7 @@ const commentParserToESTree = (jsdoc, mode) => {
     // `end` will be overwritten if there are other entries
     end: endRoot,
     postDelimiter: postDelimiterRoot,
+    lineEnd: lineEndRoot,
 
     type: 'JsdocBlock'
   };

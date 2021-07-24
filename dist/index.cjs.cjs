@@ -35,6 +35,7 @@ const commentParserToESTree = (jsdoc, mode) => {
   const {
     tokens: {
       delimiter: delimiterRoot,
+      lineEnd: lineEndRoot,
       postDelimiter: postDelimiterRoot,
       end: endRoot,
       description: descriptionRoot
@@ -47,6 +48,7 @@ const commentParserToESTree = (jsdoc, mode) => {
     // `end` will be overwritten if there are other entries
     end: endRoot,
     postDelimiter: postDelimiterRoot,
+    lineEnd: lineEndRoot,
     type: 'JsdocBlock'
   };
   const tags = [];
@@ -217,10 +219,11 @@ const getTokenizers = ({
       const name = pos === -1 ? remainder : remainder.slice(0, pos);
       const extra = remainder.slice(pos + 1);
       let postName = '',
-          description = '';
+          description = '',
+          lineEnd = '';
 
       if (pos > -1) {
-        [, postName, description] = extra.match(/(\s*)(.*)/u);
+        [, postName, description, lineEnd] = extra.match(/(\s*)([^\r]*)(\r)?/u);
       }
 
       spec.name = name;
@@ -231,6 +234,7 @@ const getTokenizers = ({
       tokens.name = name;
       tokens.postName = postName;
       tokens.description = description;
+      tokens.lineEnd = lineEnd || '';
       return spec;
     }
 
@@ -263,6 +267,7 @@ const parseComment = (commentNode, indent) => {
       tokens: util.seedTokens({
         delimiter: '/**',
         description: '',
+        lineEnd: '',
         end: '',
         postDelimiter: '',
         start: ''
@@ -272,6 +277,7 @@ const parseComment = (commentNode, indent) => {
       tokens: util.seedTokens({
         delimiter: '',
         description: '',
+        lineEnd: '',
         end: '*/',
         postDelimiter: '',
         start: indent + ' '

@@ -59,9 +59,9 @@ const getTokenizers = ({
 
         const name = pos === -1 ? remainder : remainder.slice(0, pos);
         const extra = remainder.slice(pos + 1);
-        let postName = '', description = '';
+        let postName = '', description = '', lineEnd = '';
         if (pos > -1) {
-          [, postName, description] = extra.match(/(\s*)(.*)/u);
+          [, postName, description, lineEnd] = extra.match(/(\s*)([^\r]*)(\r)?/u);
         }
 
         spec.name = name;
@@ -70,6 +70,7 @@ const getTokenizers = ({
         tokens.name = name;
         tokens.postName = postName;
         tokens.description = description;
+        tokens.lineEnd = lineEnd || '';
 
         return spec;
       }
@@ -106,6 +107,7 @@ const parseComment = (commentNode, indent) => {
         tokens: seedTokens({
           delimiter: '/**',
           description: '',
+          lineEnd: '',
           end: '',
           postDelimiter: '',
           start: ''
@@ -116,6 +118,7 @@ const parseComment = (commentNode, indent) => {
         tokens: seedTokens({
           delimiter: '',
           description: '',
+          lineEnd: '',
           end: '*/',
           postDelimiter: '',
           start: indent + ' '

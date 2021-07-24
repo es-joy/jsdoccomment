@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.9.0-alpha.6
+
+### User-impacting
+
+- Update: For `ocmment-parser` update, add `lineEnd`
+
 ## 0.9.0-alpha.5
 
 ### User-impacting
