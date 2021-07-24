@@ -8,7 +8,7 @@ specifiers:
   '@rollup/plugin-babel': ^5.3.0
   c8: ^7.7.3
   chai: ^4.3.4
-  comment-parser: 1.1.6-beta.1
+  comment-parser: 1.1.6-beta.2
   eslint: ^7.31.0
   eslint-config-ash-nazg: 31.0.0
   eslint-config-standard: ^16.0.3
@@ -17,7 +17,7 @@ specifiers:
   eslint-plugin-eslint-comments: ^3.2.0
   eslint-plugin-html: ^6.1.2
   eslint-plugin-import: ^2.23.4
-  eslint-plugin-jsdoc: ^35.5.0
+  eslint-plugin-jsdoc: ^35.5.1
   eslint-plugin-markdown: ^2.2.0
   eslint-plugin-no-unsanitized: ^3.1.5
   eslint-plugin-no-use-extend-native: ^0.5.0
@@ -31,7 +31,7 @@ specifiers:
   rollup: ^2.53.3
 
 dependencies:
-  comment-parser: 1.1.6-beta.1
+  comment-parser: 1.1.6-beta.2
   esquery: 1.4.0
   jsdoc-type-pratt-parser: 1.0.4
 
@@ -1776,8 +1776,8 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /comment-parser/1.1.6-beta.1:
-    resolution: {integrity: sha512-53nPGXkCaGHXLPRwCfA97CY2ywDF8/wJsxqH0GQDJasaR2DR+fhcOoTvHDLS2NYIKLmhgz1tZpD0guIHHvVdxA==}
+  /comment-parser/1.1.6-beta.2:
+    resolution: {integrity: sha512-HzRaA0WWWvbIHcv256CCfIfRTFmAK2NN6XIU9mz9G0zYAZeHsHHu1Yjlh0R7ppi14NNTGkC26R60CQFmwhwxyw==}
     engines: {node: '>= 12.0.0'}
     dev: false
 

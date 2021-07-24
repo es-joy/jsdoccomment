@@ -1,5 +1,16 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.9.0-alpha.5
+
+### User-impacting
+
+- npm: Bump `comment-parser` (for true ESM)
+- Update: Remove extensions for packages for native ESM in `comment-parser` fix
+
+### Dev-impacting
+
+- npm: Update devDeps.
+
 ## 0.9.0-alpha.4
 
 - Docs: Update repo info in `package.json`
