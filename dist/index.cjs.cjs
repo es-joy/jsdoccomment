@@ -265,21 +265,12 @@ const parseComment = (commentNode, indent) => {
     source: [{
       number: 0,
       tokens: util.seedTokens({
-        delimiter: '/**',
-        description: '',
-        lineEnd: '',
-        end: '',
-        postDelimiter: '',
-        start: ''
+        delimiter: '/**'
       })
     }, {
       number: 1,
       tokens: util.seedTokens({
-        delimiter: '',
-        description: '',
-        lineEnd: '',
         end: '*/',
-        postDelimiter: '',
         start: indent + ' '
       })
     }]

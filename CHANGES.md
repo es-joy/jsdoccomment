@@ -1,10 +1,14 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.10.0
+
+- npm: Point to stable `comment-parser`
+
 ## 0.9.0-alpha.6
 
 ### User-impacting
 
-- Update: For `ocmment-parser` update, add `lineEnd`
+- Update: For `comment-parser` update, add `lineEnd`
 
 ## 0.9.0-alpha.5
 
