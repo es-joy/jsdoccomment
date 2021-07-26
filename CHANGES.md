@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.10.2
+
+- npm: Specify exact supported range: `^12.20 || ^14.14.0 || ^16`
+
 ## 0.10.1
 
 - npm: Apply patch version of `comment-parser`
