@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## ?
+
+- npm: Apply patch version of `comment-parser`
+
 ## 0.10.0
 
 - npm: Point to stable `comment-parser`
