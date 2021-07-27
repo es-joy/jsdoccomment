@@ -1,17 +1,19 @@
 /* eslint-disable prefer-named-capture-group -- Temporary */
 import {
-  // eslint-disable-next-line import/no-named-default -- Both together
-  default as descriptionTokenizer,
-  getJoiner
-} from 'comment-parser/parser/tokenizers/description';
-import {
   seedBlock,
   seedTokens
 } from 'comment-parser/util';
-import {parse as commentParser} from 'comment-parser';
-import nameTokenizer from 'comment-parser/parser/tokenizers/name';
-import tagTokenizer from 'comment-parser/parser/tokenizers/tag';
-import typeTokenizer from 'comment-parser/parser/tokenizers/type';
+import {
+  parse as commentParser,
+  tokenizers
+} from 'comment-parser';
+
+const {
+  name: nameTokenizer,
+  tag: tagTokenizer,
+  type: typeTokenizer,
+  description: descriptionTokenizer
+} = tokenizers;
 
 export const hasSeeWithLink = (spec) => {
   return spec.tag === 'see' && (/\{@link.+?\}/u).test(spec.source[0].source);
@@ -84,7 +86,7 @@ const getTokenizers = ({
 
     // Description
     (spec) => {
-      return descriptionTokenizer(getJoiner('preserve'))(spec);
+      return descriptionTokenizer('preserve')(spec);
     }
   ];
 };

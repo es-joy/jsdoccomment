@@ -4,20 +4,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var jsdocTypePrattParser = require('jsdoc-type-pratt-parser');
 var esquery = require('esquery');
-var descriptionTokenizer = require('comment-parser/parser/tokenizers/description');
 var util = require('comment-parser/util');
 var commentParser = require('comment-parser');
-var nameTokenizer = require('comment-parser/parser/tokenizers/name');
-var tagTokenizer = require('comment-parser/parser/tokenizers/tag');
-var typeTokenizer = require('comment-parser/parser/tokenizers/type');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var esquery__default = /*#__PURE__*/_interopDefaultLegacy(esquery);
-var descriptionTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(descriptionTokenizer);
-var nameTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(nameTokenizer);
-var tagTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(tagTokenizer);
-var typeTokenizer__default = /*#__PURE__*/_interopDefaultLegacy(typeTokenizer);
 
 const stripEncapsulatingBrackets = (container, isArr) => {
   if (isArr) {
@@ -191,6 +183,12 @@ const toCamelCase = str => {
 };
 
 /* eslint-disable prefer-named-capture-group -- Temporary */
+const {
+  name: nameTokenizer,
+  tag: tagTokenizer,
+  type: typeTokenizer,
+  description: descriptionTokenizer
+} = commentParser.tokenizers;
 const hasSeeWithLink = spec => {
   return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
 };
@@ -203,13 +201,13 @@ const getTokenizers = ({
 } = {}) => {
   // trim
   return [// Tag
-  tagTokenizer__default['default'](), // Type
+  tagTokenizer(), // Type
   spec => {
     if (noTypes.includes(spec.tag)) {
       return spec;
     }
 
-    return typeTokenizer__default['default']()(spec);
+    return typeTokenizer()(spec);
   }, // Name
   spec => {
     if (spec.tag === 'template') {
@@ -242,10 +240,10 @@ const getTokenizers = ({
       return spec;
     }
 
-    return nameTokenizer__default['default']()(spec);
+    return nameTokenizer()(spec);
   }, // Description
   spec => {
-    return descriptionTokenizer__default['default'](descriptionTokenizer.getJoiner('preserve'))(spec);
+    return descriptionTokenizer('preserve')(spec);
   }];
 };
 /**
