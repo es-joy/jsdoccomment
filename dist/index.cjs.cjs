@@ -4,7 +4,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var jsdocTypePrattParser = require('jsdoc-type-pratt-parser');
 var esquery = require('esquery');
-var util = require('comment-parser/util');
 var commentParser = require('comment-parser');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -182,6 +181,82 @@ const toCamelCase = str => {
   });
 };
 
+/* eslint-disable prefer-object-spread, no-eq-null, no-shadow,
+    jsdoc/require-jsdoc, jsdoc/require-param-type -- Just temporarily
+    housing here */
+function isSpace(source) {
+  return /^\s+$/u.test(source);
+}
+function splitSpace(source) {
+  const matches = source.match(/^\s+/u);
+  return matches == null ? ['', source] : [source.slice(0, matches[0].length), source.slice(matches[0].length)];
+}
+function splitLines(source) {
+  return source.split(/\n/u);
+}
+function seedBlock(block = {}) {
+  return Object.assign({
+    description: '',
+    tags: [],
+    source: [],
+    problems: []
+  }, block);
+}
+function seedSpec(spec = {}) {
+  return Object.assign({
+    tag: '',
+    name: '',
+    type: '',
+    optional: false,
+    description: '',
+    problems: [],
+    source: []
+  }, spec);
+}
+function seedTokens(tokens = {}) {
+  return Object.assign({
+    start: '',
+    delimiter: '',
+    postDelimiter: '',
+    tag: '',
+    postTag: '',
+    name: '',
+    postName: '',
+    type: '',
+    postType: '',
+    description: '',
+    end: ''
+  }, tokens);
+}
+/**
+ * Assures Block.tags[].source contains references to the Block.source items,
+ * using Block.source as a source of truth. This is a counterpart of
+ * rewireSpecs.
+ * @param block parsed coments block
+ */
+
+function rewireSource(block) {
+  const source = block.source.reduce((acc, line) => acc.set(line.number, line), new Map());
+
+  for (const spec of block.tags) {
+    spec.source = spec.source.map(line => source.get(line.number));
+  }
+
+  return block;
+}
+/**
+ * Assures Block.source contains references to the Block.tags[].source items,
+ * using Block.tags[].source as a source of truth. This is a counterpart
+ * of rewireSource.
+ * @param block parsed coments block
+ */
+
+function rewireSpecs(block) {
+  const source = block.tags.reduce((acc, spec) => spec.source.reduce((acc, line) => acc.set(line.number, line), acc), new Map());
+  block.source = block.source.map(line => source.get(line.number) || line);
+  return block;
+}
+
 /* eslint-disable prefer-named-capture-group -- Temporary */
 const {
   name: nameTokenizer,
@@ -259,15 +334,15 @@ const parseComment = (commentNode, indent) => {
   return commentParser.parse(`/*${commentNode.value}*/`, {
     // @see https://github.com/yavorskiy/comment-parser/issues/21
     tokenizers: getTokenizers()
-  })[0] || util.seedBlock({
+  })[0] || seedBlock({
     source: [{
       number: 0,
-      tokens: util.seedTokens({
+      tokens: seedTokens({
         delimiter: '/**'
       })
     }, {
       number: 1,
-      tokens: util.seedTokens({
+      tokens: seedTokens({
         end: '*/',
         start: indent + ' '
       })
@@ -526,6 +601,14 @@ exports.getJSDocComment = getJSDocComment;
 exports.getReducedASTNode = getReducedASTNode;
 exports.getTokenizers = getTokenizers;
 exports.hasSeeWithLink = hasSeeWithLink;
+exports.isSpace = isSpace;
 exports.jsdocVisitorKeys = jsdocVisitorKeys;
 exports.parseComment = parseComment;
+exports.rewireSource = rewireSource;
+exports.rewireSpecs = rewireSpecs;
+exports.seedBlock = seedBlock;
+exports.seedSpec = seedSpec;
+exports.seedTokens = seedTokens;
+exports.splitLines = splitLines;
+exports.splitSpace = splitSpace;
 exports.toCamelCase = toCamelCase;

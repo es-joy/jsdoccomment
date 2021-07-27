@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.10.4
+
+- Fix: Bundle `comment-parser` nested imports so that IDEs (like Atom)
+    bundling older Node versions can still work. Still mirroring the
+    stricter `comment-parser` `engines` for now, however.
+
 ## 0.10.3
 
 - npm: Avoid exporting nested subpaths for sake of older Node versions
