@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.10.6
+
+- Fix: Ensure copying latest build of `comment-parser`'s ESM utils
+
 ## 0.10.5
 
 - npm: Bump fixed `jsdoc-type-pratt-parser` and devDeps.

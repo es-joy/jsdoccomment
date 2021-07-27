@@ -1,6 +1,15 @@
 export function isSpace(source) {
     return /^\s+$/.test(source);
 }
+export function hasCR(source) {
+    return /\r$/.test(source);
+}
+export function splitCR(source) {
+    const matches = source.match(/\r+$/);
+    return matches == null
+        ? ['', source]
+        : [source.slice(-matches[0].length), source.slice(0, -matches[0].length)];
+}
 export function splitSpace(source) {
     const matches = source.match(/^\s+/);
     return matches == null
@@ -17,7 +26,7 @@ export function seedSpec(spec = {}) {
     return Object.assign({ tag: '', name: '', type: '', optional: false, description: '', problems: [], source: [] }, spec);
 }
 export function seedTokens(tokens = {}) {
-    return Object.assign({ start: '', delimiter: '', postDelimiter: '', tag: '', postTag: '', name: '', postName: '', type: '', postType: '', description: '', end: '' }, tokens);
+    return Object.assign({ start: '', delimiter: '', postDelimiter: '', tag: '', postTag: '', name: '', postName: '', type: '', postType: '', description: '', end: '', lineEnd: '' }, tokens);
 }
 /**
  * Assures Block.tags[].source contains references to the Block.source items,
