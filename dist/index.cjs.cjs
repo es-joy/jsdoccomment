@@ -181,18 +181,15 @@ const toCamelCase = str => {
   });
 };
 
-/* eslint-disable prefer-object-spread, no-eq-null, no-shadow,
-    jsdoc/require-jsdoc, jsdoc/require-param-type -- Just temporarily
-    housing here */
 function isSpace(source) {
-  return /^\s+$/u.test(source);
+  return /^\s+$/.test(source);
 }
 function splitSpace(source) {
-  const matches = source.match(/^\s+/u);
+  const matches = source.match(/^\s+/);
   return matches == null ? ['', source] : [source.slice(0, matches[0].length), source.slice(matches[0].length)];
 }
 function splitLines(source) {
-  return source.split(/\n/u);
+  return source.split(/\n/);
 }
 function seedBlock(block = {}) {
   return Object.assign({
@@ -230,8 +227,7 @@ function seedTokens(tokens = {}) {
 }
 /**
  * Assures Block.tags[].source contains references to the Block.source items,
- * using Block.source as a source of truth. This is a counterpart of
- * rewireSpecs.
+ * using Block.source as a source of truth. This is a counterpart of rewireSpecs
  * @param block parsed coments block
  */
 
@@ -246,8 +242,7 @@ function rewireSource(block) {
 }
 /**
  * Assures Block.source contains references to the Block.tags[].source items,
- * using Block.tags[].source as a source of truth. This is a counterpart
- * of rewireSource.
+ * using Block.tags[].source as a source of truth. This is a counterpart of rewireSource
  * @param block parsed coments block
  */
 

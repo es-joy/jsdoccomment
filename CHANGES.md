@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.10.5
+
+- npm: Bump fixed `jsdoc-type-pratt-parser` and devDeps.
+
 ## 0.10.4
 
 - Fix: Bundle `comment-parser` nested imports so that IDEs (like Atom)
