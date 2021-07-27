@@ -184,6 +184,13 @@ const toCamelCase = str => {
 function isSpace(source) {
   return /^\s+$/.test(source);
 }
+function hasCR(source) {
+  return /\r$/.test(source);
+}
+function splitCR(source) {
+  const matches = source.match(/\r+$/);
+  return matches == null ? ['', source] : [source.slice(-matches[0].length), source.slice(0, -matches[0].length)];
+}
 function splitSpace(source) {
   const matches = source.match(/^\s+/);
   return matches == null ? ['', source] : [source.slice(0, matches[0].length), source.slice(matches[0].length)];
@@ -222,7 +229,8 @@ function seedTokens(tokens = {}) {
     type: '',
     postType: '',
     description: '',
-    end: ''
+    end: '',
+    lineEnd: ''
   }, tokens);
 }
 /**
@@ -595,6 +603,7 @@ exports.getDecorator = getDecorator;
 exports.getJSDocComment = getJSDocComment;
 exports.getReducedASTNode = getReducedASTNode;
 exports.getTokenizers = getTokenizers;
+exports.hasCR = hasCR;
 exports.hasSeeWithLink = hasSeeWithLink;
 exports.isSpace = isSpace;
 exports.jsdocVisitorKeys = jsdocVisitorKeys;
@@ -604,6 +613,7 @@ exports.rewireSpecs = rewireSpecs;
 exports.seedBlock = seedBlock;
 exports.seedSpec = seedSpec;
 exports.seedTokens = seedTokens;
+exports.splitCR = splitCR;
 exports.splitLines = splitLines;
 exports.splitSpace = splitSpace;
 exports.toCamelCase = toCamelCase;
