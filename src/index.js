@@ -9,6 +9,3 @@ export * from './parseComment.js';
 export * from './commentParserToESTree.js';
 
 export * from './jsdoccomment.js';
-
-// Temporarily re-export (and elsehwere use) `comment-parser`'s nested exports
-export * from './commentParserExtras.js';

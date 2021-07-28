@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.10.7
+
+- npm: Update comment-parser with CJS fix and re-exports
+- npm: Update devDeps.
+
 ## 0.10.6
 
 - Fix: Ensure copying latest build of `comment-parser`'s ESM utils

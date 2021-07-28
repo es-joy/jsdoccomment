@@ -1,12 +1,14 @@
 /* eslint-disable prefer-named-capture-group -- Temporary */
 import {
   parse as commentParser,
-  tokenizers
+  tokenizers,
+  util
 } from 'comment-parser';
-import {
+
+const {
   seedBlock,
   seedTokens
-} from './commentParserExtras.js';
+} = util;
 
 const {
   name: nameTokenizer,
