@@ -1,5 +1,17 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.10.8
+
+### User-impacting
+
+- npm: Liberalize `engines` as per `comment-parser` change
+- npm: Bump `comment-parser`
+
+### Dev-impacting
+
+- Linting: As per latest ash-nazg
+- npm: Update devDeps.
+
 ## 0.10.7
 
 - npm: Update comment-parser with CJS fix and re-exports
