@@ -46,6 +46,7 @@ const getTSFunctionComment = function (astNode) {
   }
 
   switch (grandparent.type) {
+  case 'PropertyDefinition':
   case 'ClassProperty':
   case 'TSDeclareFunction':
   case 'TSMethodSignature':
@@ -115,7 +116,8 @@ const allowableCommentNode = new Set([
   'MethodDefinition',
   'Property',
   'ObjectProperty',
-  'ClassProperty'
+  'ClassProperty',
+  'PropertyDefinition'
 ]);
 
 /**

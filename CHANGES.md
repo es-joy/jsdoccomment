@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.11.0
+
+- Update: For `@typescript/eslint-parser@5`, add `PropertyDefinition`
+
 ## 0.10.8
 
 ### User-impacting

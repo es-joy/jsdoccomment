@@ -325,6 +325,7 @@ const getTSFunctionComment = function (astNode) {
   }
 
   switch (grandparent.type) {
+    case 'PropertyDefinition':
     case 'ClassProperty':
     case 'TSDeclareFunction':
     case 'TSMethodSignature':
@@ -387,7 +388,7 @@ const getTSFunctionComment = function (astNode) {
 };
 
 const invokedExpression = new Set(['CallExpression', 'OptionalCallExpression', 'NewExpression']);
-const allowableCommentNode = new Set(['VariableDeclaration', 'ExpressionStatement', 'MethodDefinition', 'Property', 'ObjectProperty', 'ClassProperty']);
+const allowableCommentNode = new Set(['VariableDeclaration', 'ExpressionStatement', 'MethodDefinition', 'Property', 'ObjectProperty', 'ClassProperty', 'PropertyDefinition']);
 /**
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
