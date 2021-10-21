@@ -106,7 +106,7 @@ May also have the following non-visitable properties from `comment-parser`:
 
 Has three visitable properties:
 
-1. `parsedType` (the `jsdoc-type-pratt-parser` AST representaiton of the tag's
+1. `parsedType` (the `jsdoc-type-pratt-parser` AST representation of the tag's
     type (see the `jsdoc-type-pratt-parser` section below)).
 2. `descriptionLines`' (an array of `JsdocDescriptionLine` for multiline
     descriptions)
