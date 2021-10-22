@@ -161,9 +161,9 @@ const commentHandler = settings => {
     const {
       mode
     } = settings;
-    const selector = esquery__default['default'].parse(commentSelector);
+    const selector = esquery__default["default"].parse(commentSelector);
     const ast = commentParserToESTree(jsdoc, mode);
-    return esquery__default['default'].matches(ast, selector, null, {
+    return esquery__default["default"].matches(ast, selector, null, {
       visitorKeys: { ...jsdocTypePrattParser.visitorKeys,
         ...jsdocVisitorKeys
       }
@@ -516,9 +516,7 @@ const getJSDocComment = function (sourceCode, node, settings) {
 
 Object.defineProperty(exports, 'jsdocTypeVisitorKeys', {
   enumerable: true,
-  get: function () {
-    return jsdocTypePrattParser.visitorKeys;
-  }
+  get: function () { return jsdocTypePrattParser.visitorKeys; }
 });
 exports.commentHandler = commentHandler;
 exports.commentParserToESTree = commentParserToESTree;

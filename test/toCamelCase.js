@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-shadow -- Forced to import now
+import {expect} from 'chai';
+
 import toCamelCase from '../src/toCamelCase.js';
 
 describe('toCamelCase', function () {

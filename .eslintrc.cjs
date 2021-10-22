@@ -23,6 +23,8 @@ module.exports = {
   },
 
   rules: {
+    // Reenable after this is addressed: https://github.com/eslint/eslint/issues/14745
+    'jsdoc/check-examples': 'off',
     // https://github.com/benmosher/eslint-plugin-import/issues/1868
     'import/no-unresolved': 'off'
   }
