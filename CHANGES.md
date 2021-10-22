@@ -1,5 +1,18 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.12.0
+
+### User-impacting
+
+- Update: `jsdoc-type-pratt-parser` to 2.0.0
+- Enhancement: Support Node 17 (@timgates42)
+- Docs: Typo (@timgates42)
+
+### Dev-impacting
+
+- Linting: As per latest ash-nazg
+- npm: Update devDeps.
+
 ## 0.11.0
 
 - Update: For `@typescript/eslint-parser@5`, add `PropertyDefinition`
