@@ -1,5 +1,12 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.13.0
+
+### User-impacting
+
+- Update: `comment-parser` to 1.3.0
+- Fix: Allow comment on `ExportDefaultDeclaration`
+
 ## 0.12.0
 
 ### User-impacting
