@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.14.1
+
+### User-impacting
+
+- Update: `jsdoc-type-pratt-parser` to 2.0.2
+
 ## 0.14.0
 
 ### User-impacting
