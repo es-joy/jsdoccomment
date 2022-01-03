@@ -1,5 +1,15 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.14.2
+
+### User-impacting
+
+- Fix: Find comments previous to parentheses (used commonly in TypeScript)
+
+### Dev-impacting
+
+- npm: Update devDeps.
+
 ## 0.14.1
 
 ### User-impacting

@@ -479,6 +479,13 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
       includeComments: true
     });
 
+    if (tokenBefore && tokenBefore.type === 'Punctuator' && tokenBefore.value === '(') {
+      [tokenBefore] = sourceCode.getTokensBefore(currentNode, {
+        count: 2,
+        includeComments: true
+      });
+    }
+
     if (!tokenBefore || !isCommentToken(tokenBefore)) {
       return null;
     }
