@@ -1,5 +1,13 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+### User-impacting
+
+- Update: `jsdoc-type-pratt-parser` to 2.2.0
+
+### Dev-impacting
+
+- npm: Update devDeps.
+
 ## 0.15.0
 
 ### User-impacting
