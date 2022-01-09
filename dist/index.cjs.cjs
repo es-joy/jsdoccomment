@@ -538,3 +538,9 @@ exports.hasSeeWithLink = hasSeeWithLink;
 exports.jsdocVisitorKeys = jsdocVisitorKeys;
 exports.parseComment = parseComment;
 exports.toCamelCase = toCamelCase;
+Object.keys(jsdocTypePrattParser).forEach(function (k) {
+  if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
+    enumerable: true,
+    get: function () { return jsdocTypePrattParser[k]; }
+  });
+});
