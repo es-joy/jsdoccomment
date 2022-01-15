@@ -17,6 +17,25 @@ const stripEncapsulatingBrackets = (container, isArr) => {
   ).replace(/\}$/u, '');
 };
 
+const cleanUpLastTag = (lastTag, mode) => {
+  // Strip out `}` that encapsulates and is not part of
+  //   the type
+  stripEncapsulatingBrackets(lastTag);
+  if (lastTag.typeLines.length) {
+    stripEncapsulatingBrackets(lastTag.typeLines, true);
+  }
+
+  // With even a multiline type now in full, add parsing
+  let parsedType = null;
+  try {
+    parsedType = jsdocTypePrattParse(lastTag.rawType, mode);
+  } catch {
+    // Ignore
+  }
+
+  lastTag.parsedType = parsedType;
+};
+
 const commentParserToESTree = (jsdoc, mode) => {
   const {tokens: {
     delimiter: delimiterRoot,
@@ -42,7 +61,13 @@ const commentParserToESTree = (jsdoc, mode) => {
   const tags = [];
   let lastDescriptionLine;
   let lastTag = null;
-  jsdoc.source.slice(1).forEach((info, idx) => {
+
+  const isSingleLineBlock = Boolean(jsdoc.source.length === 1 &&
+    jsdoc.source[0].tokens.end);
+
+  const source = isSingleLineBlock ? jsdoc.source : jsdoc.source.slice(1);
+
+  source.forEach((info, idx) => {
     const {tokens} = info;
     const {
       delimiter,
@@ -61,25 +86,12 @@ const commentParserToESTree = (jsdoc, mode) => {
 
       // Clean-up with last tag before end or new tag
       if (lastTag) {
-        // Strip out `}` that encapsulates and is not part of
-        //   the type
-        stripEncapsulatingBrackets(lastTag);
-        if (lastTag.typeLines.length) {
-          stripEncapsulatingBrackets(lastTag.typeLines, true);
-        }
-
-        // With even a multiline type now in full, add parsing
-        let parsedType = null;
-        try {
-          parsedType = jsdocTypePrattParse(lastTag.rawType, mode);
-        } catch {
-          // Ignore
-        }
-
-        lastTag.parsedType = parsedType;
+        cleanUpLastTag(lastTag, mode);
       }
 
-      if (end) {
+      // Stop the iteration when we reached the last tag
+      // but only when we have multi-line block comment
+      if (end && !isSingleLineBlock) {
         ast.end = end;
 
         return;
@@ -130,6 +142,17 @@ const commentParserToESTree = (jsdoc, mode) => {
       holder.description += holder.description
         ? '\n' + description
         : description;
+    }
+
+    // Clean-up in single line mode
+    if (isSingleLineBlock) {
+      if (end) {
+        ast.end = end;
+      }
+
+      if (lastTag) {
+        cleanUpLastTag(lastTag, mode);
+      }
     }
   });
 
