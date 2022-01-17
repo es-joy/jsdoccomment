@@ -1,5 +1,15 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## ?
+
+### User-impacting
+
+- chore: update `jsdoc-type-pratt-parser`
+
+### Dev-impacting
+
+- chore: update devDeps.
+
 ## 0.17.0
 
 ### User-impacting
