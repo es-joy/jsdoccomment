@@ -22,7 +22,30 @@ const stripEncapsulatingBrackets = (container, isArr) => {
   container.rawType = container.rawType.replace(/^\{/u, '').replace(/\}$/u, '');
 };
 
+const cleanUpLastTag = (lastTag, mode) => {
+  // Strip out `}` that encapsulates and is not part of
+  //   the type
+  stripEncapsulatingBrackets(lastTag);
+
+  if (lastTag.typeLines.length) {
+    stripEncapsulatingBrackets(lastTag.typeLines, true);
+  } // With even a multiline type now in full, add parsing
+
+
+  let parsedType = null;
+
+  try {
+    parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode);
+  } catch {// Ignore
+  }
+
+  lastTag.parsedType = parsedType;
+};
+
 const commentParserToESTree = (jsdoc, mode) => {
+  const {
+    source
+  } = jsdoc;
   const {
     tokens: {
       delimiter: delimiterRoot,
@@ -31,13 +54,14 @@ const commentParserToESTree = (jsdoc, mode) => {
       end: endRoot,
       description: descriptionRoot
     }
-  } = jsdoc.source[0];
+  } = source[0];
   const ast = {
     delimiter: delimiterRoot,
     description: descriptionRoot,
     descriptionLines: [],
     // `end` will be overwritten if there are other entries
     end: endRoot,
+    endLine: source.length - 1,
     postDelimiter: postDelimiterRoot,
     lineEnd: lineEndRoot,
     type: 'JsdocBlock'
@@ -45,7 +69,7 @@ const commentParserToESTree = (jsdoc, mode) => {
   const tags = [];
   let lastDescriptionLine;
   let lastTag = null;
-  jsdoc.source.slice(1).forEach((info, idx) => {
+  source.forEach((info, idx) => {
     const {
       tokens
     } = info;
@@ -66,26 +90,13 @@ const commentParserToESTree = (jsdoc, mode) => {
 
 
       if (lastTag) {
-        // Strip out `}` that encapsulates and is not part of
-        //   the type
-        stripEncapsulatingBrackets(lastTag);
-
-        if (lastTag.typeLines.length) {
-          stripEncapsulatingBrackets(lastTag.typeLines, true);
-        } // With even a multiline type now in full, add parsing
+        cleanUpLastTag(lastTag, mode);
+      } // Stop the iteration when we reach the end
+      // but only when there is no tag earlier in the line
+      // to still process
 
 
-        let parsedType = null;
-
-        try {
-          parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode);
-        } catch {// Ignore
-        }
-
-        lastTag.parsedType = parsedType;
-      }
-
-      if (end) {
+      if (end && !tag) {
         ast.end = end;
         return;
       }
@@ -127,6 +138,12 @@ const commentParserToESTree = (jsdoc, mode) => {
         type: 'JsdocDescriptionLine'
       });
       holder.description += holder.description ? '\n' + description : description;
+    } // Clean-up where last line itself has tag content
+
+
+    if (end && tag) {
+      ast.end = end;
+      cleanUpLastTag(lastTag, mode);
     }
   });
   ast.lastDescriptionLine = lastDescriptionLine;

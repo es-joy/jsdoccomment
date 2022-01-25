@@ -37,13 +37,16 @@ const cleanUpLastTag = (lastTag, mode) => {
 };
 
 const commentParserToESTree = (jsdoc, mode) => {
+  const {source} = jsdoc;
+
   const {tokens: {
     delimiter: delimiterRoot,
     lineEnd: lineEndRoot,
     postDelimiter: postDelimiterRoot,
     end: endRoot,
     description: descriptionRoot
-  }} = jsdoc.source[0];
+  }} = source[0];
+
   const ast = {
     delimiter: delimiterRoot,
     description: descriptionRoot,
@@ -52,6 +55,7 @@ const commentParserToESTree = (jsdoc, mode) => {
 
     // `end` will be overwritten if there are other entries
     end: endRoot,
+    endLine: source.length - 1,
     postDelimiter: postDelimiterRoot,
     lineEnd: lineEndRoot,
 
@@ -61,11 +65,6 @@ const commentParserToESTree = (jsdoc, mode) => {
   const tags = [];
   let lastDescriptionLine;
   let lastTag = null;
-
-  const isSingleLineBlock = Boolean(jsdoc.source.length === 1 &&
-    jsdoc.source[0].tokens.end);
-
-  const source = isSingleLineBlock ? jsdoc.source : jsdoc.source.slice(1);
 
   source.forEach((info, idx) => {
     const {tokens} = info;
@@ -89,9 +88,10 @@ const commentParserToESTree = (jsdoc, mode) => {
         cleanUpLastTag(lastTag, mode);
       }
 
-      // Stop the iteration when we reached the last tag
-      // but only when we have multi-line block comment
-      if (end && !isSingleLineBlock) {
+      // Stop the iteration when we reach the end
+      // but only when there is no tag earlier in the line
+      // to still process
+      if (end && !tag) {
         ast.end = end;
 
         return;
@@ -144,15 +144,11 @@ const commentParserToESTree = (jsdoc, mode) => {
         : description;
     }
 
-    // Clean-up in single line mode
-    if (isSingleLineBlock) {
-      if (end) {
-        ast.end = end;
-      }
+    // Clean-up where last line itself has tag content
+    if (end && tag) {
+      ast.end = end;
 
-      if (lastTag) {
-        cleanUpLastTag(lastTag, mode);
-      }
+      cleanUpLastTag(lastTag, mode);
     }
   });
 

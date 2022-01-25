@@ -94,6 +94,7 @@ Has two visitable properties:
 Has the following custom non-visitable property:
 
 1. `lastDescriptionLine` - A number
+2. `endLine` - A number representing the line number with `end`
 
 May also have the following non-visitable properties from `comment-parser`:
 
