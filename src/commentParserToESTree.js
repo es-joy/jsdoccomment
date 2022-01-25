@@ -1,5 +1,11 @@
 import {parse as jsdocTypePrattParse} from 'jsdoc-type-pratt-parser';
 
+/**
+ * Removes initial and ending brackets from `rawType`
+ * @param {JsdocTypeLine[]|JsdocTag} container
+ * @param {boolean} isArr
+ * @returns {void}
+ */
 const stripEncapsulatingBrackets = (container, isArr) => {
   if (isArr) {
     const firstItem = container[0];
@@ -17,6 +23,12 @@ const stripEncapsulatingBrackets = (container, isArr) => {
   ).replace(/\}$/u, '');
 };
 
+/**
+ * Strips brackets from a tag's `rawType` values and adds `parsedType`
+ * @param {JsdocTag} lastTag
+ * @param {external:JsdocTypePrattParserMode} mode
+ * @returns {void}
+ */
 const cleanUpLastTag = (lastTag, mode) => {
   // Strip out `}` that encapsulates and is not part of
   //   the type
@@ -36,6 +48,70 @@ const cleanUpLastTag = (lastTag, mode) => {
   lastTag.parsedType = parsedType;
 };
 
+/**
+ * @external CommentParserJsdoc
+ */
+
+/**
+ * @external JsdocTypePrattParserMode
+ */
+
+/**
+ * @typedef {{
+ *   delimiter: string,
+ *   postDelimiter: string,
+ *   rawType: string,
+ *   start: string,
+ *   type: "JsdocTypeLine"
+ * }} JsdocTypeLine
+ */
+
+/**
+ * @typedef {{
+ *   delimiter: string,
+ *   description: string,
+ *   postDelimiter: string,
+ *   start: string,
+ *   type: "JsdocDescriptionLine"
+ * }} JsdocDescriptionLine
+ */
+
+/**
+ * @typedef {{
+ *   delimiter: string,
+ *   description: string,
+ *   postDelimiter: string,
+ *   start: string,
+ *   tag: string,
+ *   end: string,
+ *   type: string,
+ *   descriptionLines: JsdocDescriptionLine[],
+ *   rawType: string,
+ *   type: "JsdocTag",
+ *   typeLines: JsdocTypeLine[]
+ * }} JsdocTag
+ */
+
+/**
+ * @typedef {{
+ *   delimiter: string,
+ *   description: string,
+ *   descriptionLines: JsdocDescriptionLine[],
+ *   end: string,
+ *   postDelimiter: string,
+ *   lineEnd: string,
+ *   type: "JsdocBlock",
+ *   lastDescriptionLine: Integer,
+ *   tags: JsdocTag[]
+ * }} JsdocBlock
+ */
+
+/**
+ *
+ * @param {external:CommentParserJsdoc} jsdoc
+ * @param {external:JsdocTypePrattParserMode} mode
+ * @returns {JsdocBlock}
+ */
 const commentParserToESTree = (jsdoc, mode) => {
   const {source} = jsdoc;
 
