@@ -5,11 +5,14 @@
 ### User-impacting
 
 - feat: supply `indent` default for `parseComment`
+- fix: ensure `postName` gets a space for `@template` with a description
 - chore: update `jsdoc-type-pratt-parser`
 
 ### Dev-impacting
 
 - chore: update devDeps.
+- test: avoid need for `expect`
+- test: complete coverage for `commentHandler`, `parseComment` tests
 
 ## 0.17.0
 
