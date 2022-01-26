@@ -96,10 +96,10 @@ const getTokenizers = ({
 /**
  *
  * @param {PlainObject} commentNode
- * @param {string} indent Whitespace
+ * @param {string} [indent=""] Whitespace
  * @returns {PlainObject}
  */
-const parseComment = (commentNode, indent) => {
+const parseComment = (commentNode, indent = '') => {
   // Preserve JSDoc block start/end indentation.
   return commentParser(`/*${commentNode.value}*/`, {
     // @see https://github.com/yavorskiy/comment-parser/issues/21

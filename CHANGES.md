@@ -4,6 +4,7 @@
 
 ### User-impacting
 
+- feat: supply `indent` default for `parseComment`
 - chore: update `jsdoc-type-pratt-parser`
 
 ### Dev-impacting
