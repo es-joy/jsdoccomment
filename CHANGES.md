@@ -1,6 +1,6 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## ?
+## 0.18.0
 
 ### User-impacting
 
