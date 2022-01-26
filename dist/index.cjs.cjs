@@ -218,7 +218,7 @@ const getTokenizers = ({
       const remainder = spec.source[0].tokens.description;
       const pos = remainder.search(/(?<![\s,])\s/u);
       const name = pos === -1 ? remainder : remainder.slice(0, pos);
-      const extra = remainder.slice(pos + 1);
+      const extra = remainder.slice(pos);
       let postName = '',
           description = '',
           lineEnd = '';
@@ -252,12 +252,12 @@ const getTokenizers = ({
 /**
  *
  * @param {PlainObject} commentNode
- * @param {string} indent Whitespace
+ * @param {string} [indent=""] Whitespace
  * @returns {PlainObject}
  */
 
 
-const parseComment = (commentNode, indent) => {
+const parseComment = (commentNode, indent = '') => {
   // Preserve JSDoc block start/end indentation.
   return commentParser.parse(`/*${commentNode.value}*/`, {
     // @see https://github.com/yavorskiy/comment-parser/issues/21

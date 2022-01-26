@@ -62,7 +62,7 @@ const getTokenizers = ({
         const pos = remainder.search(/(?<![\s,])\s/u);
 
         const name = pos === -1 ? remainder : remainder.slice(0, pos);
-        const extra = remainder.slice(pos + 1);
+        const extra = remainder.slice(pos);
         let postName = '', description = '', lineEnd = '';
         if (pos > -1) {
           [, postName, description, lineEnd] = extra.match(/(\s*)([^\r]*)(\r)?/u);
