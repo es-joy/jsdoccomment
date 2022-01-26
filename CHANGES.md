@@ -4,12 +4,17 @@
 
 ### User-impacting
 
+- feat: add non-visitable `endLine` property (so can detect line number
+    when no description present)
 - feat: supply `indent` default for `parseComment`
 - fix: ensure `postName` gets a space for `@template` with a description
+- fix: converting JSDoc comment with tag on same line as end (e.g., single
+    line) to AST
 - chore: update `jsdoc-type-pratt-parser`
 
 ### Dev-impacting
 
+- docs: add jsdoc blocks internally
 - chore: update devDeps.
 - test: avoid need for `expect`
 - test: complete coverage for `commentHandler`, `parseComment` tests
