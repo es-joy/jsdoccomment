@@ -108,7 +108,7 @@ Has three visitable properties:
 
 1. `parsedType` (the `jsdoc-type-pratt-parser` AST representation of the tag's
     type (see the `jsdoc-type-pratt-parser` section below)).
-2. `descriptionLines`' (an array of `JsdocDescriptionLine` for multiline
+2. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
     descriptions)
 3. `typeLines` (an array of `JsdocTypeLine` for multiline type strings)
 
@@ -130,8 +130,7 @@ for JSDoc blocks and note that `type` is renamed to `rawType`):
 7. `postTag`
 8. `name`
 9. `postName`
-10. `type`
-11. `postType`
+10. `postType`
 
 ### `JsdocDescriptionLine`
 
