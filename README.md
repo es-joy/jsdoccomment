@@ -74,8 +74,8 @@ future:
     `default`, `defaultvalue`, `see`;
 - `defaultNoNames` - The tags which allow no names by default:
     `access`, `author`, `default`, `defaultvalue`, `description`, `example`,
-    `exception`, `license`, `return`, `returns`, `since`, `summary`, `throws`,
-    `version`, `variation`
+    `exception`, `kind`, `license`, `return`, `returns`, `since`, `summary`,
+    `throws`, `version`, `variation`
 
 ## ESLint AST produced for `comment-parser` nodes (`JsdocBlock`, `JsdocTag`, and `JsdocDescriptionLine`)
 
