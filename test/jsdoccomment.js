@@ -15,6 +15,17 @@ const ESPREE_DEFAULT_CONFIG = {
   loc: true
 };
 
+/**
+ * @param {string} code
+ * @param {{
+ *   ecmaVersion: number,
+ *   comment: boolean,
+ *   tokens: boolean,
+ *   range: boolean,
+ *   loc: boolean
+ * }} config
+ * @returns {Node}
+ */
 function parseAddingParents (code, config = ESPREE_DEFAULT_CONFIG) {
   const ast = espreeParse(code, config);
   traverse(ast, {

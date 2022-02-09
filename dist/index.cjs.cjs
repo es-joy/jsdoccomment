@@ -292,7 +292,7 @@ const hasSeeWithLink = spec => {
   return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
 };
 const defaultNoTypes = ['default', 'defaultvalue', 'see'];
-const defaultNoNames = ['access', 'author', 'default', 'defaultvalue', 'description', 'example', 'exception', 'license', 'return', 'returns', 'since', 'summary', 'throws', 'version', 'variation'];
+const defaultNoNames = ['access', 'author', 'default', 'defaultvalue', 'description', 'example', 'exception', 'kind', 'license', 'return', 'returns', 'since', 'summary', 'throws', 'version', 'variation'];
 
 const getTokenizers = ({
   noTypes = defaultNoTypes,

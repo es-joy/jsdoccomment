@@ -1,5 +1,18 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.19.0
+
+### User-impacting
+
+- feat: treat `@kind` as having no name
+
+### Dev-impacting
+
+- docs: jsdoc
+- test: begin checking `jsdoccomment`
+- test: adds lcov reporter and open script for it
+- chore: update devDeps.
+
 ## 0.18.0
 
 ### User-impacting
