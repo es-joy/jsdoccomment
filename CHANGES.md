@@ -1,5 +1,16 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.20.0
+
+- fix: properly supports `name`/`postName` for multi-line type
+- fix: allow pratt parser to fail (unless empty)
+- fix: don't add tag postDelimiter when on 0 description line
+- fix: avoid adding extra line when only name and no succeeding description
+- docs: clarify re: `kind`
+- test: add `parsedType` with correct mode; add tests
+- chore: updates jsdoc-type-pratt-parser
+- chore: updates devDeps.
+
 ## 0.19.0
 
 ### User-impacting

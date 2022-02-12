@@ -189,4 +189,3 @@ MIT License, see the included [LICENSE-MIT.txt](LICENSE-MIT.txt) file.
 ## To-dos
 
 1. Get complete code coverage
-2. Add `estreeToString`
