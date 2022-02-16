@@ -2,6 +2,7 @@
 
 ## 0.20.0
 
+- feat: add estree stringifer
 - fix: properly supports `name`/`postName` for multi-line type
 - fix: allow pratt parser to fail (unless empty)
 - fix: don't add tag postDelimiter when on 0 description line
