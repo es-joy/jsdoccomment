@@ -48,8 +48,9 @@ const cleanUpLastTag = (lastTag, mode) => {
 
   let parsedType = null;
 
-  if (lastTag.rawType) {
+  try {
     parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode);
+  } catch (err) {// Ignore
   }
 
   lastTag.parsedType = parsedType;

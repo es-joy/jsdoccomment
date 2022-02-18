@@ -40,8 +40,10 @@ const cleanUpLastTag = (lastTag, mode) => {
   // With even a multiline type now in full, add parsing
   let parsedType = null;
 
-  if (lastTag.rawType) {
+  try {
     parsedType = jsdocTypePrattParse(lastTag.rawType, mode);
+  } catch (err) {
+    // Ignore
   }
 
   lastTag.parsedType = parsedType;

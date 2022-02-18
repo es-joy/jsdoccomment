@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.20.1
+
+- fix: resume catching bad parsed type (at least until
+    `jsdoc-type-pratt-parser` may support all expected types)
+
 ## 0.20.0
 
 - feat: add estree stringifer
