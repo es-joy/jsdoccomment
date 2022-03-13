@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.21.2
+
+- fix: only throw if the raw type is not empty
+
 ## 0.21.1
 
 - fix: provide clearer error message for `throwOnTypeParsingErrors`

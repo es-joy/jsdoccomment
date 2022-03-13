@@ -112,7 +112,7 @@ const commentParserToESTree = (jsdoc, mode, {
       parsedType = jsdocTypePrattParse(lastTag.rawType, mode);
     } catch (err) {
       // Ignore
-      if (throwOnTypeParsingErrors) {
+      if (lastTag.rawType && throwOnTypeParsingErrors) {
         err.message = `Tag @${lastTag.tag} with raw type ` +
           `\`${lastTag.rawType}\` had parsing error: ${err.message}`;
         throw err;
