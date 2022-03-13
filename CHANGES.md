@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## ?
+
+- fix: update dep. `jsdoc-type-pratt-parser`
+
 ## 0.21.2
 
 - fix: only throw if the raw type is not empty
