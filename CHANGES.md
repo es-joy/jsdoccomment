@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.21.0
+
+- feat: add `throwOnTypeParsingErrors` to receive run-time type parsing errors
+    for `parsedType`
+
 ## 0.20.1
 
 - fix: resume catching bad parsed type (at least until

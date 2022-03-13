@@ -106,18 +106,19 @@ describe('commentParserToESTree', function () {
     }
   );
 
-  // Only resume if parser known to handle all expected types
-  // it('throws with bad injected type in single line jsdoc comment', () => {
-  //   const parsedComment = parseComment({
-  //     value: `* @type {string} `
-  //   });
-  //
-  //   parsedComment.source[0].tokens.type = 'badValue<';
-  //
-  //   expect(() => {
-  //     commentParserToESTree(parsedComment, 'jsdoc');
-  //   }).to.throw("No parslet found for token: 'EOF'");
-  // });
+  it('throws with bad injected type in single line jsdoc comment', () => {
+    const parsedComment = parseComment({
+      value: `* @type {string} `
+    });
+
+    parsedComment.source[0].tokens.type = 'badValue<';
+
+    expect(() => {
+      commentParserToESTree(parsedComment, 'jsdoc', {
+        throwOnTypeParsingErrors: true
+      });
+    }).to.throw("No parslet found for token: 'EOF'");
+  });
 
   it('handles multi line jsdoc comment beginning on line 0', () => {
     const parsedComment = parseComment({

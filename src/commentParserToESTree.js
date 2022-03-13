@@ -24,32 +24,6 @@ const stripEncapsulatingBrackets = (container, isArr) => {
 };
 
 /**
- * Strips brackets from a tag's `rawType` values and adds `parsedType`
- * @param {JsdocTag} lastTag
- * @param {external:JsdocTypePrattParserMode} mode
- * @returns {void}
- */
-const cleanUpLastTag = (lastTag, mode) => {
-  // Strip out `}` that encapsulates and is not part of
-  //   the type
-  stripEncapsulatingBrackets(lastTag);
-  if (lastTag.typeLines.length) {
-    stripEncapsulatingBrackets(lastTag.typeLines, true);
-  }
-
-  // With even a multiline type now in full, add parsing
-  let parsedType = null;
-
-  try {
-    parsedType = jsdocTypePrattParse(lastTag.rawType, mode);
-  } catch (err) {
-    // Ignore
-  }
-
-  lastTag.parsedType = parsedType;
-};
-
-/**
  * @external CommentParserJsdoc
  */
 
@@ -111,9 +85,41 @@ const cleanUpLastTag = (lastTag, mode) => {
  *
  * @param {external:CommentParserJsdoc} jsdoc
  * @param {external:JsdocTypePrattParserMode} mode
+ * @param {PlainObject} opts
+ * @param {throwOnTypeParsingErrors} [opts.throwOnTypeParsingErrors=false]
  * @returns {JsdocBlock}
  */
-const commentParserToESTree = (jsdoc, mode) => {
+const commentParserToESTree = (jsdoc, mode, {
+  throwOnTypeParsingErrors = false
+} = {}) => {
+  /**
+   * Strips brackets from a tag's `rawType` values and adds `parsedType`
+   * @param {JsdocTag} lastTag
+   * @returns {void}
+   */
+  const cleanUpLastTag = (lastTag) => {
+    // Strip out `}` that encapsulates and is not part of
+    //   the type
+    stripEncapsulatingBrackets(lastTag);
+    if (lastTag.typeLines.length) {
+      stripEncapsulatingBrackets(lastTag.typeLines, true);
+    }
+
+    // With even a multiline type now in full, add parsing
+    let parsedType = null;
+
+    try {
+      parsedType = jsdocTypePrattParse(lastTag.rawType, mode);
+    } catch (err) {
+      // Ignore
+      if (throwOnTypeParsingErrors) {
+        throw err;
+      }
+    }
+
+    lastTag.parsedType = parsedType;
+  };
+
   const {source} = jsdoc;
 
   const {tokens: {
@@ -163,7 +169,7 @@ const commentParserToESTree = (jsdoc, mode) => {
 
       // Clean-up with last tag before end or new tag
       if (lastTag) {
-        cleanUpLastTag(lastTag, mode);
+        cleanUpLastTag(lastTag);
       }
 
       // Stop the iteration when we reach the end
@@ -264,7 +270,7 @@ const commentParserToESTree = (jsdoc, mode) => {
     if (end && tag) {
       ast.end = end;
 
-      cleanUpLastTag(lastTag, mode);
+      cleanUpLastTag(lastTag);
     }
   });
 
