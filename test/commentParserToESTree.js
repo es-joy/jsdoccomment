@@ -117,7 +117,10 @@ describe('commentParserToESTree', function () {
       commentParserToESTree(parsedComment, 'jsdoc', {
         throwOnTypeParsingErrors: true
       });
-    }).to.throw("No parslet found for token: 'EOF'");
+    }).to.throw(
+      'Tag @type with raw type `badValue<` had parsing error: No ' +
+      "parslet found for token: 'EOF'"
+    );
   });
 
   it('handles multi line jsdoc comment beginning on line 0', () => {

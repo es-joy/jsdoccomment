@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.21.1
+
+- fix: provide clearer error message for `throwOnTypeParsingErrors`
+
 ## 0.21.0
 
 - feat: add `throwOnTypeParsingErrors` to receive run-time type parsing errors
