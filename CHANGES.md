@@ -4,6 +4,7 @@
 
 - feat: add `throwOnTypeParsingErrors` to receive run-time type parsing errors
     for `parsedType`
+- chore: update jsdoc-type-pratt-parser and devDeps.; also lints
 
 ## 0.20.1
 

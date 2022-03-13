@@ -94,7 +94,7 @@ const getTokenizers = ({
 };
 
 /**
- *
+ * Accepts a comment token and converts it into `comment-parser` AST.
  * @param {PlainObject} commentNode
  * @param {string} [indent=""] Whitespace
  * @returns {PlainObject}

@@ -87,7 +87,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  */
 
 /**
- *
+ * Converts comment parser AST to ESTree format.
  * @param {external:CommentParserJsdoc} jsdoc
  * @param {external:JsdocTypePrattParserMode} mode
  * @param {PlainObject} opts
@@ -391,7 +391,7 @@ const getTokenizers = ({
   }];
 };
 /**
- *
+ * Accepts a comment token and converts it into `comment-parser` AST.
  * @param {PlainObject} commentNode
  * @param {string} [indent=""] Whitespace
  * @returns {PlainObject}

@@ -82,7 +82,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  */
 
 /**
- *
+ * Converts comment parser AST to ESTree format.
  * @param {external:CommentParserJsdoc} jsdoc
  * @param {external:JsdocTypePrattParserMode} mode
  * @param {PlainObject} opts
