@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.22.1
+
+- fix: ensure `getJSDocComment` does not treat block comments as JSDoc unless
+    their first asterisk is followed by whitespace
+
 ## 0.22.0
 
 - fix: update dep. `jsdoc-type-pratt-parser`

@@ -632,7 +632,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
     break;
   }
 
-  if (tokenBefore.type === 'Block' && tokenBefore.value.charAt(0) === '*' && currentNode.loc.start.line - tokenBefore.loc.end.line >= minLines && currentNode.loc.start.line - tokenBefore.loc.end.line <= maxLines) {
+  if (tokenBefore.type === 'Block' && /^\*\s/u.test(tokenBefore.value) && currentNode.loc.start.line - tokenBefore.loc.end.line >= minLines && currentNode.loc.start.line - tokenBefore.loc.end.line <= maxLines) {
     return tokenBefore;
   }
 
