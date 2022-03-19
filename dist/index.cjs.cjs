@@ -325,10 +325,6 @@ const toCamelCase = str => {
 
 /* eslint-disable prefer-named-capture-group -- Temporary */
 const {
-  seedBlock,
-  seedTokens
-} = commentParser.util;
-const {
   name: nameTokenizer,
   tag: tagTokenizer,
   type: typeTokenizer,
@@ -404,20 +400,7 @@ const parseComment = (commentNode, indent = '') => {
   return commentParser.parse(`/*${commentNode.value}*/`, {
     // @see https://github.com/yavorskiy/comment-parser/issues/21
     tokenizers: getTokenizers()
-  })[0] || seedBlock({
-    source: [{
-      number: 0,
-      tokens: seedTokens({
-        delimiter: '/**'
-      })
-    }, {
-      number: 1,
-      tokens: seedTokens({
-        end: '*/',
-        start: indent + ' '
-      })
-    }]
-  });
+  })[0];
 };
 
 /**

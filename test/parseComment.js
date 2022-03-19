@@ -244,34 +244,18 @@ describe('parseComment', function () {
       source: [
         {
           number: 0,
+          source: '/** */',
           tokens: {
             delimiter: '/**',
-            description: '',
-            end: '',
-            lineEnd: '',
-            name: '',
-            postDelimiter: '',
-            postName: '',
-            postTag: '',
-            postType: '',
-            start: '',
-            tag: '',
-            type: ''
-          }
-        },
-        {
-          number: 1,
-          tokens: {
-            delimiter: '',
             description: '',
             end: '*/',
             lineEnd: '',
             name: '',
-            postDelimiter: '',
+            postDelimiter: ' ',
             postName: '',
             postTag: '',
             postType: '',
-            start: ' ',
+            start: '',
             tag: '',
             type: ''
           }
