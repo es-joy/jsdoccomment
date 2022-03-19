@@ -1,8 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## ?
+## 0.22.0
 
 - fix: update dep. `jsdoc-type-pratt-parser`
+- chore: update `comment-parser` and simplify as possible
 
 ## 0.21.2
 
