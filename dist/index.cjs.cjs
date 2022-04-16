@@ -335,6 +335,9 @@ const hasSeeWithLink = spec => {
 };
 const defaultNoTypes = ['default', 'defaultvalue', 'see'];
 const defaultNoNames = ['access', 'author', 'default', 'defaultvalue', 'description', 'example', 'exception', 'kind', 'license', 'return', 'returns', 'since', 'summary', 'throws', 'version', 'variation'];
+const preserveTypeTokenizer = typeTokenizer('preserve');
+const preserveDescriptionTokenizer = descriptionTokenizer('preserve');
+const plainNameTokenizer = nameTokenizer();
 
 const getTokenizers = ({
   noTypes = defaultNoTypes,
@@ -348,7 +351,7 @@ const getTokenizers = ({
       return spec;
     }
 
-    return typeTokenizer()(spec);
+    return preserveTypeTokenizer(spec);
   }, // Name
   spec => {
     if (spec.tag === 'template') {
@@ -381,10 +384,10 @@ const getTokenizers = ({
       return spec;
     }
 
-    return nameTokenizer()(spec);
+    return plainNameTokenizer(spec);
   }, // Description
   spec => {
-    return descriptionTokenizer('preserve')(spec);
+    return preserveDescriptionTokenizer(spec);
   }];
 };
 /**

@@ -29,6 +29,10 @@ export const defaultNoNames = [
   'version', 'variation'
 ];
 
+const preserveTypeTokenizer = typeTokenizer('preserve');
+const preserveDescriptionTokenizer = descriptionTokenizer('preserve');
+const plainNameTokenizer = nameTokenizer();
+
 const getTokenizers = ({
   noTypes = defaultNoTypes,
   noNames = defaultNoNames
@@ -44,7 +48,7 @@ const getTokenizers = ({
         return spec;
       }
 
-      return typeTokenizer()(spec);
+      return preserveTypeTokenizer(spec);
     },
 
     // Name
@@ -77,12 +81,12 @@ const getTokenizers = ({
         return spec;
       }
 
-      return nameTokenizer()(spec);
+      return plainNameTokenizer(spec);
     },
 
     // Description
     (spec) => {
-      return descriptionTokenizer('preserve')(spec);
+      return preserveDescriptionTokenizer(spec);
     }
   ];
 };

@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.22.2
+
+- fix: preserve type tokens
+- perf: cache tokenizers
+
 ## 0.22.1
 
 - fix: ensure `getJSDocComment` does not treat block comments as JSDoc unless
