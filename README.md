@@ -189,3 +189,4 @@ MIT License, see the included [LICENSE-MIT.txt](LICENSE-MIT.txt) file.
 ## To-dos
 
 1. Get complete code coverage
+1. Deal with conflict between some parsers' use of `start`/`end` and ours
