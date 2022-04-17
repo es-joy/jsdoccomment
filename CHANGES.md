@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.23.2
+
+- fix: ensure JsdocBlock stringifier has any initial whitespace on end line
+
 ## 0.23.1
 
 - docs(README): update

@@ -676,7 +676,7 @@ const stringifiers = {
 ` : ''}${// Could use `node.description` (and `node.lineEnd`), but lines may have
     //   been modified
     descriptionLines.length ? descriptionLines.join('') + lineEnd : ''}${tags.length ? tags.join('\n') + lineEnd : ''}${endLine ? `
- ` : ''}${terminal}`;
+ ${initial}` : ''}${terminal}`;
   },
 
   JsdocDescriptionLine({

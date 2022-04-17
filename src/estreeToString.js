@@ -19,7 +19,7 @@ const stringifiers = {
       tags.length ? tags.join('\n') + lineEnd : ''
     }${endLine
       ? `
- `
+ ${initial}`
       : ''}${terminal}`;
   },
   JsdocDescriptionLine ({
