@@ -192,3 +192,5 @@ MIT License, see the included [LICENSE-MIT.txt](LICENSE-MIT.txt) file.
 ## To-dos
 
 1. Get complete code coverage
+2. Might add `trailing` for `JsdocBlock` to know whether it is followed by a
+    line break or what not; `comment-parser` does not provide, however

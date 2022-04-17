@@ -72,6 +72,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   description: string,
  *   descriptionLines: JsdocDescriptionLine[],
+ *   initial: string,
  *   terminal: string,
  *   postDelimiter: string,
  *   lineEnd: string,
