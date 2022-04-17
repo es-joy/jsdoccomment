@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.23.3
+
+- fix(`estreeToString`): handle multi-line block descriptions followed by
+    tags with line break
+
 ## 0.23.2
 
 - fix: ensure JsdocBlock stringifier has any initial whitespace on end line

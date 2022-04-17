@@ -101,6 +101,65 @@ const jsdocBlock = {
   ]
 };
 
+const jsdocBlockMultilineDesc = {
+  type: 'JsdocBlock',
+  delimiter: '/**',
+  description: '',
+  descriptionLines: [
+    {
+      delimiter: '*',
+      description: 'multi-line',
+      postDelimiter: ' ',
+      initial: ' ',
+      type: 'JsdocDescriptionLine'
+    },
+    {
+      delimiter: '*',
+      description: 'description',
+      postDelimiter: ' ',
+      initial: ' ',
+      type: 'JsdocDescriptionLine'
+    }
+  ],
+  initial: '',
+  terminal: '*/',
+  endLine: 4,
+  lastDescriptionLine: 1,
+  lineEnd: '',
+  postDelimiter: '',
+  tags: [
+    {
+      delimiter: '*',
+      description: 'multi-line\ndescription',
+      descriptionLines: [
+      ],
+      lineEnd: '',
+      name: 'Some',
+      parsedType: {
+        type: 'JsdocTypeName',
+        value: 'string'
+      },
+      postDelimiter: ' ',
+      postName: '',
+      postTag: ' ',
+      postType: ' ',
+      tag: 'param',
+      type: 'JsdocTag',
+      rawType: 'string',
+      initial: ' ',
+      typeLines: [
+        {
+          delimiter: '',
+          postDelimiter: '',
+          rawType: 'string',
+          initial: '',
+          type: 'JsdocTypeLine'
+        }
+      ]
+    }
+  ]
+};
+
 const jsdocBlockNoTags = {
   type: 'JsdocBlock',
   delimiter: '/**',
@@ -161,7 +220,19 @@ const jsdocBlockNoTagsArray = {
 };
 
 describe('`estreeToString`', function () {
-  it('handles stringifying block', function () {
+  it(
+    'handles stringifying block with multi-line block description',
+    function () {
+      const str = estreeToString(jsdocBlockMultilineDesc);
+      expect(str).to.equal(`/**
+ * multi-line
+ * description
+ * @param {string} Some
+ */`);
+    }
+  );
+
+  it('handles stringifying block with multi-line tag description', function () {
     const str = estreeToString(jsdocBlock);
     expect(str).to.equal(`/**
  * @param {string} Some

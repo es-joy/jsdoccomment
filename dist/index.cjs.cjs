@@ -672,11 +672,12 @@ const stringifiers = {
     terminal,
     endLine
   }, descriptionLines, tags) {
+    const hasLineBeforeFinal = descriptionLines.length && tags.length;
     return `${initial}${delimiter}${postDelimiter}${endLine ? `
 ` : ''}${// Could use `node.description` (and `node.lineEnd`), but lines may have
     //   been modified
-    descriptionLines.length ? descriptionLines.join('') + lineEnd : ''}${tags.length ? tags.join('\n') + lineEnd : ''}${endLine ? `
- ${initial}` : ''}${terminal}`;
+    descriptionLines.length ? descriptionLines.join(lineEnd + '\n') + (tags.length ? lineEnd + '\n' : '') : ''}${tags.length ? tags.join(lineEnd + '\n') : ''}${endLine && !hasLineBeforeFinal ? `
+ ${initial}${lineEnd}` : endLine ? ` ${initial}` : ''}${terminal}`;
   },
 
   JsdocDescriptionLine({
