@@ -194,3 +194,6 @@ MIT License, see the included [LICENSE-MIT.txt](LICENSE-MIT.txt) file.
 1. Get complete code coverage
 2. Might add `trailing` for `JsdocBlock` to know whether it is followed by a
     line break or what not; `comment-parser` does not provide, however
+3. Fix and properly utilize `indent` argument (challenging for
+    `eslint-plugin-jsdoc` but needed for `jsdoc-eslint-parser` stringifiers
+    to be more faithful); should also then use the proposed `trailing` as well
