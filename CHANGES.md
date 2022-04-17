@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.23.1
+
+- docs(README): update
+
 ## 0.23.0
 
 - BREAKING CHANGE(`commentParserToESTree`): rename `start` and `end` to

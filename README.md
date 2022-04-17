@@ -94,7 +94,7 @@ Has two visitable properties:
 Has the following custom non-visitable property:
 
 1. `lastDescriptionLine` - A number
-2. `endLine` - A number representing the line number with `end`
+2. `endLine` - A number representing the line number with `end`/`terminal`
 
 May also have the following non-visitable properties from `comment-parser`:
 
@@ -102,7 +102,8 @@ May also have the following non-visitable properties from `comment-parser`:
 2. `delimiter`
 3. `postDelimiter`
 4. `lineEnd`
-5. `end`
+5. `initial` (from `start`)
+6. `terminal` (from `end`)
 
 ### `JsdocTag`
 
@@ -116,7 +117,8 @@ Has three visitable properties:
 
 May also have the following non-visitable properties from `comment-parser`
 (note that all are included from `comment-parser` except `end` as that is only
-for JSDoc blocks and note that `type` is renamed to `rawType`):
+for JSDoc blocks and note that `type` is renamed to `rawType` and `start` to
+`initial`):
 
 1. `description` - Same as `descriptionLines` but as a string with newlines.
 2. `rawType` - `comment-parser` has this named as `type`, but because of a
@@ -124,7 +126,8 @@ for JSDoc blocks and note that `type` is renamed to `rawType`):
     `rawType`. It is otherwise the same as in `comment-parser`, i.e., a string
     with newlines, though with the initial `{` and final `}` stripped out.
     See `typeLines` for the array version of this property.
-3. `start`
+3. `initial` - Renamed from `start` to avoid potential conflicts with
+    Acorn-style parser processing tools
 4. `delimiter`
 5. `postDelimiter`
 6. `tag` (this does differ from `comment-parser` now in terms of our stripping
@@ -142,7 +145,7 @@ May also have the following non-visitable properties from `comment-parser`:
 
 1. `delimiter`
 2. `postDelimiter`
-3. `start`
+3. `initial` (from `start`)
 4. `description`
 
 ### `JsdocTypeLine`
@@ -153,7 +156,7 @@ May also have the following non-visitable properties from `comment-parser`:
 
 1. `delimiter`
 2. `postDelimiter`
-3. `start`
+3. `initial` (from `start`)
 4. `rawType` - Renamed from `comment-parser` to avoid a conflict. See
     explanation under `JsdocTag`
 
@@ -189,4 +192,3 @@ MIT License, see the included [LICENSE-MIT.txt](LICENSE-MIT.txt) file.
 ## To-dos
 
 1. Get complete code coverage
-1. Deal with conflict between some parsers' use of `start`/`end` and ours
