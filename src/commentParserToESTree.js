@@ -36,7 +36,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   postDelimiter: string,
  *   rawType: string,
- *   start: string,
+ *   initial: string,
  *   type: "JsdocTypeLine"
  * }} JsdocTypeLine
  */
@@ -46,7 +46,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   description: string,
  *   postDelimiter: string,
- *   start: string,
+ *   initial: string,
  *   type: "JsdocDescriptionLine"
  * }} JsdocDescriptionLine
  */
@@ -56,9 +56,9 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   description: string,
  *   postDelimiter: string,
- *   start: string,
+ *   initial: string,
  *   tag: string,
- *   end: string,
+ *   terminal: string,
  *   type: string,
  *   descriptionLines: JsdocDescriptionLine[],
  *   rawType: string,
@@ -72,7 +72,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   description: string,
  *   descriptionLines: JsdocDescriptionLine[],
- *   end: string,
+ *   terminal: string,
  *   postDelimiter: string,
  *   lineEnd: string,
  *   type: "JsdocBlock",
@@ -128,6 +128,7 @@ const commentParserToESTree = (jsdoc, mode, {
     delimiter: delimiterRoot,
     lineEnd: lineEndRoot,
     postDelimiter: postDelimiterRoot,
+    start: startRoot,
     end: endRoot,
     description: descriptionRoot
   }} = source[0];
@@ -139,8 +140,9 @@ const commentParserToESTree = (jsdoc, mode, {
 
     descriptionLines: [],
 
-    // `end` will be overwritten if there are other entries
-    end: endRoot,
+    initial: startRoot,
+    // `terminal` will be overwritten if there are other entries
+    terminal: endRoot,
     endLine,
     postDelimiter: postDelimiterRoot,
     lineEnd: lineEndRoot,
@@ -158,7 +160,7 @@ const commentParserToESTree = (jsdoc, mode, {
       delimiter,
       description,
       postDelimiter,
-      start,
+      start: initial,
       tag,
       end,
       type: rawType
@@ -178,7 +180,7 @@ const commentParserToESTree = (jsdoc, mode, {
       // but only when there is no tag earlier in the line
       // to still process
       if (end && !tag) {
-        ast.end = end;
+        ast.terminal = end;
 
         return;
       }
@@ -187,6 +189,7 @@ const commentParserToESTree = (jsdoc, mode, {
         end: ed,
         delimiter: de,
         postDelimiter: pd,
+        start: init,
         ...tkns
       } = tokens;
 
@@ -208,6 +211,7 @@ const commentParserToESTree = (jsdoc, mode, {
 
       const tagObj = {
         ...tkns,
+        initial: init,
         postDelimiter: lastDescriptionLine ? pd : '',
         delimiter: lastDescriptionLine ? de : '',
         descriptionLines: [],
@@ -230,14 +234,14 @@ const commentParserToESTree = (jsdoc, mode, {
             delimiter,
             postDelimiter,
             rawType,
-            start,
+            initial,
             type: 'JsdocTypeLine'
           }
           : {
             delimiter: '',
             postDelimiter: '',
             rawType,
-            start: '',
+            initial: '',
             type: 'JsdocTypeLine'
           }
       );
@@ -252,14 +256,14 @@ const commentParserToESTree = (jsdoc, mode, {
             delimiter,
             description,
             postDelimiter,
-            start,
+            initial,
             type: 'JsdocDescriptionLine'
           }
           : {
             delimiter: '',
             description,
             postDelimiter: '',
-            start: '',
+            initial: '',
             type: 'JsdocDescriptionLine'
           }
       );
@@ -270,7 +274,7 @@ const commentParserToESTree = (jsdoc, mode, {
 
     // Clean-up where last line itself has tag content
     if (end && tag) {
-      ast.end = end;
+      ast.terminal = end;
 
       cleanUpLastTag(lastTag);
     }

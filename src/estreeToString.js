@@ -6,9 +6,9 @@ import {jsdocVisitorKeys} from './commentParserToESTree.js';
 
 const stringifiers = {
   JsdocBlock ({
-    delimiter, postDelimiter, lineEnd, end, endLine
+    delimiter, postDelimiter, lineEnd, initial, terminal, endLine
   }, descriptionLines, tags) {
-    return `${delimiter}${postDelimiter}${endLine
+    return `${initial}${delimiter}${postDelimiter}${endLine
       ? `
 `
       : ''}${
@@ -20,15 +20,15 @@ const stringifiers = {
     }${endLine
       ? `
  `
-      : ''}${end}`;
+      : ''}${terminal}`;
   },
   JsdocDescriptionLine ({
-    start, delimiter, postDelimiter, description
+    initial, delimiter, postDelimiter, description
   }) {
-    return `${start}${delimiter}${postDelimiter}${description}`;
+    return `${initial}${delimiter}${postDelimiter}${description}`;
   },
   JsdocTypeLine ({
-    start, delimiter, postDelimiter, rawType
+    initial, delimiter, postDelimiter, rawType
   }) {
     return `${delimiter}${postDelimiter}{${rawType}}`;
   },
@@ -36,11 +36,11 @@ const stringifiers = {
     const {
       description,
       name, postName, postTag, postType,
-      start, delimiter, postDelimiter, tag
+      initial, delimiter, postDelimiter, tag
       // , rawType
     } = node;
 
-    return `${start}${delimiter}${postDelimiter}@${tag}${postTag}${
+    return `${initial}${delimiter}${postDelimiter}@${tag}${postTag}${
       // Could do `rawType` but may have been changed; could also do
       //   `typeLines` but not as likely to be changed
       // parsedType

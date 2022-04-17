@@ -6,7 +6,8 @@ const singleLineWithTag = {
   delimiter: '/**',
   description: '',
   descriptionLines: [],
-  end: '*/',
+  initial: '',
+  terminal: '*/',
   endLine: 0,
   lastDescriptionLine: 0,
   lineEnd: '',
@@ -29,13 +30,13 @@ const singleLineWithTag = {
       tag: 'type',
       type: 'JsdocTag',
       rawType: 'string',
-      start: '',
+      initial: '',
       typeLines: [
         {
           delimiter: '',
           postDelimiter: '',
           rawType: 'string',
-          start: '',
+          initial: '',
           type: 'JsdocTypeLine'
         }
       ]
@@ -69,7 +70,8 @@ describe('commentParserToESTree', function () {
         delimiter: '/**',
         description: '',
         descriptionLines: [],
-        end: '*/',
+        initial: '',
+        terminal: '*/',
         endLine: 0,
         lastDescriptionLine: 0,
         lineEnd: '',
@@ -87,7 +89,7 @@ describe('commentParserToESTree', function () {
             postTag: ' ',
             postType: ' ',
             rawType: 'badValue<',
-            start: '',
+            initial: '',
             tag: 'type',
             type: 'JsdocTag',
             typeLines: [
@@ -95,7 +97,7 @@ describe('commentParserToESTree', function () {
                 delimiter: '',
                 postDelimiter: '',
                 rawType: 'badValue<',
-                start: '',
+                initial: '',
                 type: 'JsdocTypeLine'
               }
             ]
@@ -136,7 +138,8 @@ describe('commentParserToESTree', function () {
       delimiter: '/**',
       description: '',
       descriptionLines: [],
-      end: '*/',
+      initial: '',
+      terminal: '*/',
       endLine: 1,
       lastDescriptionLine: 0,
       lineEnd: '',
@@ -159,13 +162,13 @@ describe('commentParserToESTree', function () {
           tag: 'type',
           type: 'JsdocTag',
           rawType: 'string',
-          start: '',
+          initial: '',
           typeLines: [
             {
               delimiter: '',
               postDelimiter: '',
               rawType: 'string',
-              start: '',
+              initial: '',
               type: 'JsdocTypeLine'
             }
           ]
@@ -187,7 +190,8 @@ describe('commentParserToESTree', function () {
       delimiter: '/**',
       description: '',
       descriptionLines: [],
-      end: '*/',
+      initial: '',
+      terminal: '*/',
       endLine: 1,
       lastDescriptionLine: 1,
       lineEnd: '',
@@ -210,13 +214,13 @@ describe('commentParserToESTree', function () {
           tag: 'type',
           type: 'JsdocTag',
           rawType: 'string',
-          start: ' ',
+          initial: ' ',
           typeLines: [
             {
               delimiter: '',
               postDelimiter: '',
               rawType: 'string',
-              start: '',
+              initial: '',
               type: 'JsdocTypeLine'
             }
           ]
@@ -239,7 +243,8 @@ describe('commentParserToESTree', function () {
       delimiter: '/**',
       description: '',
       descriptionLines: [],
-      end: '*/',
+      initial: '',
+      terminal: '*/',
       endLine: 2,
       lastDescriptionLine: 1,
       lineEnd: '',
@@ -262,13 +267,13 @@ describe('commentParserToESTree', function () {
           tag: 'type',
           type: 'JsdocTag',
           rawType: 'string',
-          start: ' ',
+          initial: ' ',
           typeLines: [
             {
               delimiter: '',
               postDelimiter: '',
               rawType: 'string',
-              start: '',
+              initial: '',
               type: 'JsdocTypeLine'
             }
           ]
@@ -296,7 +301,8 @@ describe('commentParserToESTree', function () {
         delimiter: '/**',
         description: '',
         descriptionLines: [],
-        end: '*/',
+        initial: '',
+        terminal: '*/',
         endLine: 6,
         lastDescriptionLine: 1,
         lineEnd: '',
@@ -362,7 +368,7 @@ describe('commentParserToESTree', function () {
             postTag: ' ',
             postType: '',
             rawType: '{\n  a: string;\nb: number;\n  c: null\n}',
-            start: ' ',
+            initial: ' ',
             tag: 'type',
             type: 'JsdocTag',
             typeLines: [
@@ -370,35 +376,35 @@ describe('commentParserToESTree', function () {
                 delimiter: '',
                 postDelimiter: '',
                 rawType: '{',
-                start: '',
+                initial: '',
                 type: 'JsdocTypeLine'
               },
               {
                 delimiter: '*',
                 postDelimiter: ' ',
                 rawType: '  a: string;',
-                start: ' ',
+                initial: ' ',
                 type: 'JsdocTypeLine'
               },
               {
                 delimiter: '',
                 postDelimiter: '',
                 rawType: 'b: number;',
-                start: '     ',
+                initial: '     ',
                 type: 'JsdocTypeLine'
               },
               {
                 delimiter: '*',
                 postDelimiter: ' ',
                 rawType: '  c: null',
-                start: ' ',
+                initial: ' ',
                 type: 'JsdocTypeLine'
               },
               {
                 delimiter: '*',
                 postDelimiter: ' ',
                 rawType: '}',
-                start: ' ',
+                initial: ' ',
                 type: 'JsdocTypeLine'
               }
             ]
@@ -427,7 +433,8 @@ describe('commentParserToESTree', function () {
         delimiter: '/**',
         description: '',
         descriptionLines: [],
-        end: '*/',
+        initial: '',
+        terminal: '*/',
         endLine: 4,
         lastDescriptionLine: 1,
         lineEnd: '',
@@ -441,14 +448,14 @@ describe('commentParserToESTree', function () {
                 delimiter: '',
                 description: 'multiline',
                 postDelimiter: '',
-                start: '',
+                initial: '',
                 type: 'JsdocDescriptionLine'
               },
               {
                 delimiter: '',
                 description: 'description',
                 postDelimiter: '',
-                start: ' ',
+                initial: ' ',
                 type: 'JsdocDescriptionLine'
               }
             ],
@@ -465,13 +472,13 @@ describe('commentParserToESTree', function () {
             tag: 'param',
             type: 'JsdocTag',
             rawType: 'string',
-            start: ' ',
+            initial: ' ',
             typeLines: [
               {
                 delimiter: '',
                 postDelimiter: '',
                 rawType: 'string',
-                start: '',
+                initial: '',
                 type: 'JsdocTypeLine'
               }
             ]
@@ -503,25 +510,26 @@ describe('commentParserToESTree', function () {
             delimiter: '',
             description: 'Some',
             postDelimiter: '',
-            start: '',
+            initial: '',
             type: 'JsdocDescriptionLine'
           },
           {
             delimiter: '*',
             description: 'multiline',
             postDelimiter: ' ',
-            start: ' ',
+            initial: ' ',
             type: 'JsdocDescriptionLine'
           },
           {
             delimiter: '',
             description: 'description',
             postDelimiter: '',
-            start: ' ',
+            initial: ' ',
             type: 'JsdocDescriptionLine'
           }
         ],
-        end: '*/',
+        initial: '',
+        terminal: '*/',
         endLine: 4,
         lastDescriptionLine: 4,
         lineEnd: '',
@@ -544,7 +552,8 @@ describe('commentParserToESTree', function () {
       delimiter: '/**',
       description: '',
       descriptionLines: [],
-      end: '*/',
+      initial: '',
+      terminal: '*/',
       endLine: 2,
       lastDescriptionLine: 1,
       lineEnd: '',
@@ -562,7 +571,7 @@ describe('commentParserToESTree', function () {
           postTag: ' ',
           postType: '',
           rawType: '',
-          start: ' ',
+          initial: ' ',
           tag: 'param',
           type: 'JsdocTag',
           typeLines: []

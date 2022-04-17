@@ -5,7 +5,8 @@ const singleLineWithTag = {
   delimiter: '/**',
   description: '',
   descriptionLines: [],
-  end: '*/',
+  initial: '',
+  terminal: '*/',
   endLine: 0,
   lastDescriptionLine: 0,
   lineEnd: '',
@@ -28,13 +29,13 @@ const singleLineWithTag = {
       tag: 'type',
       type: 'JsdocTag',
       rawType: 'string',
-      start: '',
+      initial: '',
       typeLines: [
         {
           delimiter: '',
           postDelimiter: '',
           rawType: 'string',
-          start: '',
+          initial: '',
           type: 'JsdocTypeLine'
         }
       ]
@@ -47,7 +48,8 @@ const jsdocBlock = {
   delimiter: '/**',
   description: '',
   descriptionLines: [],
-  end: '*/',
+  initial: '',
+  terminal: '*/',
   endLine: 4,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -61,14 +63,14 @@ const jsdocBlock = {
           delimiter: '*',
           description: 'multi-line',
           postDelimiter: ' ',
-          start: ' ',
+          initial: ' ',
           type: 'JsdocDescriptionLine'
         },
         {
           delimiter: '',
           description: 'description',
           postDelimiter: '',
-          start: ' ',
+          initial: ' ',
           type: 'JsdocDescriptionLine'
         }
       ],
@@ -85,13 +87,13 @@ const jsdocBlock = {
       tag: 'param',
       type: 'JsdocTag',
       rawType: 'string',
-      start: ' ',
+      initial: ' ',
       typeLines: [
         {
           delimiter: '',
           postDelimiter: '',
           rawType: 'string',
-          start: '',
+          initial: '',
           type: 'JsdocTypeLine'
         }
       ]
@@ -108,11 +110,12 @@ const jsdocBlockNoTags = {
       delimiter: '*',
       description: 'test',
       postDelimiter: ' ',
-      start: ' ',
+      initial: ' ',
       type: 'JsdocDescriptionLine'
     }
   ],
-  end: '*/',
+  initial: '',
+  terminal: '*/',
   endLine: 2,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -124,7 +127,8 @@ const blockWithTagNameYetNoType = {
   delimiter: '/**',
   description: '',
   descriptionLines: [],
-  end: '*/',
+  initial: '',
+  terminal: '*/',
   endLine: 2,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -142,7 +146,7 @@ const blockWithTagNameYetNoType = {
       postTag: ' ',
       postType: '',
       rawType: '',
-      start: ' ',
+      initial: ' ',
       tag: 'param',
       type: 'JsdocTag',
       typeLines: []

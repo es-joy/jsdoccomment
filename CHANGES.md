@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.23.0
+
+- BREAKING CHANGE(`commentParserToESTree`): rename `start` and `end` to
+    `initial` and `terminal` to avoid any conflicts with Acorn-style parsers
+- feat: add `initial` and `terminal` on `JsdocBlock`
+
 ## 0.22.2
 
 - fix: preserve type tokens

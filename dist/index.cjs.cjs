@@ -41,7 +41,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   postDelimiter: string,
  *   rawType: string,
- *   start: string,
+ *   initial: string,
  *   type: "JsdocTypeLine"
  * }} JsdocTypeLine
  */
@@ -51,7 +51,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   description: string,
  *   postDelimiter: string,
- *   start: string,
+ *   initial: string,
  *   type: "JsdocDescriptionLine"
  * }} JsdocDescriptionLine
  */
@@ -61,9 +61,9 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   description: string,
  *   postDelimiter: string,
- *   start: string,
+ *   initial: string,
  *   tag: string,
- *   end: string,
+ *   terminal: string,
  *   type: string,
  *   descriptionLines: JsdocDescriptionLine[],
  *   rawType: string,
@@ -77,7 +77,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   delimiter: string,
  *   description: string,
  *   descriptionLines: JsdocDescriptionLine[],
- *   end: string,
+ *   terminal: string,
  *   postDelimiter: string,
  *   lineEnd: string,
  *   type: "JsdocBlock",
@@ -137,6 +137,7 @@ const commentParserToESTree = (jsdoc, mode, {
       delimiter: delimiterRoot,
       lineEnd: lineEndRoot,
       postDelimiter: postDelimiterRoot,
+      start: startRoot,
       end: endRoot,
       description: descriptionRoot
     }
@@ -146,8 +147,9 @@ const commentParserToESTree = (jsdoc, mode, {
     delimiter: delimiterRoot,
     description: descriptionRoot,
     descriptionLines: [],
-    // `end` will be overwritten if there are other entries
-    end: endRoot,
+    initial: startRoot,
+    // `terminal` will be overwritten if there are other entries
+    terminal: endRoot,
     endLine,
     postDelimiter: postDelimiterRoot,
     lineEnd: lineEndRoot,
@@ -164,7 +166,7 @@ const commentParserToESTree = (jsdoc, mode, {
       delimiter,
       description,
       postDelimiter,
-      start,
+      start: initial,
       tag,
       end,
       type: rawType
@@ -184,7 +186,7 @@ const commentParserToESTree = (jsdoc, mode, {
 
 
       if (end && !tag) {
-        ast.end = end;
+        ast.terminal = end;
         return;
       }
 
@@ -192,6 +194,7 @@ const commentParserToESTree = (jsdoc, mode, {
         end: ed,
         delimiter: de,
         postDelimiter: pd,
+        start: init,
         ...tkns
       } = tokens;
 
@@ -217,6 +220,7 @@ const commentParserToESTree = (jsdoc, mode, {
       }
 
       const tagObj = { ...tkns,
+        initial: init,
         postDelimiter: lastDescriptionLine ? pd : '',
         delimiter: lastDescriptionLine ? de : '',
         descriptionLines: [],
@@ -235,13 +239,13 @@ const commentParserToESTree = (jsdoc, mode, {
         delimiter,
         postDelimiter,
         rawType,
-        start,
+        initial,
         type: 'JsdocTypeLine'
       } : {
         delimiter: '',
         postDelimiter: '',
         rawType,
-        start: '',
+        initial: '',
         type: 'JsdocTypeLine'
       });
       lastTag.rawType += lastTag.rawType ? '\n' + rawType : rawType;
@@ -253,13 +257,13 @@ const commentParserToESTree = (jsdoc, mode, {
         delimiter,
         description,
         postDelimiter,
-        start,
+        initial,
         type: 'JsdocDescriptionLine'
       } : {
         delimiter: '',
         description,
         postDelimiter: '',
-        start: '',
+        initial: '',
         type: 'JsdocDescriptionLine'
       });
       holder.description += holder.description ? '\n' + description : description;
@@ -267,7 +271,7 @@ const commentParserToESTree = (jsdoc, mode, {
 
 
     if (end && tag) {
-      ast.end = end;
+      ast.terminal = end;
       cleanUpLastTag(lastTag);
     }
   });
@@ -663,27 +667,28 @@ const stringifiers = {
     delimiter,
     postDelimiter,
     lineEnd,
-    end,
+    initial,
+    terminal,
     endLine
   }, descriptionLines, tags) {
-    return `${delimiter}${postDelimiter}${endLine ? `
+    return `${initial}${delimiter}${postDelimiter}${endLine ? `
 ` : ''}${// Could use `node.description` (and `node.lineEnd`), but lines may have
     //   been modified
     descriptionLines.length ? descriptionLines.join('') + lineEnd : ''}${tags.length ? tags.join('\n') + lineEnd : ''}${endLine ? `
- ` : ''}${end}`;
+ ` : ''}${terminal}`;
   },
 
   JsdocDescriptionLine({
-    start,
+    initial,
     delimiter,
     postDelimiter,
     description
   }) {
-    return `${start}${delimiter}${postDelimiter}${description}`;
+    return `${initial}${delimiter}${postDelimiter}${description}`;
   },
 
   JsdocTypeLine({
-    start,
+    initial,
     delimiter,
     postDelimiter,
     rawType
@@ -698,13 +703,13 @@ const stringifiers = {
       postName,
       postTag,
       postType,
-      start,
+      initial,
       delimiter,
       postDelimiter,
       tag // , rawType
 
     } = node;
-    return `${start}${delimiter}${postDelimiter}@${tag}${postTag}${// Could do `rawType` but may have been changed; could also do
+    return `${initial}${delimiter}${postDelimiter}@${tag}${postTag}${// Could do `rawType` but may have been changed; could also do
     //   `typeLines` but not as likely to be changed
     // parsedType
     // Comment this out later in favor of `parsedType`
