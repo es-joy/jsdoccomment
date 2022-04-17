@@ -55,6 +55,20 @@ describe('commentParserToESTree', function () {
     expect(ast).to.deep.equal(singleLineWithTag);
   });
 
+  it('handles name jsdoc comment with tag', () => {
+    const code = `*
+ * @local
+ * @typedef {SomeType} aName
+ `;
+    const parsedComment = parseComment({
+      value: code
+    });
+
+    const ast = commentParserToESTree(parsedComment, 'typescript');
+
+    expect(ast.tags[0].name).to.equal('');
+  });
+
   it(
     'silently ignores with bad injected type in single line jsdoc comment',
     () => {

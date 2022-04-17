@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.23.5
+
+- fix(`commentParserToESTree`): avoid duplicating tag names
+
 ## 0.23.4
 
 - fix(`estreeToString`): add `delimiter`, etc. if adding `JsdocDescriptionLine`
