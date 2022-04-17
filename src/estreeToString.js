@@ -8,7 +8,10 @@ const stringifiers = {
   JsdocBlock ({
     delimiter, postDelimiter, lineEnd, initial, terminal, endLine
   }, descriptionLines, tags) {
-    const hasLineBeforeFinal = descriptionLines.length && tags.length;
+    const alreadyHasLine =
+        (descriptionLines.length && !tags.length &&
+          descriptionLines[descriptionLines.length - 1].endsWith('\n')) ||
+         (tags.length && tags[tags.length - 1].endsWith('\n'));
     return `${initial}${delimiter}${postDelimiter}${endLine
       ? `
 `
@@ -22,7 +25,7 @@ const stringifiers = {
         : ''
     }${
       tags.length ? tags.join(lineEnd + '\n') : ''
-    }${endLine && (!hasLineBeforeFinal)
+    }${endLine && !alreadyHasLine
       ? `
  ${initial}${lineEnd}`
       : endLine ? ` ${initial}` : ''}${terminal}`;

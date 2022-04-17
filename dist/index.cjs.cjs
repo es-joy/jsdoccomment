@@ -260,11 +260,17 @@ const commentParserToESTree = (jsdoc, mode, {
         postDelimiter,
         initial,
         type: 'JsdocDescriptionLine'
-      } : {
+      } : lastTag ? {
         delimiter: '',
         description,
         postDelimiter: '',
         initial: '',
+        type: 'JsdocDescriptionLine'
+      } : {
+        delimiter,
+        description,
+        postDelimiter,
+        initial,
         type: 'JsdocDescriptionLine'
       });
       holder.description += holder.description ? '\n' + description : description;
@@ -672,11 +678,11 @@ const stringifiers = {
     terminal,
     endLine
   }, descriptionLines, tags) {
-    const hasLineBeforeFinal = descriptionLines.length && tags.length;
+    const alreadyHasLine = descriptionLines.length && !tags.length && descriptionLines[descriptionLines.length - 1].endsWith('\n') || tags.length && tags[tags.length - 1].endsWith('\n');
     return `${initial}${delimiter}${postDelimiter}${endLine ? `
 ` : ''}${// Could use `node.description` (and `node.lineEnd`), but lines may have
     //   been modified
-    descriptionLines.length ? descriptionLines.join(lineEnd + '\n') + (tags.length ? lineEnd + '\n' : '') : ''}${tags.length ? tags.join(lineEnd + '\n') : ''}${endLine && !hasLineBeforeFinal ? `
+    descriptionLines.length ? descriptionLines.join(lineEnd + '\n') + (tags.length ? lineEnd + '\n' : '') : ''}${tags.length ? tags.join(lineEnd + '\n') : ''}${endLine && !alreadyHasLine ? `
  ${initial}${lineEnd}` : endLine ? ` ${initial}` : ''}${terminal}`;
   },
 

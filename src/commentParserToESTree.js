@@ -260,13 +260,21 @@ const commentParserToESTree = (jsdoc, mode, {
             initial,
             type: 'JsdocDescriptionLine'
           }
-          : {
-            delimiter: '',
-            description,
-            postDelimiter: '',
-            initial: '',
-            type: 'JsdocDescriptionLine'
-          }
+          : lastTag
+            ? {
+              delimiter: '',
+              description,
+              postDelimiter: '',
+              initial: '',
+              type: 'JsdocDescriptionLine'
+            }
+            : {
+              delimiter,
+              description,
+              postDelimiter,
+              initial,
+              type: 'JsdocDescriptionLine'
+            }
       );
       holder.description += holder.description
         ? '\n' + description

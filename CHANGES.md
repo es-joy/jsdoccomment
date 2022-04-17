@@ -1,5 +1,12 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.23.4
+
+- fix(`estreeToString`): add `delimiter`, etc. if adding `JsdocDescriptionLine`
+    for `JsdocBlock`
+- fix(`estreeToString`): add line break when tags are present (unless already
+    ending in newline)
+
 ## 0.23.3
 
 - fix(`estreeToString`): handle multi-line block descriptions followed by

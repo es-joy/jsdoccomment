@@ -507,10 +507,10 @@ describe('commentParserToESTree', function () {
         description: 'Some\nmultiline\ndescription',
         descriptionLines: [
           {
-            delimiter: '',
+            delimiter: '*',
             description: 'Some',
-            postDelimiter: '',
-            initial: '',
+            postDelimiter: ' ',
+            initial: ' ',
             type: 'JsdocDescriptionLine'
           },
           {
