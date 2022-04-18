@@ -20,6 +20,14 @@ JSON file.
 Converts [comment-parser](https://github.com/syavorsky/comment-parser)
 AST to ESTree/ESLint/Babel friendly AST. See the "ESLint AST..." section below.
 
+### `estreeToString`
+
+Stringifies. In addition to the node argument, it accepts an optional second
+options object with a single `preferRawType` key. If you don't need to modify
+JSDoc type AST, you might wish to set this to `true` to get the benefits of
+preserving the raw form, but for AST-based stringification of JSDoc types,
+keep it `false` (the default).
+
 ### `jsdocVisitorKeys`
 
 The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)

@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.24.0
+
+- feat(`estreeToString`): support stringification of `parsedType` but with
+    a new `preferRawType` option allowing the old behavior of using `rawType`
+
 ## 0.23.6
 
 - fix(`commentParserToESTree`): ensure `postType` added after multi-line type

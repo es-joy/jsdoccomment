@@ -270,6 +270,30 @@ describe('`estreeToString`', function () {
   });
 
   it(
+    'handles multi line jsdoc comment with tag and ' +
+      'multiline type (preserving multiline)',
+    () => {
+      const parsedComment = parseComment({
+        value: `*
+ * @type {{
+ *   a: string;
+ * }} SomeName
+ *`
+      });
+
+      const ast = commentParserToESTree(parsedComment, 'typescript');
+      const str = estreeToString(ast, {
+        preferRawType: true
+      });
+      expect(str).to.equal(`/**
+ * @type {{
+ *   a: string;
+ * }} SomeName
+ */`);
+    }
+  );
+
+  it(
     'handles multi line jsdoc comment with tag and multiline type',
     () => {
       const parsedComment = parseComment({
@@ -283,9 +307,7 @@ describe('`estreeToString`', function () {
       const ast = commentParserToESTree(parsedComment, 'typescript');
       const str = estreeToString(ast);
       expect(str).to.equal(`/**
- * @type {{
- *   a: string;
- * }} SomeName
+ * @type {{a: string}} SomeName
  */`);
     }
   );
