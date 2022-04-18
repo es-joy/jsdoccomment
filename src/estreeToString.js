@@ -27,8 +27,8 @@ const stringifiers = {
     }${
       tags.length ? tags.join(lineEnd + '\n') : ''
     }${endLine && !alreadyHasLine
-      ? `
- ${initial}${lineEnd}`
+      ? `${lineEnd}
+ ${initial}`
       : endLine ? ` ${initial}` : ''}${terminal}`;
   },
   JsdocDescriptionLine ({

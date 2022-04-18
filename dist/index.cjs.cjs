@@ -689,8 +689,8 @@ const stringifiers = {
     return `${initial}${delimiter}${postDelimiter}${endLine ? `
 ` : ''}${// Could use `node.description` (and `node.lineEnd`), but lines may have
     //   been modified
-    descriptionLines.length ? descriptionLines.join(lineEnd + '\n') + (tags.length ? lineEnd + '\n' : '') : ''}${tags.length ? tags.join(lineEnd + '\n') : ''}${endLine && !alreadyHasLine ? `
- ${initial}${lineEnd}` : endLine ? ` ${initial}` : ''}${terminal}`;
+    descriptionLines.length ? descriptionLines.join(lineEnd + '\n') + (tags.length ? lineEnd + '\n' : '') : ''}${tags.length ? tags.join(lineEnd + '\n') : ''}${endLine && !alreadyHasLine ? `${lineEnd}
+ ${initial}` : endLine ? ` ${initial}` : ''}${terminal}`;
   },
 
   JsdocDescriptionLine({

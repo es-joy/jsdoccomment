@@ -3,7 +3,9 @@
 ## 0.25.0
 
 - feat(`parseComment`): properly support whitespace
-- fix: avoid adding initial space before a tag if on a single line
+- fix(`estreeToString`): carriage return placement for ending of JSDoc block
+- fix(`commentParserToESTree`): avoid adding initial space before a tag if on
+    a single line
 - test: make tests more accurate to jsdoc semantically
 
 ## 0.24.0
