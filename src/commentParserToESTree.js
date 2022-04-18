@@ -218,7 +218,7 @@ const commentParserToESTree = (jsdoc, mode, {
 
       const tagObj = {
         ...tkns,
-        initial: init,
+        initial: endLine ? init : '',
         postDelimiter: lastDescriptionLine ? pd : '',
         delimiter: lastDescriptionLine ? de : '',
         descriptionLines: [],

@@ -275,7 +275,7 @@ describe('`estreeToString`', function () {
     () => {
       const parsedComment = parseComment({
         value: `*
- * @type {{
+ * @typedef {{
  *   a: string;
  * }} SomeName
  *`
@@ -286,10 +286,42 @@ describe('`estreeToString`', function () {
         preferRawType: true
       });
       expect(str).to.equal(`/**
- * @type {{
+ * @typedef {{
  *   a: string;
  * }} SomeName
  */`);
+    }
+  );
+
+  it(
+    'handles `preferRawType` with no `typeLines`',
+    () => {
+      const parsedComment = parseComment({
+        value: `*
+ * @typedef SomeName
+ `
+      });
+
+      const ast = commentParserToESTree(parsedComment, 'typescript');
+      const str = estreeToString(ast, {
+        preferRawType: true
+      });
+      expect(str).to.equal(`/**
+ * @typedef SomeName
+ */`);
+    }
+  );
+
+  it(
+    'handles single line with indent',
+    () => {
+      const parsedComment = parseComment({
+        value: `* @type {SomeType} `
+      }, '    ');
+
+      const ast = commentParserToESTree(parsedComment, 'typescript');
+      const str = estreeToString(ast);
+      expect(str).to.equal(`    /** @type {SomeType} */`);
     }
   );
 

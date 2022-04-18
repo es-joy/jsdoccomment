@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.25.0
+
+- feat(`parseComment`): properly support whitespace
+- fix: avoid adding initial space before a tag if on a single line
+- test: make tests more accurate to jsdoc semantically
+
 ## 0.24.0
 
 - feat(`estreeToString`): support stringification of `parsedType` but with

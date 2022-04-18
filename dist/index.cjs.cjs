@@ -228,7 +228,7 @@ const commentParserToESTree = (jsdoc, mode, {
       }
 
       const tagObj = { ...tkns,
-        initial: init,
+        initial: endLine ? init : '',
         postDelimiter: lastDescriptionLine ? pd : '',
         delimiter: lastDescriptionLine ? de : '',
         descriptionLines: [],
@@ -418,7 +418,7 @@ const getTokenizers = ({
 
 const parseComment = (commentNode, indent = '') => {
   // Preserve JSDoc block start/end indentation.
-  return commentParser.parse(`/*${commentNode.value}*/`, {
+  return commentParser.parse(`${indent}/*${commentNode.value}*/`, {
     // @see https://github.com/yavorskiy/comment-parser/issues/21
     tokenizers: getTokenizers()
   })[0];
