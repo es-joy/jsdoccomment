@@ -380,7 +380,7 @@ describe('commentParserToESTree', function () {
             postDelimiter: ' ',
             postName: '',
             postTag: ' ',
-            postType: '',
+            postType: ' ',
             rawType: '{\n  a: string;\nb: number;\n  c: null\n}',
             initial: ' ',
             tag: 'type',

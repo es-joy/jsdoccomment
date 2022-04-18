@@ -207,6 +207,7 @@ const commentParserToESTree = (jsdoc, mode, {
             tokens: {
               name,
               postName,
+              postType,
               tag: tg
             }
           } = source[idx + i];
@@ -216,6 +217,7 @@ const commentParserToESTree = (jsdoc, mode, {
           }
 
           if (name) {
+            tkns.postType = postType;
             tkns.name = name;
             tkns.postName = postName;
             break;
@@ -706,7 +708,7 @@ const stringifiers = {
     postDelimiter,
     rawType
   }) {
-    return `${delimiter}${postDelimiter}{${rawType}}`;
+    return `${initial}${delimiter}${postDelimiter}${rawType}`;
   },
 
   JsdocTag(node, parsedType, typeLines, descriptionLines) {
@@ -727,7 +729,7 @@ const stringifiers = {
     // parsedType
     // Comment this out later in favor of `parsedType`
     // We can't use raw `typeLines` as first argument has delimiter on it
-    typeLines}${postType}${name ? `${name}${postName || (description ? '\n' : '')}` : ''}${descriptionLines.join('\n')}`;
+    typeLines.length ? `{${typeLines.join('\n')}}` : ''}${postType}${name ? `${name}${postName || (description ? '\n' : '')}` : ''}${descriptionLines.join('\n')}`;
   }
 
 };

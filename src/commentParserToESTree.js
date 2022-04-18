@@ -200,12 +200,14 @@ const commentParserToESTree = (jsdoc, mode, {
           const {tokens: {
             name,
             postName,
+            postType,
             tag: tg
           }} = source[idx + i];
           if (tg) {
             break;
           }
           if (name) {
+            tkns.postType = postType;
             tkns.name = name;
             tkns.postName = postName;
             break;

@@ -1,4 +1,6 @@
 import estreeToString from '../src/estreeToString.js';
+import {commentParserToESTree} from '../src/commentParserToESTree.js';
+import {parseComment} from '../src/parseComment.js';
 
 const singleLineWithTag = {
   type: 'JsdocBlock',
@@ -266,6 +268,27 @@ describe('`estreeToString`', function () {
  * @param TagNameNoType
  */`);
   });
+
+  it(
+    'handles multi line jsdoc comment with tag and multiline type',
+    () => {
+      const parsedComment = parseComment({
+        value: `*
+ * @type {{
+ *   a: string;
+ * }} SomeName
+ *`
+      });
+
+      const ast = commentParserToESTree(parsedComment, 'typescript');
+      const str = estreeToString(ast);
+      expect(str).to.equal(`/**
+ * @type {{
+ *   a: string;
+ * }} SomeName
+ */`);
+    }
+  );
 
   it('throws upon encountering an unhandled node type', function () {
     expect(() => {

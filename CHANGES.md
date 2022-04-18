@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.23.6
+
+- fix(`commentParserToESTree`): ensure `postType` added after multi-line type
+- fix(`estreeToString`): ensure `JsdocTypeLine` stringified with `initial` and
+    that they are joined together with newlines
+
 ## 0.23.5
 
 - fix(`commentParserToESTree`): avoid duplicating tag names

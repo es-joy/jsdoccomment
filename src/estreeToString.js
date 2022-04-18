@@ -38,7 +38,7 @@ const stringifiers = {
   JsdocTypeLine ({
     initial, delimiter, postDelimiter, rawType
   }) {
-    return `${delimiter}${postDelimiter}{${rawType}}`;
+    return `${initial}${delimiter}${postDelimiter}${rawType}`;
   },
   JsdocTag (node, parsedType, typeLines, descriptionLines) {
     const {
@@ -54,7 +54,7 @@ const stringifiers = {
       // parsedType
       // Comment this out later in favor of `parsedType`
       // We can't use raw `typeLines` as first argument has delimiter on it
-      typeLines
+      typeLines.length ? `{${typeLines.join('\n')}}` : ''
     }${postType}${
       name ? `${name}${postName || (description ? '\n' : '')}` : ''
     }${descriptionLines.join('\n')}`;
