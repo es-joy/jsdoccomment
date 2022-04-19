@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.27.0
+
+- chore: bump `jsdoc-type-pratt-parser` and devDeps.
+
 ## 0.26.1
 
 - fix(`estreeToString`): ensure `typeLines` may be picked up

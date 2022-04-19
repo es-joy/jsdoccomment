@@ -304,7 +304,7 @@ describe('commentParserToESTree', function () {
  * @type {{
  *   a: string;
      b: number;
- *   c: null
+ *   c: null;
  * }} SomeName
  *`
       });
@@ -381,7 +381,7 @@ describe('commentParserToESTree', function () {
             postName: '',
             postTag: ' ',
             postType: ' ',
-            rawType: '{\n  a: string;\nb: number;\n  c: null\n}',
+            rawType: '{\n  a: string;\nb: number;\n  c: null;\n}',
             initial: ' ',
             tag: 'type',
             type: 'JsdocTag',
@@ -410,7 +410,7 @@ describe('commentParserToESTree', function () {
               {
                 delimiter: '*',
                 postDelimiter: ' ',
-                rawType: '  c: null',
+                rawType: '  c: null;',
                 initial: ' ',
                 type: 'JsdocTypeLine'
               },
