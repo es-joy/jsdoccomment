@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.26.0
+
+- feat(`getJSDocComment`): allow function to detect comments just preceding a
+    parenthesized expression (these have no special AST but their tokens
+    have to be overpassed)
+
 ## 0.25.0
 
 - feat(`parseComment`): properly support whitespace

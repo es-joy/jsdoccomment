@@ -17,6 +17,16 @@ const rule = {
     }
 
     return {
+      Property (node) {
+        const comment = getJSDocComment(sourceCode, node, settings);
+        if (comment !== null) {
+          return;
+        }
+        ctxt.report({
+          messageId: 'missingJsDoc',
+          node
+        });
+      },
       ObjectExpression (node) {
         const comment = getJSDocComment(sourceCode, node, settings);
         if (comment !== null) {
@@ -43,6 +53,13 @@ ruleTester.run('getJSDocComment', rule, {
   invalid: [{
     code: 'var a = {};',
     errors: [{messageId: 'missingJsDoc'}]
+  }, {
+    code: `
+      var comment = /** @type {EsprimaComment} */ ({
+          value: text
+      });
+    `,
+    errors: [{messageId: 'missingJsDoc', type: 'Property'}]
   }],
   valid: [{
     code: `
