@@ -84,8 +84,8 @@ function estreeToString (node, opts = {}) {
           return estreeToString(item, opts);
         })
         : (node[key] === undefined || node[key] === null
-          ? []
-          : [estreeToString(node[key], opts)]);
+          ? null
+          : estreeToString(node[key], opts));
     });
     return stringifiers[node.type](node, opts, ...args);
   }

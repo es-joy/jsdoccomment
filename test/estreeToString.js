@@ -216,9 +216,9 @@ const blockWithTagNameYetNoType = {
   type: 'JsdocBlock'
 };
 
-const jsdocBlockNoTagsArray = {
+const jsdocBlockEmptyTags = {
   ...JSON.parse(JSON.stringify(jsdocBlockNoTags)),
-  tags: undefined
+  tags: []
 };
 
 describe('`estreeToString`', function () {
@@ -256,13 +256,13 @@ describe('`estreeToString`', function () {
   });
 
   it('handles stringifying block with missing `tags`', function () {
-    const str = estreeToString(jsdocBlockNoTagsArray);
+    const str = estreeToString(jsdocBlockEmptyTags);
     expect(str).to.equal(`/**
  * test
  */`);
   });
 
-  it('handles stringifying block with missing `tags`', function () {
+  it('handles stringifying block with tag name yet no type', function () {
     const str = estreeToString(blockWithTagNameYetNoType);
     expect(str).to.equal(`/**
  * @param TagNameNoType

@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.26.1
+
+- fix(`estreeToString`): ensure `typeLines` may be picked up
+
 ## 0.26.0
 
 - feat(`getJSDocComment`): allow function to detect comments just preceding a

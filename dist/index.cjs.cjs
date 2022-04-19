@@ -768,7 +768,7 @@ function estreeToString(node, opts = {}) {
     const args = childNodeOrArray.map(key => {
       return Array.isArray(node[key]) ? node[key].map(item => {
         return estreeToString(item, opts);
-      }) : node[key] === undefined || node[key] === null ? [] : [estreeToString(node[key], opts)];
+      }) : node[key] === undefined || node[key] === null ? null : estreeToString(node[key], opts);
     });
     return stringifiers[node.type](node, opts, ...args);
   } // We use raw type instead but it is a key as other apps may wish to traverse
