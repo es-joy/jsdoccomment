@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.28.0
+
+- chore: bump `engines` to support Node 18
+
 ## 0.27.0
 
 - chore: bump `jsdoc-type-pratt-parser` and devDeps.
