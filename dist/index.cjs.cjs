@@ -584,9 +584,9 @@ const getReducedASTNode = function (node, sourceCode) {
           token = sourceCode.getTokenBefore(token, {
             includeComments: true
           });
-        } while (token.type === 'Punctuator' && token.value === '(');
+        } while (token && token.type === 'Punctuator' && token.value === '(');
 
-        if (token.type === 'Block') {
+        if (token && token.type === 'Block') {
           return node;
         }
 

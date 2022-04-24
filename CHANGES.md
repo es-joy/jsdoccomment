@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.28.1
+
+- fix(`getReducedASTNode`): token checking
+
 ## 0.28.0
 
 - chore: bump `engines` to support Node 18
