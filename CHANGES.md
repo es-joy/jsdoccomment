@@ -1,10 +1,14 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.29.0
+
+- fix: update `engines` as per current `getJSDocComment` behavior
+- chore: update devDeps.
+
 ## 0.28.1
 
 - fix(`getReducedASTNode`): token checking
 - build: add Node 18 support (@WikiRik)
-- chore: update devDeps.
 
 ## 0.28.0
 
