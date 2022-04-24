@@ -3,6 +3,8 @@
 ## 0.28.1
 
 - fix(`getReducedASTNode`): token checking
+- build: add Node 18 support (@WikiRik)
+- chore: update devDeps.
 
 ## 0.28.0
 
