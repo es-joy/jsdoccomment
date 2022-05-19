@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.30.0
+
+- chore: bump `jsdoc-type-pratt-parser` and devDeps.
+
 ## 0.29.0
 
 - fix: update `engines` as per current `getJSDocComment` behavior

@@ -342,7 +342,8 @@ describe('commentParserToESTree', function () {
                     type: 'JsdocTypeName',
                     value: 'string'
                   },
-                  type: 'JsdocTypeKeyValue'
+                  type: 'JsdocTypeKeyValue',
+                  variadic: false
                 },
                 {
                   key: 'b',
@@ -356,7 +357,8 @@ describe('commentParserToESTree', function () {
                     type: 'JsdocTypeName',
                     value: 'number'
                   },
-                  type: 'JsdocTypeKeyValue'
+                  type: 'JsdocTypeKeyValue',
+                  variadic: false
                 },
                 {
                   key: 'c',
@@ -369,7 +371,8 @@ describe('commentParserToESTree', function () {
                   right: {
                     type: 'JsdocTypeNull'
                   },
-                  type: 'JsdocTypeKeyValue'
+                  type: 'JsdocTypeKeyValue',
+                  variadic: false
                 }
               ],
               meta: {
