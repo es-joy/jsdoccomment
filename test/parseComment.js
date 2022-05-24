@@ -59,6 +59,64 @@ describe('parseComment', function () {
     });
   });
 
+  it('Handle @template with default', function () {
+    const parsed = parseComment({value: `* @template [SomeName=DefaultValue]`});
+    expect(parsed).to.deep.equal({
+      description: '',
+      tags: [
+        {
+          tag: 'template',
+          name: 'SomeName',
+          type: '',
+          optional: true,
+          description: '',
+          problems: [],
+          source: [
+            {
+              number: 0,
+              source: '/** @template [SomeName=DefaultValue]*/',
+              tokens: {
+                delimiter: '/**',
+                description: '',
+                end: '*/',
+                lineEnd: '',
+                name: 'SomeName',
+                postDelimiter: ' ',
+                postName: '',
+                postTag: ' ',
+                postType: '',
+                start: '',
+                tag: '@template',
+                type: ''
+              }
+            }
+          ]
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/** @template [SomeName=DefaultValue]*/',
+          tokens: {
+            delimiter: '/**',
+            description: '',
+            end: '*/',
+            lineEnd: '',
+            name: 'SomeName',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: ' ',
+            postType: '',
+            start: '',
+            tag: '@template',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
   it('Handle @template with commas and description', function () {
     const parsed = parseComment({
       value: `* @template SomeName, AnotherName - Some description`

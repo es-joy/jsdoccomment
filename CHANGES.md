@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.31.0
+
+- feat: support default values with `@template` per
+    <https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#template>
+
 ## 0.30.0
 
 - chore: bump `jsdoc-type-pratt-parser` and devDeps.
