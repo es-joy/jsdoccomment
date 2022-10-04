@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.32.0
+
+- feat: have comment checking stop at assignment patterns (comments for
+    defaults should not rise to function itself)
+- chore: bump devDeps.
+
 ## 0.31.0
 
 - feat: support default values with `@template` per

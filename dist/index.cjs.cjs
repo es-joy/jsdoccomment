@@ -553,7 +553,7 @@ const getTSFunctionComment = function (astNode) {
 };
 
 const invokedExpression = new Set(['CallExpression', 'OptionalCallExpression', 'NewExpression']);
-const allowableCommentNode = new Set(['VariableDeclaration', 'ExpressionStatement', 'MethodDefinition', 'Property', 'ObjectProperty', 'ClassProperty', 'PropertyDefinition', 'ExportDefaultDeclaration']);
+const allowableCommentNode = new Set(['AssignmentPattern', 'VariableDeclaration', 'ExpressionStatement', 'MethodDefinition', 'Property', 'ObjectProperty', 'ClassProperty', 'PropertyDefinition', 'ExportDefaultDeclaration']);
 /**
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
