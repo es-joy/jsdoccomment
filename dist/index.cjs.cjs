@@ -1,14 +1,8 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var jsdocTypePrattParser = require('jsdoc-type-pratt-parser');
 var esquery = require('esquery');
 var commentParser = require('comment-parser');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var esquery__default = /*#__PURE__*/_interopDefaultLegacy(esquery);
 
 /**
  * Removes initial and ending brackets from `rawType`
@@ -321,9 +315,9 @@ const commentHandler = settings => {
     const {
       mode
     } = settings;
-    const selector = esquery__default["default"].parse(commentSelector);
+    const selector = esquery.parse(commentSelector);
     const ast = commentParserToESTree(jsdoc, mode);
-    return esquery__default["default"].matches(ast, selector, null, {
+    return esquery.matches(ast, selector, null, {
       visitorKeys: { ...jsdocTypePrattParser.visitorKeys,
         ...jsdocVisitorKeys
       }
