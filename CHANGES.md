@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.33.0
+
+- chore: add Node 19 to `engines` (@RodEsp)
+- chore: update devDeps. and build file accordingly
+
 ## 0.32.0
 
 - feat: have comment checking stop at assignment patterns (comments for
