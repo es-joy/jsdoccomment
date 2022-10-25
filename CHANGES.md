@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.33.4
+
+- chore: republish as npm seems to have missed the release
+
 ## 0.33.3
 
 - fix: ensure multi-line `description` includes newline except for
