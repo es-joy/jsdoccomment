@@ -274,7 +274,10 @@ const commentParserToESTree = (jsdoc, mode, {
         initial,
         type: 'JsdocDescriptionLine'
       });
-      holder.description += holder.description ? '\n' + description : description;
+
+      if (!tag) {
+        holder.description += holder.description ? '\n' + description : description;
+      }
     } // Clean-up where last line itself has tag content
 
 

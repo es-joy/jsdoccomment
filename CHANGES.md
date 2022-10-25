@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.33.2
+
+- fix: avoid repetition within multi-line descriptions
+
 ## 0.33.1
 
 - fix: add to default no types: `description`, `example`, `file`,
