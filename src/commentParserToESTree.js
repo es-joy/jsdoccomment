@@ -282,10 +282,11 @@ const commentParserToESTree = (jsdoc, mode, {
               type: 'JsdocDescriptionLine'
             }
       );
+
       if (!tag) {
-        holder.description += holder.description
-          ? '\n' + description
-          : description;
+        holder.description += idx <= 1 && !lastTag
+          ? description
+          : '\n' + description;
       }
     }
 

@@ -459,7 +459,7 @@ describe('commentParserToESTree', function () {
         tags: [
           {
             delimiter: '*',
-            description: 'multiline\ndescription',
+            description: '\nmultiline\ndescription',
             descriptionLines: [
               {
                 delimiter: '',

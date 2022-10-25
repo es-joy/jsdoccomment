@@ -276,7 +276,7 @@ const commentParserToESTree = (jsdoc, mode, {
       });
 
       if (!tag) {
-        holder.description += holder.description ? '\n' + description : description;
+        holder.description += idx <= 1 && !lastTag ? description : '\n' + description;
       }
     } // Clean-up where last line itself has tag content
 

@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.33.3
+
+- fix: ensure multi-line `description` includes newline except for
+    initial line descriptions
+
 ## 0.33.2
 
 - fix: avoid repetition within multi-line descriptions
