@@ -79,11 +79,12 @@ future:
 - `toCamelCase` - A utility. Might be removed in future.
 - `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
 - `defaultNoTypes` = The tags which allow no types by default:
-    `default`, `defaultvalue`, `see`;
+    `default`, `defaultvalue`, `description`, `example`, `file`,
+    `fileoverview`, `license`, `overview`, `see`, `summary`;
 - `defaultNoNames` - The tags which allow no names by default:
     `access`, `author`, `default`, `defaultvalue`, `description`, `example`,
-    `exception`, `kind`, `license`, `return`, `returns`, `since`, `summary`,
-    `throws`, `version`, `variation`
+    `exception`, `file`, `fileoverview`, `kind`, `license`, `overview`,
+    `return`, `returns`, `since`, `summary`, `throws`, `version`, `variation`
 
 ## ESLint AST produced for `comment-parser` nodes (`JsdocBlock`, `JsdocTag`, and `JsdocDescriptionLine`)
 

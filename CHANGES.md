@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.33.1
+
+- fix: add to default no types: `description`, `example`, `file`,
+    `fileoverview`, `license`, `overview`, `see`, `summary`
+- fix: add to no names: `file`, `fileoverview, `overview`
+
 ## 0.33.0
 
 - chore: add Node 19 to `engines` (@RodEsp)
