@@ -104,6 +104,10 @@ Has the following custom non-visitable property:
 
 1. `lastDescriptionLine` - A number
 2. `endLine` - A number representing the line number with `end`/`terminal`
+3. `descriptionStartLine` - A 0+ number indicating the line where any
+    description begins
+4. `descriptionEndLine` - A 0+ number indicating the line where the description
+    ends
 
 May also have the following non-visitable properties from `comment-parser`:
 

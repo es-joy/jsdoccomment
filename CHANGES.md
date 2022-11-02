@@ -1,7 +1,8 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## 0.33.5
+## 0.34.0
 
+- feat: add `descriptionStartLine` and `descriptionEndLine` properties
 - fix: avoid duplication with 0 line comments
 - chore: update devDeps.
 

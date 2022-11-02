@@ -153,6 +153,7 @@ const commentParserToESTree = (jsdoc, mode, {
   const tags = [];
   let lastDescriptionLine;
   let lastTag = null;
+  let descLineStateOpen = true;
 
   source.forEach((info, idx) => {
     const {tokens} = info;
@@ -166,7 +167,15 @@ const commentParserToESTree = (jsdoc, mode, {
       type: rawType
     } = tokens;
 
+    if (description && descLineStateOpen) {
+      if (ast.descriptionStartLine === undefined) {
+        ast.descriptionStartLine = idx;
+      }
+      ast.descriptionEndLine = idx;
+    }
+
     if (tag || end) {
+      descLineStateOpen = false;
       if (lastDescriptionLine === undefined) {
         lastDescriptionLine = idx;
       }
