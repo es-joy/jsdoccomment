@@ -139,7 +139,7 @@ describe('commentParserToESTree', function () {
     );
   });
 
-  it('handles multi line jsdoc comment beginning on line 0', () => {
+  it('handles multiline jsdoc comment beginning on line 0', () => {
     const parsedComment = parseComment({
       value: `* @type {string}
 `
@@ -191,7 +191,7 @@ describe('commentParserToESTree', function () {
     });
   });
 
-  it('handles multi line jsdoc comment ending on line 1', () => {
+  it('handles multiline jsdoc comment ending on line 1', () => {
     const parsedComment = parseComment({
       value: `*
  * @type {string}`
@@ -243,7 +243,7 @@ describe('commentParserToESTree', function () {
     });
   });
 
-  it('handles multi line jsdoc comment with tag', () => {
+  it('handles multiline jsdoc comment with tag', () => {
     const parsedComment = parseComment({
       value: `*
  * @type {string}
@@ -297,7 +297,7 @@ describe('commentParserToESTree', function () {
   });
 
   it(
-    'handles multi line jsdoc comment with tag and multiline type',
+    'handles multiline jsdoc comment with tag and multiline type',
     () => {
       const parsedComment = parseComment({
         value: `*
@@ -433,7 +433,7 @@ describe('commentParserToESTree', function () {
   );
 
   it(
-    'handles multi line jsdoc comment with tag and multiline description',
+    'handles multiline jsdoc comment with tag and multiline description',
     () => {
       const parsedComment = parseComment({
         value: `*
@@ -506,7 +506,7 @@ describe('commentParserToESTree', function () {
   );
 
   it(
-    'handles multi line jsdoc comment with multiline description',
+    'handles multiline jsdoc comment with multiline description',
     () => {
       const parsedComment = parseComment({
         value: `*
@@ -556,7 +556,7 @@ describe('commentParserToESTree', function () {
     }
   );
 
-  it('handles multi line jsdoc comment with tag and name but no type', () => {
+  it('handles multiline jsdoc comment with tag and name but no type', () => {
     const parsedComment = parseComment({
       value: `*
  * @param TagNameNoType

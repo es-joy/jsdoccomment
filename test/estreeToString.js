@@ -270,7 +270,7 @@ describe('`estreeToString`', function () {
   });
 
   it(
-    'handles multi line jsdoc comment with tag and ' +
+    'handles multiline jsdoc comment with tag and ' +
       'multiline type (preserving multiline)',
     () => {
       const parsedComment = parseComment({
@@ -326,7 +326,7 @@ describe('`estreeToString`', function () {
   );
 
   it(
-    'handles multi line jsdoc comment with tag and multiline type',
+    'handles multiline jsdoc comment with tag and multiline type',
     () => {
       const parsedComment = parseComment({
         value: `*
