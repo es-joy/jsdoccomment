@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## ?
+
+- fix: allow newline even for 1st line (after 0th)
+
 ## 0.34.0
 
 - feat: add `descriptionStartLine` and `descriptionEndLine` properties

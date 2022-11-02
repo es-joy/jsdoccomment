@@ -301,7 +301,7 @@ const commentParserToESTree = (jsdoc, mode, {
       );
 
       if (!tag) {
-        holder.description += idx <= 1 && !lastTag
+        holder.description += (!holder.description && !lastTag)
           ? description
           : '\n' + description;
       }

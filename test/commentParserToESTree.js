@@ -541,6 +541,49 @@ describe('commentParserToESTree', function () {
   );
 
   it(
+    'handles multiline 0th line jsdoc comments',
+    () => {
+      const parsedComment = parseComment({
+        value: `* Some
+* multiline description *`
+      });
+
+      const ast = commentParserToESTree(parsedComment, 'jsdoc');
+
+      expect(ast).to.deep.equal({
+        type: 'JsdocBlock',
+        delimiter: '/**',
+        description: 'Some\nmultiline description *',
+        descriptionEndLine: 1,
+        descriptionLines: [
+          {
+            delimiter: '/**',
+            description: 'Some',
+            initial: '',
+            postDelimiter: ' ',
+            type: 'JsdocDescriptionLine'
+          },
+          {
+            delimiter: '*',
+            description: 'multiline description *',
+            initial: '',
+            postDelimiter: ' ',
+            type: 'JsdocDescriptionLine'
+          }
+        ],
+        descriptionStartLine: 0,
+        endLine: 1,
+        initial: '',
+        lastDescriptionLine: 1,
+        lineEnd: '',
+        postDelimiter: ' ',
+        tags: [],
+        terminal: '*/'
+      });
+    }
+  );
+
+  it(
     'handles multiline jsdoc comment with multiline description',
     () => {
       const parsedComment = parseComment({
