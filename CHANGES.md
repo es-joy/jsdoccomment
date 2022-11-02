@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.33.5
+
+- fix: avoid duplication with 0 line comments
+- chore: update devDeps.
+
 ## 0.33.4
 
 - chore: republish as npm seems to have missed the release
