@@ -1,8 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## ?
+## 0.35.0
 
 - fix: allow newline even for 1st line (after 0th)
+- feat: add `hasPreterminalDescription` property
 
 ## 0.34.0
 

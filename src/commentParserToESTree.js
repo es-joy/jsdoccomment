@@ -143,6 +143,7 @@ const commentParserToESTree = (jsdoc, mode, {
     initial: startRoot,
     // `terminal` will be overwritten if there are other entries
     terminal: endRoot,
+    hasPreterminalDescription: 0,
     endLine,
     postDelimiter: postDelimiterRoot,
     lineEnd: lineEndRoot,
@@ -191,6 +192,7 @@ const commentParserToESTree = (jsdoc, mode, {
       if (end && !tag) {
         ast.terminal = end;
         if (description) {
+          ast.hasPreterminalDescription = 1;
           ast.description += (ast.description ? '\n' : '') + description;
           ast.descriptionLines.push({
             delimiter,
