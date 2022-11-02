@@ -160,7 +160,7 @@ const commentParserToESTree = (jsdoc, mode, {
       end,
       type: rawType
     } = tokens;
-    if (description && descLineStateOpen) {
+    if (!tag && description && descLineStateOpen) {
       if (ast.descriptionStartLine === undefined) {
         ast.descriptionStartLine = idx;
       }
@@ -183,9 +183,14 @@ const commentParserToESTree = (jsdoc, mode, {
       if (end && !tag) {
         ast.terminal = end;
         if (description) {
-          ast.hasPreterminalDescription = 1;
-          ast.description += (ast.description ? '\n' : '') + description;
-          ast.descriptionLines.push({
+          if (lastTag) {
+            ast.hasPreterminalTagDescription = 1;
+          } else {
+            ast.hasPreterminalDescription = 1;
+          }
+          const holder = lastTag || ast;
+          holder.description += (holder.description ? '\n' : '') + description;
+          holder.descriptionLines.push({
             delimiter,
             description,
             postDelimiter,
@@ -285,6 +290,7 @@ const commentParserToESTree = (jsdoc, mode, {
     // Clean-up where last line itself has tag content
     if (end && tag) {
       ast.terminal = end;
+      ast.hasPreterminalTagDescription = 1;
       cleanUpLastTag(lastTag);
     }
   });

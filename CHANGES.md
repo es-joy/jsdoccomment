@@ -1,9 +1,15 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.36.0
+
+- feat: add `hasPreterminalTagDescription` property
+- fix: avoid description line properties if tag is present
+- fix: ensure description and description lines added to terminal multi-line tag
+
 ## 0.35.0
 
-- fix: allow newline even for 1st line (after 0th)
 - feat: add `hasPreterminalDescription` property
+- fix: allow newline even for 1st line (after 0th)
 
 ## 0.34.0
 

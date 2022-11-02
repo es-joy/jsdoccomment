@@ -10,6 +10,7 @@ const singleLineWithTag = {
   terminal: '*/',
   endLine: 0,
   hasPreterminalDescription: 0,
+  hasPreterminalTagDescription: 1,
   lastDescriptionLine: 0,
   lineEnd: '',
   postDelimiter: ' ',
@@ -45,6 +46,66 @@ const singleLineWithTag = {
   ]
 };
 
+const singleLineWithMultilineTag = {
+  type: 'JsdocBlock',
+  delimiter: '/**',
+  description: '',
+  descriptionLines: [],
+  initial: '',
+  terminal: '*/',
+  endLine: 1,
+  hasPreterminalDescription: 0,
+  hasPreterminalTagDescription: 1,
+  lastDescriptionLine: 0,
+  lineEnd: '',
+  postDelimiter: ' ',
+  tags: [
+    {
+      delimiter: '',
+      description: 'A multiline\ndescription',
+      descriptionLines: [
+        {
+          delimiter: '',
+          description: 'A multiline',
+          initial: '',
+          postDelimiter: '',
+          type: 'JsdocDescriptionLine'
+        },
+        {
+          delimiter: '',
+          description: 'description',
+          initial: '',
+          postDelimiter: '',
+          type: 'JsdocDescriptionLine'
+        }
+      ],
+      lineEnd: '',
+      name: 'aName',
+      parsedType: {
+        type: 'JsdocTypeName',
+        value: 'string'
+      },
+      postDelimiter: '',
+      postName: ' ',
+      postTag: ' ',
+      postType: ' ',
+      tag: 'param',
+      type: 'JsdocTag',
+      rawType: 'string',
+      initial: '',
+      typeLines: [
+        {
+          delimiter: '',
+          postDelimiter: '',
+          rawType: 'string',
+          initial: '',
+          type: 'JsdocTypeLine'
+        }
+      ]
+    }
+  ]
+};
+
 describe('commentParserToESTree', function () {
   it('handles single line jsdoc comment with tag', () => {
     const parsedComment = parseComment({
@@ -54,6 +115,17 @@ describe('commentParserToESTree', function () {
     const ast = commentParserToESTree(parsedComment, 'jsdoc');
 
     expect(ast).to.deep.equal(singleLineWithTag);
+  });
+
+  it('handles single line jsdoc comment with a multiline tag', () => {
+    const parsedComment = parseComment({
+      value: `* @param {string} aName A multiline
+description`
+    });
+
+    const ast = commentParserToESTree(parsedComment, 'jsdoc');
+
+    expect(ast).to.deep.equal(singleLineWithMultilineTag);
   });
 
   it('handles name jsdoc comment with tag', () => {
@@ -89,6 +161,7 @@ describe('commentParserToESTree', function () {
         terminal: '*/',
         endLine: 0,
         hasPreterminalDescription: 0,
+        hasPreterminalTagDescription: 1,
         lastDescriptionLine: 0,
         lineEnd: '',
         postDelimiter: ' ',
@@ -211,6 +284,7 @@ describe('commentParserToESTree', function () {
       terminal: '*/',
       endLine: 1,
       hasPreterminalDescription: 0,
+      hasPreterminalTagDescription: 1,
       lastDescriptionLine: 1,
       lineEnd: '',
       postDelimiter: '',

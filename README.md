@@ -108,8 +108,10 @@ Has the following custom non-visitable property:
     description begins
 4. `descriptionEndLine` - A 0+ number indicating the line where the description
     ends
-5. `hasPreterminalDescription` - Set to 0 or 1. On if has a description on the
-    same line as the terminal `*/`.
+5. `hasPreterminalDescription` - Set to 0 or 1. On if has a block description
+    on the same line as the terminal `*/`.
+6. `hasPreterminalTagDescription` - Set to 0 or 1. On if has a tag description
+    on the same line as the terminal `*/`.
 
 May also have the following non-visitable properties from `comment-parser`:
 
