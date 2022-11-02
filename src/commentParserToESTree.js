@@ -130,14 +130,13 @@ const commentParserToESTree = (jsdoc, mode, {
     lineEnd: lineEndRoot,
     postDelimiter: postDelimiterRoot,
     start: startRoot,
-    end: endRoot,
-    description: descriptionRoot
+    end: endRoot
   }} = source[0];
 
   const endLine = source.length - 1;
   const ast = {
     delimiter: delimiterRoot,
-    description: descriptionRoot,
+    description: '',
 
     descriptionLines: [],
 
@@ -182,7 +181,16 @@ const commentParserToESTree = (jsdoc, mode, {
       // to still process
       if (end && !tag) {
         ast.terminal = end;
-
+        if (description) {
+          ast.description += (ast.description ? '\n' : '') + description;
+          ast.descriptionLines.push({
+            delimiter,
+            description,
+            postDelimiter,
+            initial,
+            type: 'JsdocDescriptionLine'
+          });
+        }
         return;
       }
 
