@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.36.1
+
+- fix(`getReducedASTNode`): stop checking for comment blocks at return
+    statement
+
 ## 0.36.0
 
 - feat: add `hasPreterminalTagDescription` property
