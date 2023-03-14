@@ -413,7 +413,6 @@ description`
                 {
                   key: 'a',
                   meta: {
-                    hasLeftSideExpression: false,
                     quote: undefined
                   },
                   optional: false,
@@ -422,13 +421,11 @@ description`
                     type: 'JsdocTypeName',
                     value: 'string'
                   },
-                  type: 'JsdocTypeKeyValue',
-                  variadic: false
+                  type: 'JsdocTypeObjectField'
                 },
                 {
                   key: 'b',
                   meta: {
-                    hasLeftSideExpression: false,
                     quote: undefined
                   },
                   optional: false,
@@ -437,13 +434,11 @@ description`
                     type: 'JsdocTypeName',
                     value: 'number'
                   },
-                  type: 'JsdocTypeKeyValue',
-                  variadic: false
+                  type: 'JsdocTypeObjectField'
                 },
                 {
                   key: 'c',
                   meta: {
-                    hasLeftSideExpression: false,
                     quote: undefined
                   },
                   optional: false,
@@ -451,8 +446,7 @@ description`
                   right: {
                     type: 'JsdocTypeNull'
                   },
-                  type: 'JsdocTypeKeyValue',
-                  variadic: false
+                  type: 'JsdocTypeObjectField'
                 }
               ],
               meta: {
