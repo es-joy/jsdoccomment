@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.37.0
+## 0.37.0-pre.0
+
+- fix: update `jsdoc-type-pratt-parser` (supports bracket indexes)
+
 ## 0.36.1
 
 - fix(`getReducedASTNode`): stop checking for comment blocks at return
