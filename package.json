@@ -64,14 +64,14 @@
     "c8": "^7.13.0",
     "chai": "^4.3.7",
     "eslint": "^8.38.0",
-    "eslint-config-ash-nazg": "34.9.1",
+    "eslint-config-ash-nazg": "34.11.1",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-array-func": "^3.1.8",
     "eslint-plugin-compat": "^4.1.4",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-html": "^7.1.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^40.3.0",
+    "eslint-plugin-jsdoc": "^43.0.5",
     "eslint-plugin-markdown": "^3.0.0",
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-no-unsanitized": "^4.0.2",
@@ -82,6 +82,6 @@
     "espree": "^9.5.1",
     "estraverse": "^5.3.0",
     "mocha": "^10.2.0",
-    "rollup": "^3.20.2"
+    "rollup": "^3.20.6"
   }
 }
