@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.37.1
+
+- chore: support Node 20
+
 ## 0.37.0
 ## 0.37.0-pre.0
 
