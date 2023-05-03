@@ -12,6 +12,7 @@ describe('parseComment', function () {
           type: '',
           optional: false,
           description: '',
+          inlineTags: [],
           problems: [],
           source: [
             {
@@ -35,6 +36,7 @@ describe('parseComment', function () {
           ]
         }
       ],
+      inlineTags: [],
       source: [
         {
           number: 0,
@@ -70,6 +72,7 @@ describe('parseComment', function () {
           type: '',
           optional: true,
           description: '',
+          inlineTags: [],
           problems: [],
           source: [
             {
@@ -93,6 +96,7 @@ describe('parseComment', function () {
           ]
         }
       ],
+      inlineTags: [],
       source: [
         {
           number: 0,
@@ -130,6 +134,7 @@ describe('parseComment', function () {
           type: '',
           optional: false,
           description: '- Some description',
+          inlineTags: [],
           problems: [],
           source: [
             {
@@ -154,6 +159,7 @@ describe('parseComment', function () {
           ]
         }
       ],
+      inlineTags: [],
       source: [
         {
           number: 0,
@@ -189,6 +195,7 @@ describe('parseComment', function () {
           type: '',
           optional: false,
           description: '',
+          inlineTags: [],
           problems: [],
           source: [
             {
@@ -212,6 +219,7 @@ describe('parseComment', function () {
           ]
         }
       ],
+      inlineTags: [],
       source: [
         {
           number: 0,
@@ -247,6 +255,7 @@ describe('parseComment', function () {
           type: '',
           optional: false,
           description: 'SomeName',
+          inlineTags: [],
           problems: [],
           source: [
             {
@@ -270,6 +279,7 @@ describe('parseComment', function () {
           ]
         }
       ],
+      inlineTags: [],
       source: [
         {
           number: 0,
@@ -294,11 +304,243 @@ describe('parseComment', function () {
     });
   });
 
+  it('Handle plain inline type tag in description', function () {
+    const parsed = parseComment({value: `* A link to {@link Something}`});
+    expect(parsed).to.deep.equal({
+      description: 'A link to {@link Something}',
+      tags: [],
+      inlineTags: [
+        {
+          tag: 'link',
+          namepathOrURL: 'Something',
+          text: '',
+          textStyle: 'plain',
+          start: 10,
+          end: 27
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/** A link to {@link Something}*/',
+          tokens: {
+            delimiter: '/**',
+            description: 'A link to {@link Something}',
+            end: '*/',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
+  it('Handle inline type tag with "spaced" text in description', function () {
+    const parsed = parseComment({
+      value: `* A link to {@link Something something awesome!}`
+    });
+    expect(parsed).to.deep.equal({
+      description: 'A link to {@link Something something awesome!}',
+      tags: [],
+      inlineTags: [
+        {
+          tag: 'link',
+          namepathOrURL: 'Something',
+          text: 'something awesome!',
+          textStyle: 'space',
+          start: 10,
+          end: 46
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/** A link to {@link Something something awesome!}*/',
+          tokens: {
+            delimiter: '/**',
+            description: 'A link to {@link Something something awesome!}',
+            end: '*/',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
+  it('Handle inline type tag with "piped" text in description', function () {
+    const parsed = parseComment({
+      value: `* A link to {@link Something|something awesome!}`
+    });
+    expect(parsed).to.deep.equal({
+      description: 'A link to {@link Something|something awesome!}',
+      tags: [],
+      inlineTags: [
+        {
+          tag: 'link',
+          namepathOrURL: 'Something',
+          text: 'something awesome!',
+          textStyle: 'pipe',
+          start: 10,
+          end: 46
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/** A link to {@link Something|something awesome!}*/',
+          tokens: {
+            delimiter: '/**',
+            description: 'A link to {@link Something|something awesome!}',
+            end: '*/',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
+  it('Handle inline type tag with "prefixed" text in description', function () {
+    const parsed = parseComment({
+      value: `* A link to [something awesome!]{@link Something}`
+    });
+    expect(parsed).to.deep.equal({
+      description: 'A link to [something awesome!]{@link Something}',
+      tags: [],
+      inlineTags: [
+        {
+          tag: 'link',
+          namepathOrURL: 'Something',
+          text: 'something awesome!',
+          textStyle: 'prefix',
+          start: 10,
+          end: 47
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/** A link to [something awesome!]{@link Something}*/',
+          tokens: {
+            delimiter: '/**',
+            description: 'A link to [something awesome!]{@link Something}',
+            end: '*/',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
+  it('Handle plain inline type tag in tag', function () {
+    const parsed = parseComment({value: `* @see A link to {@link Something}`});
+    expect(parsed).to.deep.equal({
+      description: '',
+      tags: [
+        {
+          tag: 'see',
+          name: '',
+          type: '',
+          optional: false,
+          description: 'A link to {@link Something}',
+          problems: [],
+          inlineTags: [
+            {
+              tag: 'link',
+              namepathOrURL: 'Something',
+              text: '',
+              textStyle: 'plain',
+              start: 10,
+              end: 27
+            }
+          ],
+          source: [
+            {
+              number: 0,
+              source: '/** @see A link to {@link Something}*/',
+              tokens: {
+                delimiter: '/**',
+                description: 'A link to {@link Something}',
+                end: '*/',
+                lineEnd: '',
+                name: '',
+                postDelimiter: ' ',
+                postName: '',
+                postTag: ' ',
+                postType: '',
+                start: '',
+                tag: '@see',
+                type: ''
+              }
+            }
+          ]
+        }
+      ],
+      inlineTags: [],
+      source: [
+        {
+          number: 0,
+          source: '/** @see A link to {@link Something}*/',
+          tokens: {
+            delimiter: '/**',
+            description: 'A link to {@link Something}',
+            end: '*/',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: ' ',
+            postType: '',
+            start: '',
+            tag: '@see',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
   it('Default to simple empty block (comment-parser issue #128)', function () {
     const parsed = parseComment({value: `* `});
     expect(parsed).to.deep.equal({
       description: '',
       tags: [],
+      inlineTags: [],
       source: [
         {
           number: 0,
