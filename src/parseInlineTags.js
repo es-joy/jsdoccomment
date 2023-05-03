@@ -3,7 +3,7 @@
  * @param {RegExpMatchArray} match An inline tag regexp match.
  * @returns {string}
  */
-function determineTextStyle (match) {
+function determineFormat (match) {
   const {separator, text} = match.groups;
   const [, textEnd] = match.indices.groups.text;
   const [tagStart] = match.indices.groups.tag;
@@ -43,13 +43,13 @@ function parseDescription (description) {
   for (const match of matches) {
     const {tag, namepathOrURL, text} = match.groups;
     const [start, end] = match.indices[0];
-    const textStyle = determineTextStyle(match);
+    const format = determineFormat(match);
 
     result.push({
       tag,
       namepathOrURL,
       text,
-      textStyle,
+      format,
       start,
       end
     });

@@ -349,7 +349,7 @@ const toCamelCase = str => {
  * @param {RegExpMatchArray} match An inline tag regexp match.
  * @returns {string}
  */
-function determineTextStyle(match) {
+function determineFormat(match) {
   const {
     separator,
     text
@@ -391,12 +391,12 @@ function parseDescription(description) {
       text
     } = match.groups;
     const [start, end] = match.indices[0];
-    const textStyle = determineTextStyle(match);
+    const format = determineFormat(match);
     result.push({
       tag,
       namepathOrURL,
       text,
-      textStyle,
+      format,
       start,
       end
     });

@@ -314,7 +314,7 @@ describe('parseComment', function () {
           tag: 'link',
           namepathOrURL: 'Something',
           text: '',
-          textStyle: 'plain',
+          format: 'plain',
           start: 10,
           end: 27
         }
@@ -355,7 +355,7 @@ describe('parseComment', function () {
           tag: 'link',
           namepathOrURL: 'Something',
           text: 'something awesome!',
-          textStyle: 'space',
+          format: 'space',
           start: 10,
           end: 46
         }
@@ -396,7 +396,7 @@ describe('parseComment', function () {
           tag: 'link',
           namepathOrURL: 'Something',
           text: 'something awesome!',
-          textStyle: 'pipe',
+          format: 'pipe',
           start: 10,
           end: 46
         }
@@ -437,7 +437,7 @@ describe('parseComment', function () {
           tag: 'link',
           namepathOrURL: 'Something',
           text: 'something awesome!',
-          textStyle: 'prefix',
+          format: 'prefix',
           start: 10,
           end: 47
         }
@@ -483,7 +483,7 @@ describe('parseComment', function () {
               tag: 'link',
               namepathOrURL: 'Something',
               text: '',
-              textStyle: 'plain',
+              format: 'plain',
               start: 10,
               end: 27
             }
