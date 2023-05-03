@@ -343,6 +343,73 @@ describe('parseComment', function () {
     });
   });
 
+  it('Handle multiple inline type tags in multiline description', function () {
+    const parsed = parseComment({
+      value: `* A link to {@link Something}\n* and {@link SomethingElse}`
+    });
+    expect(parsed).to.deep.equal({
+      description: 'A link to {@link Something} and {@link SomethingElse}',
+      tags: [],
+      inlineTags: [
+        {
+          tag: 'link',
+          namepathOrURL: 'Something',
+          text: '',
+          format: 'plain',
+          start: 10,
+          end: 27
+        },
+        {
+          tag: 'link',
+          namepathOrURL: 'SomethingElse',
+          text: '',
+          format: 'plain',
+          start: 32,
+          end: 53
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/** A link to {@link Something}',
+          tokens: {
+            delimiter: '/**',
+            description: 'A link to {@link Something}',
+            end: '',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        },
+        {
+          number: 1,
+          source: '* and {@link SomethingElse}*/',
+          tokens: {
+            delimiter: '*',
+            description: 'and {@link SomethingElse}',
+            end: '*/',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
   it('Handle inline type tag with "spaced" text in description', function () {
     const parsed = parseComment({
       value: `* A link to {@link Something something awesome!}`
