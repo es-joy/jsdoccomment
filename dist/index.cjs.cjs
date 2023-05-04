@@ -382,7 +382,7 @@ function parseDescription(description) {
   // The pattern used to match for text after tag uses a negative lookbehind
   // on the ']' char to avoid matching the prefixed case too.
   // eslint-disable-next-line prefer-regex-literals -- Need 'd' (indices) flag
-  const suffixedAfterPattern = new RegExp(/(?<!\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)(?<separator>[\s|])?(?<text>[^}]*)\}/gu, 'gud');
+  const suffixedAfterPattern = new RegExp(/(?<!\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)\s*(?<separator>[\s|])?\s*(?<text>[^}]*)\}/gu, 'gud');
   const matches = [...description.matchAll(prefixedTextPattern), ...description.matchAll(suffixedAfterPattern)];
   for (const match of matches) {
     const {

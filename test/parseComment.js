@@ -304,7 +304,7 @@ describe('parseComment', function () {
     });
   });
 
-  it('Handle plain inline type tag in description', function () {
+  it('Handle plain inline tag in description', function () {
     const parsed = parseComment({value: `* A link to {@link Something}`});
     expect(parsed).to.deep.equal({
       description: 'A link to {@link Something}',
@@ -343,7 +343,7 @@ describe('parseComment', function () {
     });
   });
 
-  it('Handle multiple inline type tags in multiline description', function () {
+  it('Handle multiple inline tags in multiline description', function () {
     const parsed = parseComment({
       value: `* A link to {@link Something}\n* and {@link SomethingElse}`
     });
@@ -410,7 +410,66 @@ describe('parseComment', function () {
     });
   });
 
-  it('Handle inline type tag with "spaced" text in description', function () {
+  it('Handle inline tags with multiline text', function () {
+    const parsed = parseComment({
+      value: `* A link to {@link Something|multiple\nlines}`
+    });
+    expect(parsed).to.deep.equal({
+      description: 'A link to {@link Something|multiple lines}',
+      tags: [],
+      inlineTags: [
+        {
+          tag: 'link',
+          namepathOrURL: 'Something',
+          text: 'multiple lines',
+          format: 'pipe',
+          start: 10,
+          end: 42
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/** A link to {@link Something|multiple',
+          tokens: {
+            delimiter: '/**',
+            description: 'A link to {@link Something|multiple',
+            end: '',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        },
+        {
+          number: 1,
+          source: 'lines}*/',
+          tokens: {
+            delimiter: '',
+            description: 'lines}',
+            end: '*/',
+            lineEnd: '',
+            name: '',
+            postDelimiter: '',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
+  it('Handle inline tag with "spaced" text in description', function () {
     const parsed = parseComment({
       value: `* A link to {@link Something something awesome!}`
     });
@@ -451,7 +510,7 @@ describe('parseComment', function () {
     });
   });
 
-  it('Handle inline type tag with "piped" text in description', function () {
+  it('Handle inline tag with "piped" text in description', function () {
     const parsed = parseComment({
       value: `* A link to {@link Something|something awesome!}`
     });
@@ -492,7 +551,50 @@ describe('parseComment', function () {
     });
   });
 
-  it('Handle inline type tag with "prefixed" text in description', function () {
+  it('Handle inline tag with "piped" spaced text in description', function () {
+    const parsed = parseComment({
+      value: `* A link to {@link Something  |  something awesome!}`
+    });
+    expect(parsed).to.deep.equal({
+      description: 'A link to {@link Something  |  something awesome!}',
+      tags: [],
+      inlineTags: [
+        {
+          tag: 'link',
+          namepathOrURL: 'Something',
+          text: 'something awesome!',
+          format: 'pipe',
+          start: 10,
+          end: 50
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source:
+            '/** A link to {@link Something  |  something awesome!}*/',
+          tokens: {
+            delimiter: '/**',
+            description:
+              'A link to {@link Something  |  something awesome!}',
+            end: '*/',
+            lineEnd: '',
+            name: '',
+            postDelimiter: ' ',
+            postName: '',
+            postTag: '',
+            postType: '',
+            start: '',
+            tag: '',
+            type: ''
+          }
+        }
+      ],
+      problems: []
+    });
+  });
+
+  it('Handle inline tag with "prefixed" text in description', function () {
     const parsed = parseComment({
       value: `* A link to [something awesome!]{@link Something}`
     });
@@ -533,7 +635,7 @@ describe('parseComment', function () {
     });
   });
 
-  it('Handle plain inline type tag in tag', function () {
+  it('Handle plain inline tag in tag', function () {
     const parsed = parseComment({value: `* @see A link to {@link Something}`});
     expect(parsed).to.deep.equal({
       description: '',
