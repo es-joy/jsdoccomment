@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.38.0
+
+- feat: add parsing inline tags (#12); fixes #11
+
 ## 0.37.1
 
 - chore: support Node 20
