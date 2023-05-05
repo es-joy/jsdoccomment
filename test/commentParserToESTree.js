@@ -41,9 +41,11 @@ const singleLineWithTag = {
           initial: '',
           type: 'JsdocTypeLine'
         }
-      ]
+      ],
+      inlineTags: []
     }
-  ]
+  ],
+  inlineTags: []
 };
 
 const singleLineWithMultilineTag = {
@@ -101,10 +103,109 @@ const singleLineWithMultilineTag = {
           initial: '',
           type: 'JsdocTypeLine'
         }
-      ]
+      ],
+      inlineTags: []
+    }
+  ],
+  inlineTags: []
+};
+
+const singleLineWithInlineTag = ({
+  description,
+  format,
+  namepathOrURL,
+  tag,
+  text
+}) => ({
+  type: 'JsdocBlock',
+  delimiter: '/**',
+  description,
+  descriptionLines: [
+    {
+      delimiter: '/**',
+      description,
+      initial: '',
+      postDelimiter: ' ',
+      type: 'JsdocDescriptionLine'
+    }
+  ],
+  descriptionStartLine: 0,
+  descriptionEndLine: 0,
+  initial: '',
+  terminal: '*/',
+  endLine: 0,
+  hasPreterminalDescription: 1,
+  lastDescriptionLine: 0,
+  lineEnd: '',
+  postDelimiter: ' ',
+  tags: [],
+  inlineTags: [
+    {
+      format,
+      namepathOrURL,
+      tag,
+      text,
+      type: 'JsdocInlineTag'
     }
   ]
-};
+});
+
+const singleTagWithInlineTag = ({
+  format,
+  namepathOrURL,
+  tag,
+  text
+}) => ({
+  type: 'JsdocBlock',
+  delimiter: '/**',
+  description: '',
+  descriptionLines: [],
+  initial: '',
+  terminal: '*/',
+  endLine: 0,
+  hasPreterminalDescription: 0,
+  hasPreterminalTagDescription: 1,
+  lastDescriptionLine: 0,
+  lineEnd: '',
+  postDelimiter: ' ',
+  tags: [
+    {
+      delimiter: '',
+      description: 'This is {@link Something}',
+      descriptionLines: [
+        {
+          delimiter: '',
+          description: 'This is {@link Something}',
+          initial: '',
+          postDelimiter: '',
+          type: 'JsdocDescriptionLine'
+        }
+      ],
+      initial: '',
+      inlineTags: [
+        {
+          format,
+          namepathOrURL,
+          tag,
+          text,
+          type: 'JsdocInlineTag'
+        }
+      ],
+      lineEnd: '',
+      name: '',
+      parsedType: null,
+      postDelimiter: '',
+      postName: '',
+      postTag: ' ',
+      postType: '',
+      rawType: '',
+      tag: 'see',
+      type: 'JsdocTag',
+      typeLines: []
+    }
+  ],
+  inlineTags: []
+});
 
 describe('commentParserToESTree', function () {
   it('handles single line jsdoc comment with tag', () => {
@@ -189,9 +290,11 @@ description`
                 initial: '',
                 type: 'JsdocTypeLine'
               }
-            ]
+            ],
+            inlineTags: []
           }
         ],
+        inlineTags: [],
         type: 'JsdocBlock'
       });
     }
@@ -261,9 +364,11 @@ description`
               initial: '',
               type: 'JsdocTypeLine'
             }
-          ]
+          ],
+          inlineTags: []
         }
-      ]
+      ],
+      inlineTags: []
     });
   });
 
@@ -315,9 +420,11 @@ description`
               initial: '',
               type: 'JsdocTypeLine'
             }
-          ]
+          ],
+          inlineTags: []
         }
-      ]
+      ],
+      inlineTags: []
     });
   });
 
@@ -369,9 +476,11 @@ description`
               initial: '',
               type: 'JsdocTypeLine'
             }
-          ]
+          ],
+          inlineTags: []
         }
-      ]
+      ],
+      inlineTags: []
     });
   });
 
@@ -498,9 +607,11 @@ description`
                 initial: ' ',
                 type: 'JsdocTypeLine'
               }
-            ]
+            ],
+            inlineTags: []
           }
         ],
+        inlineTags: [],
         type: 'JsdocBlock'
       });
     }
@@ -573,9 +684,11 @@ description`
                 initial: '',
                 type: 'JsdocTypeLine'
               }
-            ]
+            ],
+            inlineTags: []
           }
-        ]
+        ],
+        inlineTags: []
       });
     }
   );
@@ -611,6 +724,7 @@ description`
         lineEnd: '',
         postDelimiter: ' ',
         tags: [],
+        inlineTags: [],
         terminal: '*/'
       });
     }
@@ -655,6 +769,7 @@ description`
         lineEnd: '',
         postDelimiter: ' ',
         tags: [],
+        inlineTags: [],
         terminal: '*/'
       });
     }
@@ -709,7 +824,8 @@ description`
         lastDescriptionLine: 4,
         lineEnd: '',
         postDelimiter: '',
-        tags: []
+        tags: [],
+        inlineTags: []
       });
     }
   );
@@ -750,10 +866,44 @@ description`
           initial: ' ',
           tag: 'param',
           type: 'JsdocTag',
-          typeLines: []
+          typeLines: [],
+          inlineTags: []
         }
       ],
+      inlineTags: [],
       type: 'JsdocBlock'
     });
+  });
+
+  it('handles single line jsdoc comment with inline tag in description', () => {
+    const parsedComment = parseComment({
+      value: `* This is {@link Something}`
+    });
+
+    const ast = commentParserToESTree(parsedComment, 'jsdoc');
+
+    expect(ast).to.deep.equal(singleLineWithInlineTag({
+      description: 'This is {@link Something}',
+      text: '',
+      tag: 'link',
+      namepathOrURL: 'Something',
+      format: 'plain'
+    }));
+  });
+
+  it('handles single line jsdoc comment with inline tag in tag', () => {
+    const parsedComment = parseComment({
+      value: `* @see This is {@link Something}`
+    });
+
+    const ast = commentParserToESTree(parsedComment, 'jsdoc');
+
+    expect(ast).to.deep.equal(singleTagWithInlineTag({
+      description: 'This is {@link Something}',
+      text: '',
+      tag: 'link',
+      namepathOrURL: 'Something',
+      format: 'plain'
+    }));
   });
 });
