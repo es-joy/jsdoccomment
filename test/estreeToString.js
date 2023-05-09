@@ -344,6 +344,53 @@ describe('`estreeToString`', function () {
     }
   );
 
+  it('handles pipe inline tag', function () {
+    const ast = {
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: 'something awesome!',
+      format: 'pipe',
+      type: 'JsdocInlineTag'
+    };
+    const str = estreeToString(ast);
+    expect(str).to.equal('{@link Something|something awesome!}');
+  });
+
+  it('handles plain inline tag', function () {
+    const ast = {
+      tag: 'link',
+      namepathOrURL: 'Something',
+      format: 'plain',
+      type: 'JsdocInlineTag'
+    };
+    const str = estreeToString(ast);
+    expect(str).to.equal('{@link Something}');
+  });
+
+  it('handles space inline tag', function () {
+    const ast = {
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: 'something awesome!',
+      format: 'space',
+      type: 'JsdocInlineTag'
+    };
+    const str = estreeToString(ast);
+    expect(str).to.equal('{@link Something something awesome!}');
+  });
+
+  it('handles prefix inline tag', function () {
+    const ast = {
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: 'something awesome!',
+      format: 'prefix',
+      type: 'JsdocInlineTag'
+    };
+    const str = estreeToString(ast);
+    expect(str).to.equal('[something awesome!]{@link Something}');
+  });
+
   it('throws upon encountering an unhandled node type', function () {
     expect(() => {
       estreeToString({
