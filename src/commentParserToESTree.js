@@ -8,19 +8,22 @@ import {parse as jsdocTypePrattParse} from 'jsdoc-type-pratt-parser';
  */
 const stripEncapsulatingBrackets = (container, isArr) => {
   if (isArr) {
-    const firstItem = container[0];
+    const firstItem = /** @type {JsdocTypeLine[]} */ (container)[0];
     firstItem.rawType = firstItem.rawType.replace(
       /^\{/u, ''
     );
 
-    const lastItem = container[container.length - 1];
+    const lastItem = /** @type {JsdocTypeLine[]} */ (
+      container
+    )[/** @type {JsdocTypeLine[]} */ (container).length - 1];
     lastItem.rawType = lastItem.rawType.replace(/\}$/u, '');
 
     return;
   }
-  container.rawType = container.rawType.replace(
-    /^\{/u, ''
-  ).replace(/\}$/u, '');
+  /** @type {JsdocTag} */ (container).rawType =
+    /** @type {JsdocTag} */ (container).rawType.replace(
+      /^\{/u, ''
+    ).replace(/\}$/u, '');
 };
 
 /**
@@ -73,9 +76,12 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   tag: string,
  *   terminal: string,
  *   type: "JsdocTag",
- *   type: string,
  *   typeLines: JsdocTypeLine[],
  * }} JsdocTag
+ */
+
+/**
+ * @typedef {number} Integer
  */
 
 /**
@@ -94,6 +100,14 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  * }} JsdocBlock
  */
 
+/**
+ * @param {object} cfg
+ * @param {string} cfg.text
+ * @param {string} cfg.tag
+ * @param {'pipe' | 'plain' | 'prefix' | 'space'} cfg.format
+ * @param {string} cfg.namepathOrURL
+ * @returns {JsdocInlineTag}
+ */
 const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
   text,
   tag,
@@ -104,10 +118,10 @@ const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
 
 /**
  * Converts comment parser AST to ESTree format.
- * @param {external:CommentParserJsdoc} jsdoc
- * @param {external:JsdocTypePrattParserMode} mode
- * @param {PlainObject} opts
- * @param {throwOnTypeParsingErrors} [opts.throwOnTypeParsingErrors=false]
+ * @param {import('comment-parser').Block} jsdoc
+ * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
+ * @param {object} opts
+ * @param {boolean} [opts.throwOnTypeParsingErrors=false]
  * @returns {JsdocBlock}
  */
 const commentParserToESTree = (jsdoc, mode, {

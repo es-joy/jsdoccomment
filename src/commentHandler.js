@@ -11,12 +11,12 @@ import {
 /**
  * @callback CommentHandler
  * @param {string} commentSelector
- * @param {Node} jsdoc
+ * @param {import('comment-parser').Block} jsdoc
  * @returns {boolean}
  */
 
 /**
- * @param {Settings} settings
+ * @param {{[name: string]: any}} settings
  * @returns {CommentHandler}
  */
 const commentHandler = (settings) => {

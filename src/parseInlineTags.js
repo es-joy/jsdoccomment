@@ -1,7 +1,9 @@
 
 /**
- * @param {RegExpMatchArray} match An inline tag regexp match.
- * @returns {string}
+ * @param {RegExpMatchArray & {
+ *   groups: {separator: string, text: string}
+ * }} match An inline tag regexp match.
+ * @returns {'pipe' | 'plain' | 'prefix' | 'space'}
  */
 function determineFormat (match) {
   const {separator, text} = match.groups;
@@ -18,11 +20,23 @@ function determineFormat (match) {
 }
 
 /**
+ * @typedef {{
+ *   format: 'pipe' | 'plain' | 'prefix' | 'space',
+ *   namepathOrURL: string,
+ *   tag: string,
+ *   text: string,
+ *   start: number,
+ *   end: number,
+ * }} InlineTag
+ */
+
+/**
  * Extracts inline tags from a description.
  * @param {string} description
  * @returns {InlineTag[]} Array of inline tags from the description.
  */
 function parseDescription (description) {
+  /** @type {InlineTag[]} */
   const result = [];
 
   // This could have been expressed in a single pattern,
@@ -61,12 +75,18 @@ function parseDescription (description) {
 /**
  * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
- * @param {Block} block
+ * @param {import('comment-parser').Block & {
+ *   inlineTags: InlineTag[]
+ * }} block
  */
 export default function parseInlineTags (block) {
   block.inlineTags = parseDescription(block.description);
   for (const tag of block.tags) {
-    tag.inlineTags = parseDescription(tag.description);
+    /**
+     * @type {import('comment-parser').Spec & {
+     *   inlineTags: InlineTag[]
+     * }}
+     */ (tag).inlineTags = parseDescription(tag.description);
   }
   return block;
 }

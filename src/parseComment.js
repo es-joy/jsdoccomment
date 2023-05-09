@@ -13,6 +13,10 @@ const {
   description: descriptionTokenizer
 } = tokenizers;
 
+/**
+ * @param {import('comment-parser').Spec} spec
+ * @returns {boolean}
+ */
 export const hasSeeWithLink = (spec) => {
   return spec.tag === 'see' && (/\{@link.+?\}/u).test(spec.source[0].source);
 };

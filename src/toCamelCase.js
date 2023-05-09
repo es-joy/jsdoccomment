@@ -1,3 +1,7 @@
+/**
+ * @param {string} str
+ * @returns {string}
+ */
 const toCamelCase = (str) => {
   return str.toLowerCase().replace(/^[a-z]/gu, (init) => {
     return init.toUpperCase();
