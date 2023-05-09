@@ -128,30 +128,32 @@ function estreeToString (node, opts = {}) {
   if (Object.prototype.hasOwnProperty.call(stringifiers, node.type)) {
     const childNodeOrArray = visitorKeys[node.type];
 
-    const args = childNodeOrArray.map((key) => {
-      // @ts-expect-error
-      return Array.isArray(node[key])
+    const args = /** @type {(string[]|string|null)[]} */ (
+      childNodeOrArray.map((key) => {
         // @ts-expect-error
-        ? node[key].map(
-          (
-            /**
-             * @type {import('./commentParserToESTree.js').JsdocBlock|
-             *   import('./commentParserToESTree.js').JsdocDescriptionLine|
-             *   import('./commentParserToESTree.js').JsdocTypeLine|
-             *   import('./commentParserToESTree.js').JsdocTag|
-             *   import('./commentParserToESTree.js').JsdocInlineTag}
-             */
-            item
-          ) => {
-            return estreeToString(item, opts);
-          }
-        )
-        // @ts-expect-error
-        : (node[key] === undefined || node[key] === null
-          ? null
+        return Array.isArray(node[key])
           // @ts-expect-error
-          : estreeToString(node[key], opts));
-    });
+          ? node[key].map(
+            (
+              /**
+               * @type {import('./commentParserToESTree.js').JsdocBlock|
+               *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+               *   import('./commentParserToESTree.js').JsdocTypeLine|
+               *   import('./commentParserToESTree.js').JsdocTag|
+               *   import('./commentParserToESTree.js').JsdocInlineTag}
+               */
+              item
+            ) => {
+              return estreeToString(item, opts);
+            }
+          )
+          // @ts-expect-error
+          : (node[key] === undefined || node[key] === null
+            ? null
+            // @ts-expect-error
+            : estreeToString(node[key], opts));
+      })
+    );
     return stringifiers[
       /**
        * @type {import('./commentParserToESTree.js').JsdocBlock|
@@ -160,7 +162,12 @@ function estreeToString (node, opts = {}) {
        *   import('./commentParserToESTree.js').JsdocTag}
        */
       (node).type
-    ](node, opts, ...args);
+    ](
+      node,
+      opts,
+      // @ts-expect-error
+      ...args
+    );
   }
 
   // We use raw type instead but it is a key as other apps may wish to traverse

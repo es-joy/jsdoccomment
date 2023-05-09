@@ -27,14 +27,6 @@ const stripEncapsulatingBrackets = (container, isArr) => {
 };
 
 /**
- * @external CommentParserJsdoc
- */
-
-/**
- * @external JsdocTypePrattParserMode
- */
-
-/**
  * @typedef {{
  *   delimiter: string,
  *   postDelimiter: string,
@@ -71,7 +63,11 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   descriptionLines: JsdocDescriptionLine[],
  *   initial: string,
  *   inlineTags: JsdocInlineTag[]
+ *   name: string,
  *   postDelimiter: string,
+ *   postName: string,
+ *   postTag: string,
+ *   postType: string,
  *   rawType: string,
  *   tag: string,
  *   terminal: string,
@@ -92,6 +88,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   initial: string,
  *   inlineTags: JsdocInlineTag[]
  *   lastDescriptionLine: Integer,
+ *   endLine: Integer,
  *   lineEnd: string,
  *   postDelimiter: string,
  *   tags: JsdocTag[],

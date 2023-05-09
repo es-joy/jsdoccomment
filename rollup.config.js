@@ -11,7 +11,7 @@ import {babel} from '@rollup/plugin-babel';
  * @param {string} config.input
  * @param {string} [config.format="umd"]
  * @param {boolean} [config.minifying=false]
- * @returns {external:RollupConfig}
+ * @returns {RollupConfig}
  */
 function getRollupObject ({input, minifying, format = 'umd'} = {}) {
   const nonMinified = {

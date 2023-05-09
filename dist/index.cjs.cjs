@@ -12,22 +12,15 @@ var commentParser = require('comment-parser');
  */
 const stripEncapsulatingBrackets = (container, isArr) => {
   if (isArr) {
-    const firstItem = container[0];
+    const firstItem = /** @type {JsdocTypeLine[]} */container[0];
     firstItem.rawType = firstItem.rawType.replace(/^\{/u, '');
-    const lastItem = container[container.length - 1];
+    const lastItem = /** @type {JsdocTypeLine[]} */container[/** @type {JsdocTypeLine[]} */container.length - 1];
     lastItem.rawType = lastItem.rawType.replace(/\}$/u, '');
     return;
   }
-  container.rawType = container.rawType.replace(/^\{/u, '').replace(/\}$/u, '');
+  /** @type {JsdocTag} */
+  container.rawType = /** @type {JsdocTag} */container.rawType.replace(/^\{/u, '').replace(/\}$/u, '');
 };
-
-/**
- * @external CommentParserJsdoc
- */
-
-/**
- * @external JsdocTypePrattParserMode
- */
 
 /**
  * @typedef {{
@@ -66,14 +59,21 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   descriptionLines: JsdocDescriptionLine[],
  *   initial: string,
  *   inlineTags: JsdocInlineTag[]
+ *   name: string,
  *   postDelimiter: string,
+ *   postName: string,
+ *   postTag: string,
+ *   postType: string,
  *   rawType: string,
  *   tag: string,
  *   terminal: string,
  *   type: "JsdocTag",
- *   type: string,
  *   typeLines: JsdocTypeLine[],
  * }} JsdocTag
+ */
+
+/**
+ * @typedef {number} Integer
  */
 
 /**
@@ -84,6 +84,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   initial: string,
  *   inlineTags: JsdocInlineTag[]
  *   lastDescriptionLine: Integer,
+ *   endLine: Integer,
  *   lineEnd: string,
  *   postDelimiter: string,
  *   tags: JsdocTag[],
@@ -92,6 +93,14 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  * }} JsdocBlock
  */
 
+/**
+ * @param {object} cfg
+ * @param {string} cfg.text
+ * @param {string} cfg.tag
+ * @param {'pipe' | 'plain' | 'prefix' | 'space'} cfg.format
+ * @param {string} cfg.namepathOrURL
+ * @returns {JsdocInlineTag}
+ */
 const inlineTagToAST = ({
   text,
   tag,
@@ -107,10 +116,10 @@ const inlineTagToAST = ({
 
 /**
  * Converts comment parser AST to ESTree format.
- * @param {external:CommentParserJsdoc} jsdoc
- * @param {external:JsdocTypePrattParserMode} mode
- * @param {PlainObject} opts
- * @param {throwOnTypeParsingErrors} [opts.throwOnTypeParsingErrors=false]
+ * @param {import('comment-parser').Block} jsdoc
+ * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
+ * @param {object} opts
+ * @param {boolean} [opts.throwOnTypeParsingErrors=false]
  * @returns {JsdocBlock}
  */
 const commentParserToESTree = (jsdoc, mode, {
@@ -343,12 +352,12 @@ const jsdocVisitorKeys = {
 /**
  * @callback CommentHandler
  * @param {string} commentSelector
- * @param {Node} jsdoc
+ * @param {import('comment-parser').Block} jsdoc
  * @returns {boolean}
  */
 
 /**
- * @param {Settings} settings
+ * @param {{[name: string]: any}} settings
  * @returns {CommentHandler}
  */
 const commentHandler = settings => {
@@ -370,6 +379,10 @@ const commentHandler = settings => {
   };
 };
 
+/**
+ * @param {string} str
+ * @returns {string}
+ */
 const toCamelCase = str => {
   return str.toLowerCase().replace(/^[a-z]/gu, init => {
     return init.toUpperCase();
@@ -381,8 +394,10 @@ const toCamelCase = str => {
 };
 
 /**
- * @param {RegExpMatchArray} match An inline tag regexp match.
- * @returns {string}
+ * @param {RegExpMatchArray & {
+ *   groups: {separator: string, text: string}
+ * }} match An inline tag regexp match.
+ * @returns {'pipe' | 'plain' | 'prefix' | 'space'}
  */
 function determineFormat(match) {
   const {
@@ -402,11 +417,23 @@ function determineFormat(match) {
 }
 
 /**
+ * @typedef {{
+ *   format: 'pipe' | 'plain' | 'prefix' | 'space',
+ *   namepathOrURL: string,
+ *   tag: string,
+ *   text: string,
+ *   start: number,
+ *   end: number,
+ * }} InlineTag
+ */
+
+/**
  * Extracts inline tags from a description.
  * @param {string} description
  * @returns {InlineTag[]} Array of inline tags from the description.
  */
 function parseDescription(description) {
+  /** @type {InlineTag[]} */
   const result = [];
 
   // This could have been expressed in a single pattern,
@@ -442,11 +469,18 @@ function parseDescription(description) {
 /**
  * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
- * @param {Block} block
+ * @param {import('comment-parser').Block & {
+ *   inlineTags: InlineTag[]
+ * }} block
  */
 function parseInlineTags(block) {
   block.inlineTags = parseDescription(block.description);
   for (const tag of block.tags) {
+    /**
+     * @type {import('comment-parser').Spec & {
+     *   inlineTags: InlineTag[]
+     * }}
+     */
     tag.inlineTags = parseDescription(tag.description);
   }
   return block;
@@ -459,6 +493,11 @@ const {
   type: typeTokenizer,
   description: descriptionTokenizer
 } = commentParser.tokenizers;
+
+/**
+ * @param {import('comment-parser').Spec} spec
+ * @returns {boolean}
+ */
 const hasSeeWithLink = spec => {
   return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
 };
@@ -775,7 +814,18 @@ const getJSDocComment = function (sourceCode, node, settings) {
   return findJSDocComment(reducedNode, sourceCode, settings);
 };
 
+/**
+ * @typedef {{preferRawType?: boolean}} ESTreeToStringOptions
+ */
+
 const stringifiers = {
+  /**
+   * @param {import('./commentParserToESTree.js').JsdocBlock} node
+   * @param {ESTreeToStringOptions} opts
+   * @param {string[]} descriptionLines
+   * @param {string[]} tags
+   * @returns {string}
+   */
   JsdocBlock({
     delimiter,
     postDelimiter,
@@ -792,6 +842,10 @@ const stringifiers = {
     descriptionLines.length ? descriptionLines.join(lineEnd + '\n') + (tags.length ? lineEnd + '\n' : '') : ''}${tags.length ? tags.join(lineEnd + '\n') : ''}${endLine && !alreadyHasLine ? `${lineEnd}
  ${initial}` : endLine ? ` ${initial}` : ''}${terminal}`;
   },
+  /**
+   * @param {import('./commentParserToESTree.js').JsdocDescriptionLine} node
+   * @returns {string}
+   */
   JsdocDescriptionLine({
     initial,
     delimiter,
@@ -800,15 +854,39 @@ const stringifiers = {
   }) {
     return `${initial}${delimiter}${postDelimiter}${description}`;
   },
+  /**
+   * @param {import('./commentParserToESTree.js').JsdocTypeLine} node
+   * @returns {string}
+   */
   JsdocTypeLine({
     initial,
     delimiter,
     postDelimiter,
-    rawType,
-    parsedType
+    rawType
   }) {
     return `${initial}${delimiter}${postDelimiter}${rawType}`;
   },
+  /**
+   * @param {import('./commentParserToESTree.js').JsdocInlineTag} node
+   */
+  JsdocInlineTag({
+    format,
+    namepathOrURL,
+    tag,
+    text
+  }) {
+    return format === 'pipe' ? `{@${tag} ${namepathOrURL}|${text}}` : format === 'plain' ? `{@${tag} ${namepathOrURL}}` : format === 'prefix' ? `[${text}]{@${tag} ${namepathOrURL}}`
+    // "space"
+    : `{@${tag} ${namepathOrURL} ${text}}`;
+  },
+  /**
+   * @param {import('./commentParserToESTree.js').JsdocTag} node
+   * @param {ESTreeToStringOptions} opts
+   * @param {string} parsedType
+   * @param {string[]} typeLines
+   * @param {string[]} descriptionLines
+   * @returns {string}
+   */
   JsdocTag(node, opts, parsedType, typeLines, descriptionLines) {
     const {
       description,
@@ -839,8 +917,14 @@ const visitorKeys = {
 /**
  * @todo convert for use by escodegen (until may be patched to support
  *   custom entries?).
- * @param {Node} node
- * @param {{preferRawType: boolean}} opts
+ * @param {import('./commentParserToESTree.js').JsdocBlock|
+ *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+ *   import('./commentParserToESTree.js').JsdocTypeLine|
+ *   import('./commentParserToESTree.js').JsdocTag|
+ *   import('./commentParserToESTree.js').JsdocInlineTag|
+ *   import('jsdoc-type-pratt-parser').RootResult
+ * } node
+ * @param {ESTreeToStringOptions} opts
  * @throws {Error}
  * @returns {string}
  */
@@ -848,16 +932,39 @@ function estreeToString(node, opts = {}) {
   if (Object.prototype.hasOwnProperty.call(stringifiers, node.type)) {
     const childNodeOrArray = visitorKeys[node.type];
     const args = childNodeOrArray.map(key => {
-      return Array.isArray(node[key]) ? node[key].map(item => {
+      // @ts-expect-error
+      return Array.isArray(node[key])
+      // @ts-expect-error
+      ? node[key].map((
+      /**
+       * @type {import('./commentParserToESTree.js').JsdocBlock|
+       *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+       *   import('./commentParserToESTree.js').JsdocTypeLine|
+       *   import('./commentParserToESTree.js').JsdocTag|
+       *   import('./commentParserToESTree.js').JsdocInlineTag}
+       */
+      item) => {
         return estreeToString(item, opts);
-      }) : node[key] === undefined || node[key] === null ? null : estreeToString(node[key], opts);
+      })
+      // @ts-expect-error
+      : node[key] === undefined || node[key] === null ? null
+      // @ts-expect-error
+      : estreeToString(node[key], opts);
     });
-    return stringifiers[node.type](node, opts, ...args);
+    return stringifiers[
+    /**
+     * @type {import('./commentParserToESTree.js').JsdocBlock|
+     *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+     *   import('./commentParserToESTree.js').JsdocTypeLine|
+     *   import('./commentParserToESTree.js').JsdocTag}
+     */
+    node.type](node, opts, ...args);
   }
 
   // We use raw type instead but it is a key as other apps may wish to traverse
   if (node.type.startsWith('JsdocType')) {
-    return opts.preferRawType ? '' : `{${jsdocTypePrattParser.stringify(node)}}`;
+    return opts.preferRawType ? '' : `{${jsdocTypePrattParser.stringify( /** @type {import('jsdoc-type-pratt-parser').RootResult} */
+    node)}}`;
   }
   throw new Error(`Unhandled node type: ${node.type}`);
 }
