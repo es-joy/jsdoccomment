@@ -1,5 +1,12 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## ?
+
+- fix(estreeToString): add JsdodInlineTag stringify support
+- refactor: lint
+- docs: add `JsdocInlineTag` to README
+- chore: update devDeps.
+
 ## 0.38.0
 
 - feat: add parsing inline tags (#12); fixes #11
