@@ -5,9 +5,6 @@ module.exports = {
     'ash-nazg/sauron-node-overrides'
   ],
   settings: {
-    jsdoc: {
-      mode: 'typescript'
-    },
     polyfills: [
       'console',
       'Error',

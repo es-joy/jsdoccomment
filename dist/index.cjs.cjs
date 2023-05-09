@@ -14,7 +14,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
   if (isArr) {
     const firstItem = /** @type {JsdocTypeLine[]} */container[0];
     firstItem.rawType = firstItem.rawType.replace(/^\{/u, '');
-    const lastItem = /** @type {JsdocTypeLine[]} */container[/** @type {JsdocTypeLine[]} */container.length - 1];
+    const lastItem = /** @type {JsdocTypeLine[]} */container.at(-1);
     lastItem.rawType = lastItem.rawType.replace(/\}$/u, '');
     return;
   }
@@ -384,9 +384,9 @@ const commentHandler = settings => {
  * @returns {string}
  */
 const toCamelCase = str => {
-  return str.toLowerCase().replace(/^[a-z]/gu, init => {
+  return str.toLowerCase().replaceAll(/^[a-z]/gu, init => {
     return init.toUpperCase();
-  }).replace(/_(?<wordInit>[a-z])/gu, (_, n1, o, s, {
+  }).replaceAll(/_(?<wordInit>[a-z])/gu, (_, n1, o, s, {
     wordInit
   }) => {
     return wordInit.toUpperCase();
@@ -834,7 +834,7 @@ const stringifiers = {
     terminal,
     endLine
   }, opts, descriptionLines, tags) {
-    const alreadyHasLine = descriptionLines.length && !tags.length && descriptionLines[descriptionLines.length - 1].endsWith('\n') || tags.length && tags[tags.length - 1].endsWith('\n');
+    const alreadyHasLine = descriptionLines.length && !tags.length && descriptionLines.at(-1).endsWith('\n') || tags.length && tags.at(-1).endsWith('\n');
     return `${initial}${delimiter}${postDelimiter}${endLine ? `
 ` : ''}${
     // Could use `node.description` (and `node.lineEnd`), but lines may have
@@ -931,7 +931,8 @@ const visitorKeys = {
 function estreeToString(node, opts = {}) {
   if (Object.prototype.hasOwnProperty.call(stringifiers, node.type)) {
     const childNodeOrArray = visitorKeys[node.type];
-    const args = childNodeOrArray.map(key => {
+    const args = /** @type {(string[]|string|null)[]} */
+    childNodeOrArray.map(key => {
       // @ts-expect-error
       return Array.isArray(node[key])
       // @ts-expect-error
@@ -958,7 +959,9 @@ function estreeToString(node, opts = {}) {
      *   import('./commentParserToESTree.js').JsdocTypeLine|
      *   import('./commentParserToESTree.js').JsdocTag}
      */
-    node.type](node, opts, ...args);
+    node.type](node, opts,
+    // @ts-expect-error
+    ...args);
   }
 
   // We use raw type instead but it is a key as other apps may wish to traverse

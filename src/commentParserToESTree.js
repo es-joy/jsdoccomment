@@ -15,7 +15,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
 
     const lastItem = /** @type {JsdocTypeLine[]} */ (
       container
-    )[/** @type {JsdocTypeLine[]} */ (container).length - 1];
+    ).at(-1);
     lastItem.rawType = lastItem.rawType.replace(/\}$/u, '');
 
     return;

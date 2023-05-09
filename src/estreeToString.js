@@ -22,8 +22,8 @@ const stringifiers = {
   }, opts, descriptionLines, tags) {
     const alreadyHasLine =
         (descriptionLines.length && !tags.length &&
-          descriptionLines[descriptionLines.length - 1].endsWith('\n')) ||
-         (tags.length && tags[tags.length - 1].endsWith('\n'));
+          descriptionLines.at(-1).endsWith('\n')) ||
+         (tags.length && tags.at(-1).endsWith('\n'));
     return `${initial}${delimiter}${postDelimiter}${endLine
       ? `
 `
