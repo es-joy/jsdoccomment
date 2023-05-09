@@ -668,7 +668,10 @@ const isCommentToken = token => {
  *   declaration?: {
  *     decorators: any[]
  *   },
- *   decorators?: any[]
+ *   decorators?: any[],
+ *   parent: import('eslint').Rule.Node & {
+ *     decorators?: any[]
+ *   }
  * }} node
  * @returns {boolean}
  */
@@ -717,6 +720,7 @@ const getTSFunctionComment = function (astNode) {
     return astNode;
   }
   switch (grandparent.type) {
+    // @ts-expect-error
     case 'PropertyDefinition':
     case 'ClassProperty':
     case 'TSDeclareFunction':
@@ -734,7 +738,7 @@ const getTSFunctionComment = function (astNode) {
       // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
       ) {
         /* c8 ignore next 3 */
-        if (!greatGreatGrandparent) {
+        if (!greatGreatGrandparent || !greatGreatGrandparent.parent) {
           return astNode;
         }
         return greatGreatGrandparent.parent;

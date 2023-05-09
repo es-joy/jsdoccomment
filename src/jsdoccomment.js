@@ -26,7 +26,10 @@ const isCommentToken = (token) => {
  *   declaration?: {
  *     decorators: any[]
  *   },
- *   decorators?: any[]
+ *   decorators?: any[],
+ *   parent: import('eslint').Rule.Node & {
+ *     decorators?: any[]
+ *   }
  * }} node
  * @returns {boolean}
  */
@@ -77,8 +80,8 @@ const getTSFunctionComment = function (astNode) {
   }
 
   switch (grandparent.type) {
-  case 'PropertyDefinition':
-  case 'ClassProperty':
+  // @ts-expect-error
+  case 'PropertyDefinition': case 'ClassProperty':
   case 'TSDeclareFunction':
   case 'TSMethodSignature':
   case 'TSPropertySignature':
@@ -95,7 +98,7 @@ const getTSFunctionComment = function (astNode) {
     // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
     ) {
       /* c8 ignore next 3 */
-      if (!greatGreatGrandparent) {
+      if (!greatGreatGrandparent || !greatGreatGrandparent.parent) {
         return astNode;
       }
       return greatGreatGrandparent.parent;
@@ -193,6 +196,10 @@ const getReducedASTNode = function (node, sourceCode) {
   case 'TSEnumDeclaration':
   case 'ClassDeclaration':
   case 'FunctionDeclaration':
+    /* c8 ignore next 3 */
+    if (!parent) {
+      return node;
+    }
     return looksLikeExport(parent) ? parent : node;
 
   case 'TSDeclareFunction':
@@ -201,6 +208,10 @@ const getReducedASTNode = function (node, sourceCode) {
   case 'ArrowFunctionExpression':
   case 'TSEmptyBodyFunctionExpression':
   case 'FunctionExpression':
+    /* c8 ignore next 3 */
+    if (!parent) {
+      return node;
+    }
     if (
       !invokedExpression.has(parent.type)
     ) {
