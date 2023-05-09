@@ -5,9 +5,15 @@
  */
 
 /**
+ * @typedef {number} Integer
+ */
+
+/**
  * Checks if the given token is a comment token or not.
  *
- * @param {Token} token - The token to check.
+ * @param {import('eslint').AST.Token | {
+ *   type: import('eslint').AST.TokenType|"Line"|"Block"|"Shebang"
+ * }} token - The token to check.
  * @returns {boolean} `true` if the token is a comment token.
  */
 const isCommentToken = (token) => {
@@ -16,7 +22,12 @@ const isCommentToken = (token) => {
 };
 
 /**
- * @param {AST} node
+ * @param {import('eslint').Rule.Node & {
+ *   declaration?: {
+ *     decorators: any[]
+ *   },
+ *   decorators?: any[]
+ * }} node
  * @returns {boolean}
  */
 const getDecorator = (node) => {
@@ -27,7 +38,9 @@ const getDecorator = (node) => {
 /**
  * Check to see if it is a ES6 export declaration.
  *
- * @param {ASTNode} astNode An AST node.
+ * @param {import('eslint').Rule.Node|
+ *   import('@typescript-eslint/types').TSESTree.Node
+ * } astNode An AST node.
  * @returns {boolean} whether the given node represents an export declaration.
  * @private
  */
@@ -39,12 +52,22 @@ const looksLikeExport = function (astNode) {
 };
 
 /**
- * @param {AST} astNode
- * @returns {AST}
+ * @param {import('eslint').Rule.Node|
+ *   import('@typescript-eslint/types').TSESTree.Node} astNode
+ * @returns {import('eslint').Rule.Node|
+ *   import('@typescript-eslint/types').TSESTree.Node}
  */
 const getTSFunctionComment = function (astNode) {
   const {parent} = astNode;
+  /* c8 ignore next 3 */
+  if (!parent) {
+    return astNode;
+  }
   const grandparent = parent.parent;
+  /* c8 ignore next 3 */
+  if (!grandparent) {
+    return astNode;
+  }
   const greatGrandparent = grandparent.parent;
   const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
 
@@ -61,18 +84,30 @@ const getTSFunctionComment = function (astNode) {
   case 'TSPropertySignature':
     return grandparent;
   case 'ArrowFunctionExpression':
+    /* c8 ignore next 3 */
+    if (!greatGrandparent) {
+      return astNode;
+    }
     // istanbul ignore else
     if (
       greatGrandparent.type === 'VariableDeclarator'
 
     // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
     ) {
+      /* c8 ignore next 3 */
+      if (!greatGreatGrandparent) {
+        return astNode;
+      }
       return greatGreatGrandparent.parent;
     }
 
     // istanbul ignore next
     return astNode;
   case 'FunctionExpression':
+    /* c8 ignore next 3 */
+    if (!greatGreatGrandparent) {
+      return astNode;
+    }
     // istanbul ignore else
     if (greatGrandparent.type === 'MethodDefinition') {
       return greatGrandparent;
@@ -85,6 +120,11 @@ const getTSFunctionComment = function (astNode) {
       // istanbul ignore next
       return astNode;
     }
+  }
+
+  /* c8 ignore next 3 */
+  if (!greatGreatGrandparent) {
+    return astNode;
   }
 
   // istanbul ignore next
@@ -135,10 +175,12 @@ const allowableCommentNode = new Set([
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
  *
- * @param {ASTNode} node An AST node.
- * @param {SourceCode} sourceCode The ESLint SourceCode.
- * @returns {ASTNode} The AST node that can be evaluated for appropriate
- * JSDoc comments.
+ * @param {import('eslint').Rule.Node|
+ *   import('@typescript-eslint/types').TSESTree.Node} node An AST node.
+ * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode.
+ * @returns {import('eslint').Rule.Node|
+ * import('@typescript-eslint/types').TSESTree.Node} The AST node that
+ *   can be evaluated for appropriate JSDoc comments.
  */
 const getReducedASTNode = function (node, sourceCode) {
   let {parent} = node;
@@ -207,8 +249,10 @@ const getReducedASTNode = function (node, sourceCode) {
 /**
  * Checks for the presence of a JSDoc comment for the given node and returns it.
  *
- * @param {ASTNode} astNode The AST node to get the comment for.
- * @param {SourceCode} sourceCode
+ * @param {import('eslint').Rule.Node|
+ *   import('@typescript-eslint/types').TSESTree.Node
+ * } astNode The AST node to get the comment for.
+ * @param {import('eslint').SourceCode} sourceCode
  * @param {{maxLines: Integer, minLines: Integer}} settings
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
@@ -261,11 +305,15 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
 /**
  * Retrieves the JSDoc comment for a given node.
  *
- * @param {SourceCode} sourceCode The ESLint SourceCode
- * @param {ASTNode} node The AST node to get the comment for.
- * @param {PlainObject} settings The settings in context
- * @returns {Token|null} The Block comment token containing the JSDoc comment
- *    for the given node or null if not found.
+ * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
+ * @param {import('eslint').Rule.Node|
+ *   import('@typescript-eslint/types').TSESTree.Node
+ * } node The AST node to get the comment for.
+ * @param {{maxLines: Integer, minLines: Integer}} settings The
+ *   settings in context
+ * @returns {import('eslint').AST.Token|null} The Block comment
+ *   token containing the JSDoc comment for the given node or
+ *   null if not found.
  * @public
  */
 const getJSDocComment = function (sourceCode, node, settings) {
