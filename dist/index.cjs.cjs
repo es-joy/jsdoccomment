@@ -7,14 +7,15 @@ var commentParser = require('comment-parser');
 /**
  * Removes initial and ending brackets from `rawType`
  * @param {JsdocTypeLine[]|JsdocTag} container
- * @param {boolean} isArr
+ * @param {boolean} [isArr]
  * @returns {void}
  */
 const stripEncapsulatingBrackets = (container, isArr) => {
   if (isArr) {
     const firstItem = /** @type {JsdocTypeLine[]} */container[0];
     firstItem.rawType = firstItem.rawType.replace(/^\{/u, '');
-    const lastItem = /** @type {JsdocTypeLine[]} */container.at(-1);
+    const lastItem = /** @type {JsdocTypeLine} */
+    /** @type {JsdocTypeLine[]} */container.at(-1);
     lastItem.rawType = lastItem.rawType.replace(/\}$/u, '');
     return;
   }
@@ -65,8 +66,8 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   postTag: string,
  *   postType: string,
  *   rawType: string,
+ *   parsedType: import('jsdoc-type-pratt-parser').RootResult|null
  *   tag: string,
- *   terminal: string,
  *   type: "JsdocTag",
  *   typeLines: JsdocTypeLine[],
  * }} JsdocTag
@@ -80,10 +81,14 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  * @typedef {{
  *   delimiter: string,
  *   description: string,
+ *   descriptionEndLine?: Integer,
  *   descriptionLines: JsdocDescriptionLine[],
+ *   descriptionStartLine?: Integer,
+ *   hasPreterminalDescription: 0|1,
+ *   hasPreterminalTagDescription?: 1,
  *   initial: string,
  *   inlineTags: JsdocInlineTag[]
- *   lastDescriptionLine: Integer,
+ *   lastDescriptionLine?: Integer,
  *   endLine: Integer,
  *   lineEnd: string,
  *   postDelimiter: string,
@@ -116,7 +121,9 @@ const inlineTagToAST = ({
 
 /**
  * Converts comment parser AST to ESTree format.
- * @param {import('comment-parser').Block} jsdoc
+ * @param {import('comment-parser').Block & {
+ *   inlineTags: JsdocInlineTag[]
+ * }} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
  * @param {boolean} [opts.throwOnTypeParsingErrors=false]
@@ -145,7 +152,8 @@ const commentParserToESTree = (jsdoc, mode, {
     } catch (err) {
       // Ignore
       if (lastTag.rawType && throwOnTypeParsingErrors) {
-        err.message = `Tag @${lastTag.tag} with raw type ` + `\`${lastTag.rawType}\` had parsing error: ${err.message}`;
+        /** @type {Error} */err.message = `Tag @${lastTag.tag} with raw type ` + `\`${lastTag.rawType}\` had parsing error: ${
+        /** @type {Error} */err.message}`;
         throw err;
       }
     }
@@ -165,12 +173,15 @@ const commentParserToESTree = (jsdoc, mode, {
     }
   } = source[0];
   const endLine = source.length - 1;
+
+  /** @type {JsdocBlock} */
   const ast = {
     delimiter: delimiterRoot,
     description: '',
     descriptionLines: [],
     inlineTags: blockInlineTags.map(t => inlineTagToAST(t)),
     initial: startRoot,
+    tags: [],
     // `terminal` will be overwritten if there are other entries
     terminal: endRoot,
     hasPreterminalDescription: 0,
@@ -179,8 +190,16 @@ const commentParserToESTree = (jsdoc, mode, {
     lineEnd: lineEndRoot,
     type: 'JsdocBlock'
   };
+
+  /**
+   * @type {JsdocTag[]}
+   */
   const tags = [];
+
+  /** @type {Integer|undefined} */
   let lastDescriptionLine;
+
+  /** @type {JsdocTag|null} */
   let lastTag = null;
   let descLineStateOpen = true;
   source.forEach((info, idx) => {
@@ -272,6 +291,8 @@ const commentParserToESTree = (jsdoc, mode, {
         // we can use the `tags` length as index into the parser result tags.
         tagInlineTags = jsdoc.tags[tags.length].inlineTags.map(t => inlineTagToAST(t));
       }
+
+      /** @type {JsdocTag} */
       const tagObj = {
         ...tkns,
         initial: endLine ? init : '',
@@ -279,6 +300,7 @@ const commentParserToESTree = (jsdoc, mode, {
         delimiter: lastDescriptionLine ? de : '',
         descriptionLines: [],
         inlineTags: tagInlineTags,
+        parsedType: null,
         rawType: '',
         type: 'JsdocTag',
         typeLines: []
@@ -289,7 +311,8 @@ const commentParserToESTree = (jsdoc, mode, {
     }
     if (rawType) {
       // Will strip rawType brackets after this tag
-      lastTag.typeLines.push(lastTag.typeLines.length ? {
+      /** @type {JsdocTag} */
+      lastTag.typeLines.push( /** @type {JsdocTag} */lastTag.typeLines.length ? {
         delimiter,
         postDelimiter,
         rawType,
@@ -302,7 +325,8 @@ const commentParserToESTree = (jsdoc, mode, {
         initial: '',
         type: 'JsdocTypeLine'
       });
-      lastTag.rawType += lastTag.rawType ? '\n' + rawType : rawType;
+      /** @type {JsdocTag} */
+      lastTag.rawType += /** @type {JsdocTag} */lastTag.rawType ? '\n' + rawType : rawType;
     }
     if (description) {
       const holder = lastTag || ast;
@@ -334,7 +358,7 @@ const commentParserToESTree = (jsdoc, mode, {
     if (end && tag) {
       ast.terminal = end;
       ast.hasPreterminalTagDescription = 1;
-      cleanUpLastTag(lastTag);
+      cleanUpLastTag( /** @type {JsdocTag} */lastTag);
     }
   });
   ast.lastDescriptionLine = lastDescriptionLine;
@@ -834,7 +858,8 @@ const stringifiers = {
     terminal,
     endLine
   }, opts, descriptionLines, tags) {
-    const alreadyHasLine = descriptionLines.length && !tags.length && descriptionLines.at(-1).endsWith('\n') || tags.length && tags.at(-1).endsWith('\n');
+    var _descriptionLines$at, _tags$at;
+    const alreadyHasLine = descriptionLines.length && !tags.length && ((_descriptionLines$at = descriptionLines.at(-1)) === null || _descriptionLines$at === void 0 ? void 0 : _descriptionLines$at.endsWith('\n')) || tags.length && ((_tags$at = tags.at(-1)) === null || _tags$at === void 0 ? void 0 : _tags$at.endsWith('\n'));
     return `${initial}${delimiter}${postDelimiter}${endLine ? `
 ` : ''}${
     // Could use `node.description` (and `node.lineEnd`), but lines may have

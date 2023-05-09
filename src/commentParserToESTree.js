@@ -3,7 +3,7 @@ import {parse as jsdocTypePrattParse} from 'jsdoc-type-pratt-parser';
 /**
  * Removes initial and ending brackets from `rawType`
  * @param {JsdocTypeLine[]|JsdocTag} container
- * @param {boolean} isArr
+ * @param {boolean} [isArr]
  * @returns {void}
  */
 const stripEncapsulatingBrackets = (container, isArr) => {
@@ -13,9 +13,11 @@ const stripEncapsulatingBrackets = (container, isArr) => {
       /^\{/u, ''
     );
 
-    const lastItem = /** @type {JsdocTypeLine[]} */ (
-      container
-    ).at(-1);
+    const lastItem = /** @type {JsdocTypeLine} */ (
+      /** @type {JsdocTypeLine[]} */ (
+        container
+      ).at(-1)
+    );
     lastItem.rawType = lastItem.rawType.replace(/\}$/u, '');
 
     return;
@@ -69,8 +71,8 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   postTag: string,
  *   postType: string,
  *   rawType: string,
+ *   parsedType: import('jsdoc-type-pratt-parser').RootResult|null
  *   tag: string,
- *   terminal: string,
  *   type: "JsdocTag",
  *   typeLines: JsdocTypeLine[],
  * }} JsdocTag
@@ -84,10 +86,14 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  * @typedef {{
  *   delimiter: string,
  *   description: string,
+ *   descriptionEndLine?: Integer,
  *   descriptionLines: JsdocDescriptionLine[],
+ *   descriptionStartLine?: Integer,
+ *   hasPreterminalDescription: 0|1,
+ *   hasPreterminalTagDescription?: 1,
  *   initial: string,
  *   inlineTags: JsdocInlineTag[]
- *   lastDescriptionLine: Integer,
+ *   lastDescriptionLine?: Integer,
  *   endLine: Integer,
  *   lineEnd: string,
  *   postDelimiter: string,
@@ -115,7 +121,9 @@ const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
 
 /**
  * Converts comment parser AST to ESTree format.
- * @param {import('comment-parser').Block} jsdoc
+ * @param {import('comment-parser').Block & {
+ *   inlineTags: JsdocInlineTag[]
+ * }} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
  * @param {boolean} [opts.throwOnTypeParsingErrors=false]
@@ -145,8 +153,11 @@ const commentParserToESTree = (jsdoc, mode, {
     } catch (err) {
       // Ignore
       if (lastTag.rawType && throwOnTypeParsingErrors) {
-        err.message = `Tag @${lastTag.tag} with raw type ` +
-          `\`${lastTag.rawType}\` had parsing error: ${err.message}`;
+        /** @type {Error} */ (
+          err
+        ).message = `Tag @${lastTag.tag} with raw type ` +
+          `\`${lastTag.rawType}\` had parsing error: ${
+            /** @type {Error} */ (err).message}`;
         throw err;
       }
     }
@@ -165,6 +176,8 @@ const commentParserToESTree = (jsdoc, mode, {
   }} = source[0];
 
   const endLine = source.length - 1;
+
+  /** @type {JsdocBlock} */
   const ast = {
     delimiter: delimiterRoot,
     description: '',
@@ -173,6 +186,7 @@ const commentParserToESTree = (jsdoc, mode, {
     inlineTags: blockInlineTags.map((t) => inlineTagToAST(t)),
 
     initial: startRoot,
+    tags: [],
     // `terminal` will be overwritten if there are other entries
     terminal: endRoot,
     hasPreterminalDescription: 0,
@@ -183,9 +197,17 @@ const commentParserToESTree = (jsdoc, mode, {
     type: 'JsdocBlock'
   };
 
+  /**
+   * @type {JsdocTag[]}
+   */
   const tags = [];
+
+  /** @type {Integer|undefined} */
   let lastDescriptionLine;
+
+  /** @type {JsdocTag|null} */
   let lastTag = null;
+
   let descLineStateOpen = true;
 
   source.forEach((info, idx) => {
@@ -282,6 +304,7 @@ const commentParserToESTree = (jsdoc, mode, {
         );
       }
 
+      /** @type {JsdocTag} */
       const tagObj = {
         ...tkns,
         initial: endLine ? init : '',
@@ -289,6 +312,7 @@ const commentParserToESTree = (jsdoc, mode, {
         delimiter: lastDescriptionLine ? de : '',
         descriptionLines: [],
         inlineTags: tagInlineTags,
+        parsedType: null,
         rawType: '',
         type: 'JsdocTag',
         typeLines: []
@@ -302,8 +326,8 @@ const commentParserToESTree = (jsdoc, mode, {
 
     if (rawType) {
       // Will strip rawType brackets after this tag
-      lastTag.typeLines.push(
-        lastTag.typeLines.length
+      /** @type {JsdocTag} */ (lastTag).typeLines.push(
+        /** @type {JsdocTag} */ (lastTag).typeLines.length
           ? {
             delimiter,
             postDelimiter,
@@ -319,7 +343,11 @@ const commentParserToESTree = (jsdoc, mode, {
             type: 'JsdocTypeLine'
           }
       );
-      lastTag.rawType += lastTag.rawType ? '\n' + rawType : rawType;
+      /** @type {JsdocTag} */ (lastTag).rawType += /** @type {JsdocTag} */ (
+        lastTag
+      ).rawType
+        ? '\n' + rawType
+        : rawType;
     }
 
     if (description) {
@@ -362,7 +390,7 @@ const commentParserToESTree = (jsdoc, mode, {
       ast.terminal = end;
       ast.hasPreterminalTagDescription = 1;
 
-      cleanUpLastTag(lastTag);
+      cleanUpLastTag(/** @type {JsdocTag} */ (lastTag));
     }
   });
 
