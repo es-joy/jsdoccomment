@@ -76,8 +76,11 @@ function parseDescription (description) {
  * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
  * @param {import('comment-parser').Block & {
- *   inlineTags: InlineTag[]
+ *   inlineTags?: InlineTag[]
  * }} block
+ * @returns {import('comment-parser').Block & {
+ *   inlineTags: InlineTag[]
+ * }}
  */
 export default function parseInlineTags (block) {
   block.inlineTags = parseDescription(block.description);
@@ -88,5 +91,11 @@ export default function parseInlineTags (block) {
      * }}
      */ (tag).inlineTags = parseDescription(tag.description);
   }
-  return block;
+  return (
+    /**
+     * @type {import('comment-parser').Block & {
+     *   inlineTags: InlineTag[]
+     * }}
+     */ (block)
+  );
 }

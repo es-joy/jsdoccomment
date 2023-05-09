@@ -54,6 +54,10 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   namepathOrURL: string,
  *   tag: string,
  *   text: string,
+ * }} JsdocInlineTagNoType
+ */
+/**
+ * @typedef {JsdocInlineTagNoType & {
  *   type: "JsdocInlineTag"
  * }} JsdocInlineTag
  */
@@ -122,7 +126,7 @@ const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
 /**
  * Converts comment parser AST to ESTree format.
  * @param {import('comment-parser').Block & {
- *   inlineTags: JsdocInlineTag[]
+ *   inlineTags: JsdocInlineTagNoType[]
  * }} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
@@ -295,13 +299,23 @@ const commentParserToESTree = (jsdoc, mode, {
         }
       }
 
+      /**
+       * @type {JsdocInlineTag[]}
+       */
       let tagInlineTags = [];
       if (tag) {
         // Assuming the tags from `source` are in the same order as `jsdoc.tags`
         // we can use the `tags` length as index into the parser result tags.
-        tagInlineTags = jsdoc.tags[tags.length].inlineTags.map(
-          (t) => inlineTagToAST(t)
-        );
+        tagInlineTags =
+          /**
+           * @type {import('comment-parser').Spec & {
+           *   inlineTags: JsdocInlineTagNoType[]
+           * }}
+           */ (
+            jsdoc.tags[tags.length]
+          ).inlineTags.map(
+            (t) => inlineTagToAST(t)
+          );
       }
 
       /** @type {JsdocTag} */

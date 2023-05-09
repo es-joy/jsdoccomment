@@ -54,7 +54,11 @@ const getTokenizers = ({
     // Tag
     tagTokenizer(),
 
-    // Type
+    /**
+     * Type tokenizer.
+     * @param {import('comment-parser').Spec} spec
+     * @returns {import('comment-parser').Spec}
+     */
     (spec) => {
       if (noTypes.includes(spec.tag)) {
         return spec;
@@ -63,7 +67,11 @@ const getTokenizers = ({
       return preserveTypeTokenizer(spec);
     },
 
-    // Name
+    /**
+     * Name tokenizer.
+     * @param {import('comment-parser').Spec} spec
+     * @returns {import('comment-parser').Spec}
+     */
     (spec) => {
       if (spec.tag === 'template') {
         // const preWS = spec.postTag;
@@ -102,7 +110,11 @@ const getTokenizers = ({
       return plainNameTokenizer(spec);
     },
 
-    // Description
+    /**
+     * Description tokenizer.
+     * @param {import('comment-parser').Spec} spec
+     * @returns {import('comment-parser').Spec}
+     */
     (spec) => {
       return preserveDescriptionTokenizer(spec);
     }
@@ -111,9 +123,11 @@ const getTokenizers = ({
 
 /**
  * Accepts a comment token and converts it into `comment-parser` AST.
- * @param {PlainObject} commentNode
+ * @param {{value: string}} commentNode
  * @param {string} [indent=""] Whitespace
- * @returns {PlainObject}
+ * @returns {import('comment-parser').Block & {
+ *   inlineTags: import('./parseInlineTags.js').InlineTag[]
+ * }}
  */
 const parseComment = (commentNode, indent = '') => {
   // Preserve JSDoc block start/end indentation.
