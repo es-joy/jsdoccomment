@@ -1,7 +1,12 @@
 
 /**
  * @param {RegExpMatchArray & {
- *   groups: {separator: string, text: string}
+ *   indices: {
+ *     groups: {
+ *       [key: string]: [number, number]
+ *     }
+ *   }
+ *   groups: {[key: string]: string}
  * }} match An inline tag regexp match.
  * @returns {'pipe' | 'plain' | 'prefix' | 'space'}
  */
@@ -54,7 +59,19 @@ function parseDescription (description) {
     ...description.matchAll(suffixedAfterPattern)
   ];
 
-  for (const match of matches) {
+  for (const mtch of matches) {
+    const match = /**
+      * @type {RegExpMatchArray & {
+      *   indices: {
+      *     groups: {
+      *       [key: string]: [number, number]
+      *     }
+      *   }
+      *   groups: {[key: string]: string}
+      * }}
+      */ (
+        mtch
+      );
     const {tag, namepathOrURL, text} = match.groups;
     const [start, end] = match.indices[0];
     const format = determineFormat(match);

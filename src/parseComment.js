@@ -83,11 +83,17 @@ const getTokenizers = ({
         const extra = remainder.slice(pos);
         let postName = '', description = '', lineEnd = '';
         if (pos > -1) {
-          [, postName, description, lineEnd] = extra.match(/(\s*)([^\r]*)(\r)?/u);
+          [, postName, description, lineEnd] = /** @type {RegExpMatchArray} */ (
+            extra.match(/(\s*)([^\r]*)(\r)?/u)
+          );
         }
 
         if (optionalBrackets.test(name)) {
-          name = name.match(optionalBrackets)?.groups?.name;
+          name = /** @type {string} */ (
+            /** @type {RegExpMatchArray} */ (
+              name.match(optionalBrackets)
+            )?.groups?.name
+          );
           spec.optional = true;
         } else {
           spec.optional = false;

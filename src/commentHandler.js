@@ -11,7 +11,9 @@ import {
 /**
  * @callback CommentHandler
  * @param {string} commentSelector
- * @param {import('comment-parser').Block} jsdoc
+ * @param {import('comment-parser').Block & {
+ *   inlineTags: import('./commentParserToESTree.js').JsdocInlineTagNoType[]
+* }} jsdoc
  * @returns {boolean}
  */
 
