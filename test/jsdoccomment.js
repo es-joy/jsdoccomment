@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-shadow -- Needed for TS
+import {expect} from 'chai';
 import {parse as espreeParse} from 'espree';
 import {traverse} from 'estraverse';
 import {SourceCode} from 'eslint';
@@ -24,13 +26,18 @@ const ESPREE_DEFAULT_CONFIG = {
  *   range: boolean,
  *   loc: boolean
  * }} config
- * @returns {Node}
+ * @returns {import('eslint').AST.Program}
  */
 function parseAddingParents (code, config = ESPREE_DEFAULT_CONFIG) {
   const ast = espreeParse(code, config);
   traverse(ast, {
     enter (node, parent) {
-      node.parent = parent;
+      if (!node || !parent) {
+        return;
+      }
+      /** @type {import('estree').Node & {parent: import('estree').Node}} */ (
+        node
+      ).parent = parent;
     }
   });
   return ast;
@@ -45,7 +52,9 @@ describe('`getReducedASTNode`', function () {
 
     const sourceCode = new SourceCode(code, ast);
 
-    const parsed = getReducedASTNode(ast.body[0], sourceCode);
+    const parsed = getReducedASTNode(
+      /** @type {import('eslint').Rule.Node} */ (ast.body[0]), sourceCode
+    );
     expect(parsed.type).to.equal('FunctionDeclaration');
   });
 });

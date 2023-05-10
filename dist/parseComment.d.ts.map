@@ -1,0 +1,1 @@
+{"version":3,"file":"parseComment.d.ts","sourceRoot":"","sources":["../src/parseComment.js"],"names":[],"mappings":"AAmBO,qCAHI,OAAO,gBAAgB,EAAE,IAAI,GAC3B,OAAO,CAInB;AAED,sCAIE;AAEF,sCAWE;AAOF;;;wEAgFC;AAED;;;;;;;GAOG;AACH,0CANW;IAAC,KAAK,EAAE,MAAM,CAAA;CAAC,gCAEb,OAAO,gBAAgB,EAAE,KAAK,GAAG;IAC7C,UAAc,EAAE,OAAO,sBAAsB,EAAE,SAAS,EAAE,CAAA;CACvD,CASH"}

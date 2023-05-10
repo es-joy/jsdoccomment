@@ -2,6 +2,7 @@
 
 ## ?
 
+- feat: types for test files and emit declaration files
 - fix(estreeToString): add JsdodInlineTag stringify support
 - refactor: lint
 - docs: add `JsdocInlineTag` to README

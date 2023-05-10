@@ -390,7 +390,9 @@ const jsdocVisitorKeys = {
 /**
  * @callback CommentHandler
  * @param {string} commentSelector
- * @param {import('comment-parser').Block} jsdoc
+ * @param {import('comment-parser').Block & {
+ *   inlineTags: import('./commentParserToESTree.js').JsdocInlineTagNoType[]
+* }} jsdoc
  * @returns {boolean}
  */
 
@@ -408,7 +410,9 @@ const commentHandler = settings => {
     } = settings;
     const selector = esquery.parse(commentSelector);
     const ast = commentParserToESTree(jsdoc, mode);
-    return esquery.matches(ast, selector, null, {
+    const _ast = /** @type {unknown} */ast;
+    return esquery.matches( /** @type {import('estree').Node} */
+    _ast, selector, null, {
       visitorKeys: {
         ...jsdocTypePrattParser.visitorKeys,
         ...jsdocVisitorKeys
@@ -433,7 +437,12 @@ const toCamelCase = str => {
 
 /**
  * @param {RegExpMatchArray & {
- *   groups: {separator: string, text: string}
+ *   indices: {
+ *     groups: {
+ *       [key: string]: [number, number]
+ *     }
+ *   }
+ *   groups: {[key: string]: string}
  * }} match An inline tag regexp match.
  * @returns {'pipe' | 'plain' | 'prefix' | 'space'}
  */
@@ -484,7 +493,19 @@ function parseDescription(description) {
   // eslint-disable-next-line prefer-regex-literals -- Need 'd' (indices) flag
   const suffixedAfterPattern = new RegExp(/(?<!\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)\s*(?<separator>[\s|])?\s*(?<text>[^}]*)\}/gu, 'gud');
   const matches = [...description.matchAll(prefixedTextPattern), ...description.matchAll(suffixedAfterPattern)];
-  for (const match of matches) {
+  for (const mtch of matches) {
+    const match =
+    /**
+    * @type {RegExpMatchArray & {
+    *   indices: {
+    *     groups: {
+    *       [key: string]: [number, number]
+    *     }
+    *   }
+    *   groups: {[key: string]: string}
+    * }}
+    */
+    mtch;
     const {
       tag,
       namepathOrURL,
@@ -590,11 +611,15 @@ const getTokenizers = ({
         description = '',
         lineEnd = '';
       if (pos > -1) {
-        [, postName, description, lineEnd] = extra.match(/(\s*)([^\r]*)(\r)?/u);
+        [, postName, description, lineEnd] = /** @type {RegExpMatchArray} */
+        extra.match(/(\s*)([^\r]*)(\r)?/u);
       }
       if (optionalBrackets.test(name)) {
         var _name$match, _name$match$groups;
-        name = (_name$match = name.match(optionalBrackets)) === null || _name$match === void 0 ? void 0 : (_name$match$groups = _name$match.groups) === null || _name$match$groups === void 0 ? void 0 : _name$match$groups.name;
+        name =
+        /** @type {string} */
+        /** @type {RegExpMatchArray} */
+        (_name$match = name.match(optionalBrackets)) === null || _name$match === void 0 ? void 0 : (_name$match$groups = _name$match.groups) === null || _name$match$groups === void 0 ? void 0 : _name$match$groups.name;
         spec.optional = true;
       } else {
         spec.optional = false;
@@ -648,15 +673,25 @@ const parseComment = (commentNode, indent = '') => {
  */
 
 /**
- * @typedef {number} Integer
+ * @typedef {import('eslint').AST.Token | import('estree').Comment | {
+ *   type: import('eslint').AST.TokenType|"Line"|"Block"|"Shebang",
+ *   value: string
+ * }} Token
+ */
+
+/**
+ * @typedef {import('eslint').Rule.Node|
+ *   import('@typescript-eslint/types').TSESTree.Node} ESLintOrTSNode
+ */
+
+/**
+ * @typedef {number} int
  */
 
 /**
  * Checks if the given token is a comment token or not.
  *
- * @param {import('eslint').AST.Token | {
- *   type: import('eslint').AST.TokenType|"Line"|"Block"|"Shebang"
- * }} token - The token to check.
+ * @param {Token} token - The token to check.
  * @returns {boolean} `true` if the token is a comment token.
  */
 const isCommentToken = token => {
@@ -664,16 +699,14 @@ const isCommentToken = token => {
 };
 
 /**
- * @param {import('eslint').Rule.Node & {
- *   declaration?: {
- *     decorators: any[]
- *   },
+ * @param {(import('estree').Comment|import('eslint').Rule.Node) & {
+ *   declaration?: any,
  *   decorators?: any[],
- *   parent: import('eslint').Rule.Node & {
+ *   parent?: import('eslint').Rule.Node & {
  *     decorators?: any[]
  *   }
  * }} node
- * @returns {boolean}
+ * @returns {import('@typescript-eslint/types').TSESTree.Decorator|undefined}
  */
 const getDecorator = node => {
   var _node$declaration, _node$declaration$dec, _node$decorators, _node$parent, _node$parent$decorato;
@@ -683,9 +716,7 @@ const getDecorator = node => {
 /**
  * Check to see if it is a ES6 export declaration.
  *
- * @param {import('eslint').Rule.Node|
- *   import('@typescript-eslint/types').TSESTree.Node
- * } astNode An AST node.
+ * @param {import('eslint').Rule.Node} astNode An AST node.
  * @returns {boolean} whether the given node represents an export declaration.
  * @private
  */
@@ -694,10 +725,8 @@ const looksLikeExport = function (astNode) {
 };
 
 /**
- * @param {import('eslint').Rule.Node|
- *   import('@typescript-eslint/types').TSESTree.Node} astNode
- * @returns {import('eslint').Rule.Node|
- *   import('@typescript-eslint/types').TSESTree.Node}
+ * @param {import('eslint').Rule.Node} astNode
+ * @returns {import('eslint').Rule.Node}
  */
 const getTSFunctionComment = function (astNode) {
   const {
@@ -716,10 +745,10 @@ const getTSFunctionComment = function (astNode) {
   const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
 
   // istanbul ignore if
-  if (parent.type !== 'TSTypeAnnotation') {
+  if ( /** @type {ESLintOrTSNode} */parent.type !== 'TSTypeAnnotation') {
     return astNode;
   }
-  switch (grandparent.type) {
+  switch ( /** @type {ESLintOrTSNode} */grandparent.type) {
     // @ts-expect-error
     case 'PropertyDefinition':
     case 'ClassProperty':
@@ -801,18 +830,16 @@ const allowableCommentNode = new Set(['AssignmentPattern', 'VariableDeclaration'
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
  *
- * @param {import('eslint').Rule.Node|
- *   import('@typescript-eslint/types').TSESTree.Node} node An AST node.
+ * @param {import('eslint').Rule.Node} node An AST node.
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode.
- * @returns {import('eslint').Rule.Node|
- * import('@typescript-eslint/types').TSESTree.Node} The AST node that
+ * @returns {import('eslint').Rule.Node} The AST node that
  *   can be evaluated for appropriate JSDoc comments.
  */
 const getReducedASTNode = function (node, sourceCode) {
   let {
     parent
   } = node;
-  switch (node.type) {
+  switch ( /** @type {ESLintOrTSNode} */node.type) {
     case 'TSFunctionType':
       return getTSFunctionComment(node);
     case 'TSInterfaceDeclaration':
@@ -820,6 +847,10 @@ const getReducedASTNode = function (node, sourceCode) {
     case 'TSEnumDeclaration':
     case 'ClassDeclaration':
     case 'FunctionDeclaration':
+      /* c8 ignore next 3 */
+      if (!parent) {
+        return node;
+      }
       return looksLikeExport(parent) ? parent : node;
     case 'TSDeclareFunction':
     case 'ClassExpression':
@@ -827,10 +858,18 @@ const getReducedASTNode = function (node, sourceCode) {
     case 'ArrowFunctionExpression':
     case 'TSEmptyBodyFunctionExpression':
     case 'FunctionExpression':
+      /* c8 ignore next 3 */
+      if (!parent) {
+        return node;
+      }
       if (!invokedExpression.has(parent.type)) {
+        /**
+         * @type {import('eslint').Rule.Node|Token|null}
+         */
         let token = node;
         do {
-          token = sourceCode.getTokenBefore(token, {
+          token = sourceCode.getTokenBefore( /** @type {import('eslint').Rule.Node|import('eslint').AST.Token} */
+          token, {
             includeComments: true
           });
         } while (token && token.type === 'Punctuator' && token.value === '(');
@@ -864,11 +903,10 @@ const getReducedASTNode = function (node, sourceCode) {
 /**
  * Checks for the presence of a JSDoc comment for the given node and returns it.
  *
- * @param {import('eslint').Rule.Node|
- *   import('@typescript-eslint/types').TSESTree.Node
- * } astNode The AST node to get the comment for.
+ * @param {import('eslint').Rule.Node} astNode The AST node to get
+ *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
- * @param {{maxLines: Integer, minLines: Integer}} settings
+ * @param {{maxLines: int, minLines: int}} settings
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
  * @private
@@ -878,12 +916,15 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
     minLines,
     maxLines
   } = settings;
+
+  /** @type {import('eslint').Rule.Node|import('estree').Comment} */
   let currentNode = astNode;
   let tokenBefore = null;
   while (currentNode) {
     const decorator = getDecorator(currentNode);
     if (decorator) {
-      currentNode = decorator;
+      const dec = /** @type {unknown} */decorator;
+      currentNode = /** @type {import('eslint').Rule.Node} */dec;
     }
     tokenBefore = sourceCode.getTokenBefore(currentNode, {
       includeComments: true
@@ -903,6 +944,11 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
     }
     break;
   }
+
+  /* c8 ignore next 3 */
+  if (!tokenBefore || !currentNode.loc || !tokenBefore.loc) {
+    return null;
+  }
   if (tokenBefore.type === 'Block' && /^\*\s/u.test(tokenBefore.value) && currentNode.loc.start.line - tokenBefore.loc.end.line >= minLines && currentNode.loc.start.line - tokenBefore.loc.end.line <= maxLines) {
     return tokenBefore;
   }
@@ -913,12 +959,11 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
  * Retrieves the JSDoc comment for a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {import('eslint').Rule.Node|
- *   import('@typescript-eslint/types').TSESTree.Node
- * } node The AST node to get the comment for.
- * @param {{maxLines: Integer, minLines: Integer}} settings The
+ * @param {import('eslint').Rule.Node} node The AST node to get
+ *   the comment for.
+ * @param {{maxLines: int, minLines: int}} settings The
  *   settings in context
- * @returns {import('eslint').AST.Token|null} The Block comment
+ * @returns {Token|null} The Block comment
  *   token containing the JSDoc comment for the given node or
  *   null if not found.
  * @public

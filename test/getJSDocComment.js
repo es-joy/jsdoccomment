@@ -1,6 +1,9 @@
 import {RuleTester} from 'eslint';
 import {getJSDocComment} from '../src/index.js';
 
+/**
+ * @param {import('eslint').Rule.RuleContext} ctxt
+ */
 const getSettings = (ctxt) => {
   return {
     maxLines: Number(ctxt.settings.jsdoc?.maxLines ?? 1),
@@ -8,6 +11,7 @@ const getSettings = (ctxt) => {
   };
 };
 
+/** @type {import('eslint').Rule.RuleModule} */
 const rule = {
   create (ctxt) {
     const sourceCode = ctxt.getSourceCode();

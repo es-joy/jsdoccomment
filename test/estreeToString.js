@@ -1,25 +1,31 @@
+// eslint-disable-next-line no-shadow -- Needed for TS
+import {expect} from 'chai';
+
 import estreeToString from '../src/estreeToString.js';
 import {commentParserToESTree} from '../src/commentParserToESTree.js';
 import {parseComment} from '../src/parseComment.js';
 
+/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const singleLineWithTag = {
   type: 'JsdocBlock',
   delimiter: '/**',
   description: '',
   descriptionLines: [],
   initial: '',
+  hasPreterminalDescription: 0,
   terminal: '*/',
   endLine: 0,
   lastDescriptionLine: 0,
   lineEnd: '',
+  inlineTags: [],
   postDelimiter: ' ',
   tags: [
     {
       delimiter: '',
       description: '',
       descriptionLines: [],
-      lineEnd: '',
       name: '',
+      inlineTags: [],
       parsedType: {
         type: 'JsdocTypeName',
         value: 'string'
@@ -45,17 +51,20 @@ const singleLineWithTag = {
   ]
 };
 
+/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const jsdocBlock = {
   type: 'JsdocBlock',
   delimiter: '/**',
   description: '',
   descriptionLines: [],
   initial: '',
+  hasPreterminalDescription: 0,
   terminal: '*/',
   endLine: 4,
   lastDescriptionLine: 1,
   lineEnd: '',
   postDelimiter: '',
+  inlineTags: [],
   tags: [
     {
       delimiter: '*',
@@ -76,7 +85,7 @@ const jsdocBlock = {
           type: 'JsdocDescriptionLine'
         }
       ],
-      lineEnd: '',
+      inlineTags: [],
       name: 'Some',
       parsedType: {
         type: 'JsdocTypeName',
@@ -103,6 +112,7 @@ const jsdocBlock = {
   ]
 };
 
+/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const jsdocBlockMultilineDesc = {
   type: 'JsdocBlock',
   delimiter: '/**',
@@ -124,6 +134,8 @@ const jsdocBlockMultilineDesc = {
     }
   ],
   initial: '',
+  hasPreterminalDescription: 0,
+  inlineTags: [],
   terminal: '*/',
   endLine: 4,
   lastDescriptionLine: 1,
@@ -135,7 +147,7 @@ const jsdocBlockMultilineDesc = {
       description: 'multi-line\ndescription',
       descriptionLines: [
       ],
-      lineEnd: '',
+      inlineTags: [],
       name: 'Some',
       parsedType: {
         type: 'JsdocTypeName',
@@ -162,6 +174,7 @@ const jsdocBlockMultilineDesc = {
   ]
 };
 
+/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const jsdocBlockNoTags = {
   type: 'JsdocBlock',
   delimiter: '/**',
@@ -176,30 +189,35 @@ const jsdocBlockNoTags = {
     }
   ],
   initial: '',
+  hasPreterminalDescription: 0,
   terminal: '*/',
   endLine: 2,
   lastDescriptionLine: 1,
   lineEnd: '',
   postDelimiter: '',
+  inlineTags: [],
   tags: []
 };
 
+/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const blockWithTagNameYetNoType = {
   delimiter: '/**',
   description: '',
   descriptionLines: [],
   initial: '',
+  hasPreterminalDescription: 0,
   terminal: '*/',
   endLine: 2,
   lastDescriptionLine: 1,
   lineEnd: '',
   postDelimiter: '',
+  inlineTags: [],
   tags: [
     {
       delimiter: '*',
       description: '',
       descriptionLines: [],
-      lineEnd: '',
+      inlineTags: [],
       name: 'TagNameNoType',
       parsedType: null,
       postDelimiter: ' ',
@@ -216,6 +234,7 @@ const blockWithTagNameYetNoType = {
   type: 'JsdocBlock'
 };
 
+/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const jsdocBlockEmptyTags = {
   ...JSON.parse(JSON.stringify(jsdocBlockNoTags)),
   tags: []
@@ -345,6 +364,7 @@ describe('`estreeToString`', function () {
   );
 
   it('handles pipe inline tag', function () {
+    /** @type {import('../src/commentParserToESTree.js').JsdocInlineTag} */
     const ast = {
       tag: 'link',
       namepathOrURL: 'Something',
@@ -357,9 +377,11 @@ describe('`estreeToString`', function () {
   });
 
   it('handles plain inline tag', function () {
+    /** @type {import('../src/commentParserToESTree.js').JsdocInlineTag} */
     const ast = {
       tag: 'link',
       namepathOrURL: 'Something',
+      text: '',
       format: 'plain',
       type: 'JsdocInlineTag'
     };
@@ -368,6 +390,7 @@ describe('`estreeToString`', function () {
   });
 
   it('handles space inline tag', function () {
+    /** @type {import('../src/commentParserToESTree.js').JsdocInlineTag} */
     const ast = {
       tag: 'link',
       namepathOrURL: 'Something',
@@ -380,6 +403,7 @@ describe('`estreeToString`', function () {
   });
 
   it('handles prefix inline tag', function () {
+    /** @type {import('../src/commentParserToESTree.js').JsdocInlineTag} */
     const ast = {
       tag: 'link',
       namepathOrURL: 'Something',
@@ -393,9 +417,12 @@ describe('`estreeToString`', function () {
 
   it('throws upon encountering an unhandled node type', function () {
     expect(() => {
-      estreeToString({
+      /**
+       * @typedef {any} BadArgument
+       */
+      estreeToString(/** @type {BadArgument} */ ({
         type: 'UnknownType'
-      });
+      }));
     }).to.throw('Unhandled node type: UnknownType');
   });
 });

@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-shadow -- Needed for TS
+import {expect} from 'chai';
+
 import {commentParserToESTree} from '../src/commentParserToESTree.js';
 import {parseComment} from '../src/parseComment.js';
 
@@ -110,6 +113,14 @@ const singleLineWithMultilineTag = {
   inlineTags: []
 };
 
+/**
+ * @param {object} cfg
+ * @param {string} cfg.description
+ * @param {"pipe"|"space"|"prefix"|"plain"} cfg.format
+ * @param {string} cfg.namepathOrURL
+ * @param {string} cfg.tag
+ * @param {string} cfg.text
+ */
 const singleLineWithInlineTag = ({
   description,
   format,
@@ -150,7 +161,16 @@ const singleLineWithInlineTag = ({
   ]
 });
 
+/**
+ * @param {object} cfg
+ * @param {string} cfg.description
+ * @param {"pipe"|"space"|"prefix"|"plain"} cfg.format
+ * @param {string} cfg.namepathOrURL
+ * @param {string} cfg.tag
+ * @param {string} cfg.text
+ */
 const singleTagWithInlineTag = ({
+  description,
   format,
   namepathOrURL,
   tag,
@@ -171,11 +191,11 @@ const singleTagWithInlineTag = ({
   tags: [
     {
       delimiter: '',
-      description: 'This is {@link Something}',
+      description,
       descriptionLines: [
         {
           delimiter: '',
-          description: 'This is {@link Something}',
+          description,
           initial: '',
           postDelimiter: '',
           type: 'JsdocDescriptionLine'
