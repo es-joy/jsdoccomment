@@ -87,6 +87,7 @@
     "espree": "^9.5.2",
     "estraverse": "^5.3.0",
     "mocha": "^10.2.0",
-    "rollup": "^3.21.5"
+    "rollup": "^3.21.5",
+    "typescript": "^5.0.4"
   }
 }
