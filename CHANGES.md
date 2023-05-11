@@ -1,9 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## ?
+## 0.39.0
 
 - feat: types for test files and emit declaration files
-- fix(estreeToString): add JsdodInlineTag stringify support
+- fix(estreeToString): add `JsdodInlineTag` stringify support
 - refactor: lint
 - docs: add `JsdocInlineTag` to README
 - chore: update devDeps.
