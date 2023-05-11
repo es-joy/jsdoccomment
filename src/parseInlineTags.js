@@ -25,11 +25,7 @@ function determineFormat (match) {
 }
 
 /**
- * @typedef {{
- *   format: 'pipe' | 'plain' | 'prefix' | 'space',
- *   namepathOrURL: string,
- *   tag: string,
- *   text: string,
+ * @typedef {import('./commentParserToESTree.js').JsdocInlineTagNoType & {
  *   start: number,
  *   end: number,
  * }} InlineTag
