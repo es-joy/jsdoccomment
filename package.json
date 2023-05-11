@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.39.0",
+  "version": "0.39.1",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment along with other jsdoc utilities",
@@ -13,6 +13,7 @@
   "types": "./dist/index.d.ts",
   "main": "./dist/index.cjs.cjs",
   "exports": {
+    "types": "./dist/index.d.ts",
     "import": "./src/index.js",
     "require": "./dist/index.cjs.cjs"
   },

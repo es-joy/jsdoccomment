@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.39.1
+
+- fix: typing export
+
 ## 0.39.0
 
 - feat: types for test files and emit declaration files
