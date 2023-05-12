@@ -663,6 +663,7 @@ const parseComment = (commentNode, indent = '') => {
 /**
  * @typedef {import('eslint').AST.Token | import('estree').Comment | {
  *   type: import('eslint').AST.TokenType|"Line"|"Block"|"Shebang",
+ *   range: [number, number],
  *   value: string
  * }} Token
  */
@@ -894,7 +895,7 @@ const getReducedASTNode = function (node, sourceCode) {
  * @param {import('eslint').Rule.Node} astNode The AST node to get
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
- * @param {{maxLines: int, minLines: int}} settings
+ * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
  * @private
@@ -949,7 +950,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
  * @param {import('eslint').Rule.Node} node The AST node to get
  *   the comment for.
- * @param {{maxLines: int, minLines: int}} settings The
+ * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
  *   settings in context
  * @returns {Token|null} The Block comment
  *   token containing the JSDoc comment for the given node or

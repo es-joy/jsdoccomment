@@ -1,5 +1,6 @@
 export type Token = import('eslint').AST.Token | import('estree').Comment | {
     type: import('eslint').AST.TokenType | "Line" | "Block" | "Shebang";
+    range: [number, number];
     value: string;
 };
 export type ESLintOrTSNode = import('eslint').Rule.Node | import('@typescript-eslint/types').TSESTree.Node;
@@ -20,7 +21,7 @@ export function getReducedASTNode(node: import('eslint').Rule.Node, sourceCode: 
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
  * @param {import('eslint').Rule.Node} node The AST node to get
  *   the comment for.
- * @param {{maxLines: int, minLines: int}} settings The
+ * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
  *   settings in context
  * @returns {Token|null} The Block comment
  *   token containing the JSDoc comment for the given node or
@@ -28,6 +29,7 @@ export function getReducedASTNode(node: import('eslint').Rule.Node, sourceCode: 
  * @public
  */
 export function getJSDocComment(sourceCode: import('eslint').SourceCode, node: import('eslint').Rule.Node, settings: {
+    [name: string]: any;
     maxLines: int;
     minLines: int;
 }): Token | null;
@@ -54,12 +56,13 @@ export function getDecorator(node: (import('estree').Comment | import('eslint').
  * @param {import('eslint').Rule.Node} astNode The AST node to get
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
- * @param {{maxLines: int, minLines: int}} settings
+ * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
  * @private
  */
 export function findJSDocComment(astNode: import('eslint').Rule.Node, sourceCode: import('eslint').SourceCode, settings: {
+    [name: string]: any;
     maxLines: int;
     minLines: int;
 }): Token | null;

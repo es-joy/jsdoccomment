@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.39.3
+
+- fix: add type details for Node range and settings
+
 ## 0.39.2
 
 - fix: export additional typedefs from index.js
