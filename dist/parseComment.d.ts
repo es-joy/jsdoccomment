@@ -10,12 +10,12 @@ export function getTokenizers({ noTypes, noNames }?: {
  * @param {{value: string}} commentNode
  * @param {string} [indent=""] Whitespace
  * @returns {import('comment-parser').Block & {
- *   inlineTags: import('./parseInlineTags.js').InlineTag[]
+ *   inlineTags: import('./index.js').InlineTag[]
  * }}
  */
 export function parseComment(commentNode: {
     value: string;
 }, indent?: string | undefined): import('comment-parser').Block & {
-    inlineTags: import('./parseInlineTags.js').InlineTag[];
+    inlineTags: import('./index.js').InlineTag[];
 };
 //# sourceMappingURL=parseComment.d.ts.map

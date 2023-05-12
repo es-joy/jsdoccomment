@@ -1,7 +1,5 @@
 export default estreeToString;
-export type ESTreeToStringOptions = {
-    preferRawType?: boolean;
-};
+export type ESTreeToStringOptions = import('./index.js').ESTreeToStringOptions;
 /**
  * @todo convert for use by escodegen (until may be patched to support
  *   custom entries?).

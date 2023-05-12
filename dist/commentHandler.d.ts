@@ -1,14 +1,7 @@
 export default commentHandler;
-export type CommentHandler = (commentSelector: string, jsdoc: import('comment-parser').Block & {
-    inlineTags: import('./commentParserToESTree.js').JsdocInlineTagNoType[];
-}) => boolean;
+export type CommentHandler = import('./index.js').CommentHandler;
 /**
- * @callback CommentHandler
- * @param {string} commentSelector
- * @param {import('comment-parser').Block & {
- *   inlineTags: import('./commentParserToESTree.js').JsdocInlineTagNoType[]
-* }} jsdoc
- * @returns {boolean}
+ * @typedef {import('./index.js').CommentHandler} CommentHandler
  */
 /**
  * @param {{[name: string]: any}} settings

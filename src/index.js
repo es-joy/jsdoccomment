@@ -1,3 +1,23 @@
+/**
+ * @typedef {import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+ *   start: number,
+ *   end: number,
+ * }} InlineTag
+ */
+
+/**
+ * @typedef {{preferRawType?: boolean}} ESTreeToStringOptions
+ */
+
+/**
+ * @callback CommentHandler
+ * @param {string} commentSelector
+ * @param {import('comment-parser').Block & {
+ *   inlineTags: import('./commentParserToESTree.js').JsdocInlineTagNoType[]
+ * }} jsdoc
+ * @returns {boolean}
+ */
+
 export {visitorKeys as jsdocTypeVisitorKeys} from 'jsdoc-type-pratt-parser';
 
 export * from 'jsdoc-type-pratt-parser';

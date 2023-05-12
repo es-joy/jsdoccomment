@@ -13,12 +13,5 @@ export default function parseInlineTags(block: import('comment-parser').Block & 
 }): import('comment-parser').Block & {
     inlineTags: InlineTag[];
 };
-export type InlineTag = {
-    format: 'pipe' | 'plain' | 'prefix' | 'space';
-    namepathOrURL: string;
-    tag: string;
-    text: string;
-    start: number;
-    end: number;
-};
+export type InlineTag = import('./index.js').InlineTag;
 //# sourceMappingURL=parseInlineTags.d.ts.map

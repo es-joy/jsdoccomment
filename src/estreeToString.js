@@ -6,7 +6,7 @@ import {
 import {jsdocVisitorKeys} from './commentParserToESTree.js';
 
 /**
- * @typedef {{preferRawType?: boolean}} ESTreeToStringOptions
+ * @typedef {import('./index.js').ESTreeToStringOptions} ESTreeToStringOptions
  */
 
 const stringifiers = {

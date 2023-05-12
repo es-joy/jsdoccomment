@@ -9,12 +9,7 @@ import {
 } from './commentParserToESTree.js';
 
 /**
- * @callback CommentHandler
- * @param {string} commentSelector
- * @param {import('comment-parser').Block & {
- *   inlineTags: import('./commentParserToESTree.js').JsdocInlineTagNoType[]
-* }} jsdoc
- * @returns {boolean}
+ * @typedef {import('./index.js').CommentHandler} CommentHandler
  */
 
 /**

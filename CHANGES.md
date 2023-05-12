@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.39.2
+
+- fix: export additional typedefs from index.js
+
 ## 0.39.1
 
 - fix: typing export

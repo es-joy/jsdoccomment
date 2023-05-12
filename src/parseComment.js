@@ -132,7 +132,7 @@ const getTokenizers = ({
  * @param {{value: string}} commentNode
  * @param {string} [indent=""] Whitespace
  * @returns {import('comment-parser').Block & {
- *   inlineTags: import('./parseInlineTags.js').InlineTag[]
+ *   inlineTags: import('./index.js').InlineTag[]
  * }}
  */
 const parseComment = (commentNode, indent = '') => {

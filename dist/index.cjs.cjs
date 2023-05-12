@@ -388,12 +388,7 @@ const jsdocVisitorKeys = {
 };
 
 /**
- * @callback CommentHandler
- * @param {string} commentSelector
- * @param {import('comment-parser').Block & {
- *   inlineTags: import('./commentParserToESTree.js').JsdocInlineTagNoType[]
-* }} jsdoc
- * @returns {boolean}
+ * @typedef {import('./index.js').CommentHandler} CommentHandler
  */
 
 /**
@@ -464,14 +459,7 @@ function determineFormat(match) {
 }
 
 /**
- * @typedef {{
- *   format: 'pipe' | 'plain' | 'prefix' | 'space',
- *   namepathOrURL: string,
- *   tag: string,
- *   text: string,
- *   start: number,
- *   end: number,
- * }} InlineTag
+ * @typedef {import('./index.js').InlineTag} InlineTag
  */
 
 /**
@@ -654,7 +642,7 @@ const getTokenizers = ({
  * @param {{value: string}} commentNode
  * @param {string} [indent=""] Whitespace
  * @returns {import('comment-parser').Block & {
- *   inlineTags: import('./parseInlineTags.js').InlineTag[]
+ *   inlineTags: import('./index.js').InlineTag[]
  * }}
  */
 const parseComment = (commentNode, indent = '') => {
@@ -974,7 +962,7 @@ const getJSDocComment = function (sourceCode, node, settings) {
 };
 
 /**
- * @typedef {{preferRawType?: boolean}} ESTreeToStringOptions
+ * @typedef {import('./index.js').ESTreeToStringOptions} ESTreeToStringOptions
  */
 
 const stringifiers = {

@@ -25,10 +25,7 @@ function determineFormat (match) {
 }
 
 /**
- * @typedef {import('./commentParserToESTree.js').JsdocInlineTagNoType & {
- *   start: number,
- *   end: number,
- * }} InlineTag
+ * @typedef {import('./index.js').InlineTag} InlineTag
  */
 
 /**
