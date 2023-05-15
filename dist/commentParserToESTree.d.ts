@@ -59,17 +59,13 @@ export type JsdocBlock = {
 };
 /**
  * Converts comment parser AST to ESTree format.
- * @param {import('comment-parser').Block & {
- *   inlineTags: JsdocInlineTagNoType[]
- * }} jsdoc
+ * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
  * @param {boolean} [opts.throwOnTypeParsingErrors=false]
  * @returns {JsdocBlock}
  */
-export function commentParserToESTree(jsdoc: import('comment-parser').Block & {
-    inlineTags: JsdocInlineTagNoType[];
-}, mode: import('jsdoc-type-pratt-parser').ParseMode, { throwOnTypeParsingErrors }?: {
+export function commentParserToESTree(jsdoc: import('./index.js').JsdocBlockWithInline, mode: import('jsdoc-type-pratt-parser').ParseMode, { throwOnTypeParsingErrors }?: {
     throwOnTypeParsingErrors?: boolean | undefined;
 }): JsdocBlock;
 export namespace jsdocVisitorKeys {

@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.39.4
+
+- fix: include type exports for full inlineTags (and line) property support on blocks and tags
+
 ## 0.39.3
 
 - fix: add type details for Node range and settings

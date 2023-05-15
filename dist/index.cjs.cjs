@@ -125,9 +125,7 @@ const inlineTagToAST = ({
 
 /**
  * Converts comment parser AST to ESTree format.
- * @param {import('comment-parser').Block & {
- *   inlineTags: JsdocInlineTagNoType[]
- * }} jsdoc
+ * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
  * @param {boolean} [opts.throwOnTypeParsingErrors=false]
@@ -516,28 +514,29 @@ function parseDescription(description) {
 /**
  * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
- * @param {import('comment-parser').Block & {
- *   inlineTags?: InlineTag[]
- * }} block
- * @returns {import('comment-parser').Block & {
- *   inlineTags: InlineTag[]
- * }}
+ * @param {import('comment-parser').Block} block
+ * @returns {import('./index.js').JsdocBlockWithInline}
  */
 function parseInlineTags(block) {
-  block.inlineTags = parseDescription(block.description);
+  const inlineTags =
+  /**
+   * @type {(import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+   *   line?: import('./commentParserToESTree.js').Integer
+   * })[]}
+   */
+  parseDescription(block.description);
+
+  /** @type {import('./index.js').JsdocBlockWithInline} */
+  block.inlineTags = inlineTags;
   for (const tag of block.tags) {
     /**
-     * @type {import('comment-parser').Spec & {
-     *   inlineTags: InlineTag[]
-     * }}
+     * @type {import('./index.js').JsdocTagWithInline}
      */
     tag.inlineTags = parseDescription(tag.description);
   }
   return (
     /**
-     * @type {import('comment-parser').Block & {
-     *   inlineTags: InlineTag[]
-     * }}
+     * @type {import('./index.js').JsdocBlockWithInline}
      */
     block
   );
@@ -641,9 +640,7 @@ const getTokenizers = ({
  * Accepts a comment token and converts it into `comment-parser` AST.
  * @param {{value: string}} commentNode
  * @param {string} [indent=""] Whitespace
- * @returns {import('comment-parser').Block & {
- *   inlineTags: import('./index.js').InlineTag[]
- * }}
+ * @returns {import('./index.js').JsdocBlockWithInline}
  */
 const parseComment = (commentNode, indent = '') => {
   // Preserve JSDoc block start/end indentation.

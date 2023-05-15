@@ -85,27 +85,31 @@ function parseDescription (description) {
 /**
  * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
- * @param {import('comment-parser').Block & {
- *   inlineTags?: InlineTag[]
- * }} block
- * @returns {import('comment-parser').Block & {
- *   inlineTags: InlineTag[]
- * }}
+ * @param {import('comment-parser').Block} block
+ * @returns {import('./index.js').JsdocBlockWithInline}
  */
 export default function parseInlineTags (block) {
-  block.inlineTags = parseDescription(block.description);
+  const inlineTags =
+    /**
+     * @type {(import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+     *   line?: import('./commentParserToESTree.js').Integer
+     * })[]}
+     */ (
+      parseDescription(block.description)
+    );
+
+  /** @type {import('./index.js').JsdocBlockWithInline} */ (
+    block
+  ).inlineTags = inlineTags;
+
   for (const tag of block.tags) {
     /**
-     * @type {import('comment-parser').Spec & {
-     *   inlineTags: InlineTag[]
-     * }}
+     * @type {import('./index.js').JsdocTagWithInline}
      */ (tag).inlineTags = parseDescription(tag.description);
   }
   return (
     /**
-     * @type {import('comment-parser').Block & {
-     *   inlineTags: InlineTag[]
-     * }}
+     * @type {import('./index.js').JsdocBlockWithInline}
      */ (block)
   );
 }

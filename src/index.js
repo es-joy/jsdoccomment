@@ -6,15 +6,35 @@
  */
 
 /**
+ * @typedef {import('comment-parser').Spec & {
+ *   line?: import('./commentParserToESTree.js').Integer,
+ *   inlineTags: (import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+ *     line?: import('./commentParserToESTree.js').Integer
+ *   })[]
+ * }} JsdocTagWithInline
+ */
+
+/**
+ * Expands on comment-parser's `Block` interface.
+ * @typedef {{
+ *   description: string,
+ *   source: import('comment-parser').Line[],
+ *   problems: import('comment-parser').Problem[],
+ *   tags: JsdocTagWithInline[],
+ *   inlineTags: (import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+ *     line?: import('./commentParserToESTree.js').Integer
+ *   })[]
+ * }} JsdocBlockWithInline
+ */
+
+/**
  * @typedef {{preferRawType?: boolean}} ESTreeToStringOptions
  */
 
 /**
  * @callback CommentHandler
  * @param {string} commentSelector
- * @param {import('comment-parser').Block & {
- *   inlineTags: import('./commentParserToESTree.js').JsdocInlineTagNoType[]
- * }} jsdoc
+ * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @returns {boolean}
  */
 

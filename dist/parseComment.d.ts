@@ -9,13 +9,9 @@ export function getTokenizers({ noTypes, noNames }?: {
  * Accepts a comment token and converts it into `comment-parser` AST.
  * @param {{value: string}} commentNode
  * @param {string} [indent=""] Whitespace
- * @returns {import('comment-parser').Block & {
- *   inlineTags: import('./index.js').InlineTag[]
- * }}
+ * @returns {import('./index.js').JsdocBlockWithInline}
  */
 export function parseComment(commentNode: {
     value: string;
-}, indent?: string | undefined): import('comment-parser').Block & {
-    inlineTags: import('./index.js').InlineTag[];
-};
+}, indent?: string | undefined): import('./index.js').JsdocBlockWithInline;
 //# sourceMappingURL=parseComment.d.ts.map

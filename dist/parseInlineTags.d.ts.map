@@ -1,1 +1,1 @@
-{"version":3,"file":"parseInlineTags.d.ts","sourceRoot":"","sources":["../src/parseInlineTags.js"],"names":[],"mappings":"AAoFA;;;;;;;;;GASG;AACH,+CAPW,OAAO,gBAAgB,EAAE,KAAK,GAAG;IAC3C,UAAc,CAAC,EAAE,SAAS,EAAE,CAAA;CACzB,GACS,OAAO,gBAAgB,EAAE,KAAK,GAAG;IAC7C,UAAc,EAAE,SAAS,EAAE,CAAA;CACxB,CAkBH;wBAnFY,OAAO,YAAY,EAAE,SAAS"}
+{"version":3,"file":"parseInlineTags.d.ts","sourceRoot":"","sources":["../src/parseInlineTags.js"],"names":[],"mappings":"AAoFA;;;;;GAKG;AACH,+CAHW,OAAO,gBAAgB,EAAE,KAAK,GAC5B,OAAO,YAAY,EAAE,oBAAoB,CA0BrD;wBAvFY,OAAO,YAAY,EAAE,SAAS"}

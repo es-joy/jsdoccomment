@@ -131,9 +131,7 @@ const getTokenizers = ({
  * Accepts a comment token and converts it into `comment-parser` AST.
  * @param {{value: string}} commentNode
  * @param {string} [indent=""] Whitespace
- * @returns {import('comment-parser').Block & {
- *   inlineTags: import('./index.js').InlineTag[]
- * }}
+ * @returns {import('./index.js').JsdocBlockWithInline}
  */
 const parseComment = (commentNode, indent = '') => {
   // Preserve JSDoc block start/end indentation.
