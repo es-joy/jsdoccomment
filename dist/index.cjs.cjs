@@ -405,7 +405,7 @@ const commentHandler = settings => {
     const ast = commentParserToESTree(jsdoc, mode);
     const _ast = /** @type {unknown} */ast;
     return esquery.matches( /** @type {import('estree').Node} */
-    _ast, selector, null, {
+    _ast, selector, undefined, {
       visitorKeys: {
         ...jsdocTypePrattParser.visitorKeys,
         ...jsdocVisitorKeys
