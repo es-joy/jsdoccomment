@@ -563,6 +563,20 @@ const optionalBrackets = /^\[(?<name>[^=]*)=[^\]]*\]/u;
 const preserveTypeTokenizer = typeTokenizer('preserve');
 const preserveDescriptionTokenizer = descriptionTokenizer('preserve');
 const plainNameTokenizer = nameTokenizer();
+
+/**
+ * Can't import `comment-parser/es6/parser/tokenizers/index.js`,
+ *   so we redefine here.
+ * @typedef {(spec: import('comment-parser').Spec) =>
+ *   import('comment-parser').Spec} CommentParserTokenizer
+ */
+
+/**
+ * @param {object} [cfg]
+ * @param {string[]} [cfg.noTypes]
+ * @param {string[]} [cfg.noNames]
+ * @returns {CommentParserTokenizer[]}
+ */
 const getTokenizers = ({
   noTypes = defaultNoTypes,
   noNames = defaultNoNames

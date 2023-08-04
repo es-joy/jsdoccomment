@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.40.1
+
+- chore(TS): fix path issue
+
 ## 0.40.0
 
 - chore: update comment-parser and devDeps.
