@@ -128,7 +128,7 @@ const inlineTagToAST = ({
  * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
- * @param {boolean} [opts.throwOnTypeParsingErrors=false]
+ * @param {boolean} [opts.throwOnTypeParsingErrors]
  * @returns {JsdocBlock}
  */
 const commentParserToESTree = (jsdoc, mode, {
@@ -602,11 +602,11 @@ const getTokenizers = ({
         extra.match(/(\s*)([^\r]*)(\r)?/u);
       }
       if (optionalBrackets.test(name)) {
-        var _name$match, _name$match$groups;
+        var _name$match;
         name =
         /** @type {string} */
         /** @type {RegExpMatchArray} */
-        (_name$match = name.match(optionalBrackets)) === null || _name$match === void 0 ? void 0 : (_name$match$groups = _name$match.groups) === null || _name$match$groups === void 0 ? void 0 : _name$match$groups.name;
+        (_name$match = name.match(optionalBrackets)) === null || _name$match === void 0 || (_name$match = _name$match.groups) === null || _name$match === void 0 ? void 0 : _name$match.name;
         spec.optional = true;
       } else {
         spec.optional = false;
@@ -639,7 +639,7 @@ const getTokenizers = ({
 /**
  * Accepts a comment token and converts it into `comment-parser` AST.
  * @param {{value: string}} commentNode
- * @param {string} [indent=""] Whitespace
+ * @param {string} [indent] Whitespace
  * @returns {import('./index.js').JsdocBlockWithInline}
  */
 const parseComment = (commentNode, indent = '') => {
@@ -651,6 +651,7 @@ const parseComment = (commentNode, indent = '') => {
   return parseInlineTags(block);
 };
 
+/* eslint-disable jsdoc/imports-as-dependencies -- https://github.com/gajus/eslint-plugin-jsdoc/issues/1114 */
 /**
  * Obtained originally from {@link https://github.com/eslint/eslint/blob/master/lib/util/source-code.js#L313}.
  *
@@ -695,8 +696,8 @@ const isCommentToken = token => {
  * @returns {import('@typescript-eslint/types').TSESTree.Decorator|undefined}
  */
 const getDecorator = node => {
-  var _node$declaration, _node$declaration$dec, _node$decorators, _node$parent, _node$parent$decorato;
-  return (node === null || node === void 0 ? void 0 : (_node$declaration = node.declaration) === null || _node$declaration === void 0 ? void 0 : (_node$declaration$dec = _node$declaration.decorators) === null || _node$declaration$dec === void 0 ? void 0 : _node$declaration$dec[0]) || (node === null || node === void 0 ? void 0 : (_node$decorators = node.decorators) === null || _node$decorators === void 0 ? void 0 : _node$decorators[0]) || (node === null || node === void 0 ? void 0 : (_node$parent = node.parent) === null || _node$parent === void 0 ? void 0 : (_node$parent$decorato = _node$parent.decorators) === null || _node$parent$decorato === void 0 ? void 0 : _node$parent$decorato[0]);
+  var _node$declaration, _node$decorators, _node$parent;
+  return (node === null || node === void 0 || (_node$declaration = node.declaration) === null || _node$declaration === void 0 || (_node$declaration = _node$declaration.decorators) === null || _node$declaration === void 0 ? void 0 : _node$declaration[0]) || (node === null || node === void 0 || (_node$decorators = node.decorators) === null || _node$decorators === void 0 ? void 0 : _node$decorators[0]) || (node === null || node === void 0 || (_node$parent = node.parent) === null || _node$parent === void 0 || (_node$parent = _node$parent.decorators) === null || _node$parent === void 0 ? void 0 : _node$parent[0]);
 };
 
 /**
@@ -1137,7 +1138,7 @@ exports.jsdocVisitorKeys = jsdocVisitorKeys;
 exports.parseComment = parseComment;
 exports.toCamelCase = toCamelCase;
 Object.keys(jsdocTypePrattParser).forEach(function (k) {
-  if (k !== 'default' && !exports.hasOwnProperty(k)) Object.defineProperty(exports, k, {
+  if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
     enumerable: true,
     get: function () { return jsdocTypePrattParser[k]; }
   });

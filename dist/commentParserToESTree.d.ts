@@ -62,17 +62,17 @@ export type JsdocBlock = {
  * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
- * @param {boolean} [opts.throwOnTypeParsingErrors=false]
+ * @param {boolean} [opts.throwOnTypeParsingErrors]
  * @returns {JsdocBlock}
  */
 export function commentParserToESTree(jsdoc: import('./index.js').JsdocBlockWithInline, mode: import('jsdoc-type-pratt-parser').ParseMode, { throwOnTypeParsingErrors }?: {
     throwOnTypeParsingErrors?: boolean | undefined;
 }): JsdocBlock;
 export namespace jsdocVisitorKeys {
-    const JsdocBlock: string[];
-    const JsdocDescriptionLine: never[];
-    const JsdocTypeLine: never[];
-    const JsdocTag: string[];
-    const JsdocInlineTag: never[];
+    let JsdocBlock: string[];
+    let JsdocDescriptionLine: never[];
+    let JsdocTypeLine: never[];
+    let JsdocTag: string[];
+    let JsdocInlineTag: never[];
 }
 //# sourceMappingURL=commentParserToESTree.d.ts.map

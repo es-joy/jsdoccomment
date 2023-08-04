@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.40.0
+
+- chore: update comment-parser and devDeps.
+- chore(TS): switch to NodeNext
+
 ## 0.39.4
 
 - fix: include type exports for full inlineTags (and line) property support on blocks and tags
