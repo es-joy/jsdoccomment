@@ -10,8 +10,7 @@
     "declarationMap": true,
     "strict": true,
     "target": "es6",
-    "outDir": "dist",
-    "allowSyntheticDefaultImports": true
+    "outDir": "dist"
   },
   "include": ["src/**/*.js", "test/**/*.js", "typings/espree.d.ts"],
   "exclude": ["node_modules"]
