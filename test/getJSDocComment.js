@@ -100,5 +100,19 @@ ruleTester.run('getJSDocComment', rule, {
     parserOptions: {
       ecmaVersion: 2015
     }
+  }, {
+    code: `
+      app.use(
+        (
+          /** @param err */
+          (err, req, res, next) => {
+            // foo
+          }
+        )
+      );
+    `,
+    parserOptions: {
+      ecmaVersion: 2015
+    }
   }]
 });
