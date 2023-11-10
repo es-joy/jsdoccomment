@@ -21,6 +21,16 @@ const rule = {
     }
 
     return {
+      ArrowFunctionExpression (node) {
+        const comment = getJSDocComment(sourceCode, node, settings);
+        if (comment !== null) {
+          return;
+        }
+        ctxt.report({
+          messageId: 'missingJsDoc',
+          node
+        });
+      },
       Property (node) {
         const comment = getJSDocComment(sourceCode, node, settings);
         if (comment !== null) {
@@ -76,5 +86,19 @@ ruleTester.run('getJSDocComment', rule, {
     // eslint-disable-next-line no-var
     var a = {};
     `
+  }, {
+    code: `
+      app.use(
+        /** @type {express.ErrorRequestHandler} */
+        (
+          (err, req, res, next) => {
+            // foo
+          }
+        )
+      );
+    `,
+    parserOptions: {
+      ecmaVersion: 2015
+    }
   }]
 });

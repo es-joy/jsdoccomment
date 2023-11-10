@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.41.0
+
+- feat: look above surrounding parenthesis tokens for comment blocks, even if on a higher line than the corresponding AST structure
+
 ## 0.40.1
 
 - chore(TS): fix path issue

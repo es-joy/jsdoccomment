@@ -913,6 +913,7 @@ const getReducedASTNode = function (node, sourceCode) {
  * @private
  */
 const findJSDocComment = (astNode, sourceCode, settings) => {
+  var _parenthesisToken, _parenthesisToken2;
   const {
     minLines,
     maxLines
@@ -921,6 +922,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
   /** @type {import('eslint').Rule.Node|import('estree').Comment} */
   let currentNode = astNode;
   let tokenBefore = null;
+  let parenthesisToken = null;
   while (currentNode) {
     const decorator = getDecorator(currentNode);
     if (decorator) {
@@ -931,6 +933,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
       includeComments: true
     });
     if (tokenBefore && tokenBefore.type === 'Punctuator' && tokenBefore.value === '(') {
+      parenthesisToken = tokenBefore;
       [tokenBefore] = sourceCode.getTokensBefore(currentNode, {
         count: 2,
         includeComments: true
@@ -950,7 +953,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
   if (!tokenBefore || !currentNode.loc || !tokenBefore.loc) {
     return null;
   }
-  if (tokenBefore.type === 'Block' && /^\*\s/u.test(tokenBefore.value) && currentNode.loc.start.line - tokenBefore.loc.end.line >= minLines && currentNode.loc.start.line - tokenBefore.loc.end.line <= maxLines) {
+  if (tokenBefore.type === 'Block' && /^\*\s/u.test(tokenBefore.value) && currentNode.loc.start.line - ( /** @type {import('eslint').AST.Token} */(_parenthesisToken = parenthesisToken) !== null && _parenthesisToken !== void 0 ? _parenthesisToken : tokenBefore).loc.end.line >= minLines && currentNode.loc.start.line - ( /** @type {import('eslint').AST.Token} */(_parenthesisToken2 = parenthesisToken) !== null && _parenthesisToken2 !== void 0 ? _parenthesisToken2 : tokenBefore).loc.end.line <= maxLines) {
     return tokenBefore;
   }
   return null;
