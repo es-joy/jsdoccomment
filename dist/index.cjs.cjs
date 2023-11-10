@@ -258,6 +258,7 @@ const commentParserToESTree = (jsdoc, mode, {
         return;
       }
       const {
+        // eslint-disable-next-line no-unused-vars -- Discarding
         end: ed,
         delimiter: de,
         postDelimiter: pd,
@@ -472,11 +473,9 @@ function parseDescription(description) {
   // This could have been expressed in a single pattern,
   // but having two avoids a potentially exponential time regex.
 
-  // eslint-disable-next-line prefer-regex-literals -- Need 'd' (indices) flag
   const prefixedTextPattern = new RegExp(/(?:\[(?<text>[^\]]+)\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)\}/gu, 'gud');
   // The pattern used to match for text after tag uses a negative lookbehind
   // on the ']' char to avoid matching the prefixed case too.
-  // eslint-disable-next-line prefer-regex-literals -- Need 'd' (indices) flag
   const suffixedAfterPattern = new RegExp(/(?<!\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)\s*(?<separator>[\s|])?\s*(?<text>[^}]*)\}/gu, 'gud');
   const matches = [...description.matchAll(prefixedTextPattern), ...description.matchAll(suffixedAfterPattern)];
   for (const mtch of matches) {

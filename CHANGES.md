@@ -3,6 +3,7 @@
 ## 0.41.0
 
 - feat: look above surrounding parenthesis tokens for comment blocks, even if on a higher line than the corresponding AST structure
+- chore: update comment-parser and devDeps.
 
 ## 0.40.1
 
