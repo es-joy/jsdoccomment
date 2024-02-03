@@ -3,7 +3,7 @@ import {expect} from 'chai';
 
 import {parseComment} from '../src/index.js';
 
-describe('parseComment', function () {
+describe('parseComment (node)', function () {
   it('Handle simple @template', function () {
     const parsed = parseComment({value: `* @template SomeName`});
     expect(parsed).to.deep.equal({
@@ -734,6 +734,123 @@ describe('parseComment', function () {
         }
       ],
       problems: []
+    });
+  });
+});
+
+describe('parseComment (string)', function () {
+  it('Handle simple @template', function () {
+    const parsed = parseComment(`/**\n * @template SomeName\n */`);
+
+    expect(parsed).to.deep.equal({
+      description: '',
+      tags: [
+        {
+          tag: 'template',
+          name: 'SomeName',
+          type: '',
+          optional: false,
+          description: '',
+          problems: [],
+          source: [
+            {
+              number: 1,
+              source: ' * @template SomeName',
+              tokens: {
+                start: ' ',
+                delimiter: '*',
+                postDelimiter: ' ',
+                tag: '@template',
+                postTag: ' ',
+                name: 'SomeName',
+                postName: '',
+                type: '',
+                postType: '',
+                description: '',
+                end: '',
+                lineEnd: ''
+              }
+            },
+            {
+              number: 2,
+              source: ' */',
+              tokens: {
+                start: ' ',
+                delimiter: '',
+                postDelimiter: '',
+                tag: '',
+                postTag: '',
+                name: '',
+                postName: '',
+                type: '',
+                postType: '',
+                description: '',
+                end: '*/',
+                lineEnd: ''
+              }
+            }
+          ],
+          inlineTags: []
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/**',
+          tokens: {
+            start: '',
+            delimiter: '/**',
+            postDelimiter: '',
+            tag: '',
+            postTag: '',
+            name: '',
+            postName: '',
+            type: '',
+            postType: '',
+            description: '',
+            end: '',
+            lineEnd: ''
+          }
+        },
+        {
+          number: 1,
+          source: ' * @template SomeName',
+          tokens: {
+            start: ' ',
+            delimiter: '*',
+            postDelimiter: ' ',
+            tag: '@template',
+            postTag: ' ',
+            name: 'SomeName',
+            postName: '',
+            type: '',
+            postType: '',
+            description: '',
+            end: '',
+            lineEnd: ''
+          }
+        },
+        {
+          number: 2,
+          source: ' */',
+          tokens: {
+            start: ' ',
+            delimiter: '',
+            postDelimiter: '',
+            tag: '',
+            postTag: '',
+            name: '',
+            postName: '',
+            type: '',
+            postType: '',
+            description: '',
+            end: '*/',
+            lineEnd: ''
+          }
+        }
+      ],
+      problems: [],
+      inlineTags: []
     });
   });
 });
