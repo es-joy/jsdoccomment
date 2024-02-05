@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.42.0
+
+- feat: expand argument for `parseComment` to accept a comment token string (@typhonrt)
+- chore: update devDeps.
+
 ## 0.41.0
 
 - feat: look above surrounding parenthesis tokens for comment blocks, even if on a higher line than the corresponding AST structure
