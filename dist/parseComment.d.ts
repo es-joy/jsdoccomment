@@ -23,12 +23,13 @@ export function getTokenizers({ noTypes, noNames }?: {
     noNames?: string[] | undefined;
 } | undefined): CommentParserTokenizer[];
 /**
- * Accepts a comment token and converts it into `comment-parser` AST.
- * @param {{value: string}} commentNode
+ * Accepts a comment token or complete comment string and converts it into
+ * `comment-parser` AST.
+ * @param {string | {value: string}} commentOrNode
  * @param {string} [indent] Whitespace
  * @returns {import('./index.js').JsdocBlockWithInline}
  */
-export function parseComment(commentNode: {
+export function parseComment(commentOrNode: string | {
     value: string;
 }, indent?: string | undefined): import('./index.js').JsdocBlockWithInline;
 //# sourceMappingURL=parseComment.d.ts.map
