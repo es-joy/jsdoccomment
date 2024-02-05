@@ -17,9 +17,9 @@ module.exports = {
     }
   ],
 
-  // Auto-set dynamically by config but needs to be explicit for Atom
+  // Auto-set dynamically by config but needs to be explicit
   parserOptions: {
-    ecmaVersion: 2021
+    ecmaVersion: 2022
   },
 
   rules: {

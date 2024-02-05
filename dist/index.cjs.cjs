@@ -1150,7 +1150,7 @@ function estreeToString(node, opts = {}) {
   throw new Error(`Unhandled node type: ${node.type}`);
 }
 
-Object.defineProperty(exports, 'jsdocTypeVisitorKeys', {
+Object.defineProperty(exports, "jsdocTypeVisitorKeys", {
   enumerable: true,
   get: function () { return jsdocTypePrattParser.visitorKeys; }
 });
