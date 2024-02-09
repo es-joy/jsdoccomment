@@ -128,10 +128,13 @@ const inlineTagToAST = ({
  * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
+ * @param {'compact'|'preserve'} [opts.spacing] By default, empty lines are
+ *        compacted; set to 'preserve' to preserve empty comment lines.
  * @param {boolean} [opts.throwOnTypeParsingErrors]
  * @returns {JsdocBlock}
  */
 const commentParserToESTree = (jsdoc, mode, {
+  spacing = 'compact',
   throwOnTypeParsingErrors = false
 } = {}) => {
   /**
@@ -341,7 +344,7 @@ const commentParserToESTree = (jsdoc, mode, {
       /** @type {JsdocTag} */
       lastTag.rawType += /** @type {JsdocTag} */lastTag.rawType ? '\n' + rawType : rawType;
     }
-    if (description) {
+    if (spacing === 'compact' && description || spacing === 'preserve' && delimiter !== '/**') {
       const holder = lastTag || ast;
       holder.descriptionLines.push(holder.descriptionLines.length ? {
         delimiter,

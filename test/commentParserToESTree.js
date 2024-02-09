@@ -926,4 +926,33 @@ description`
       format: 'plain'
     }));
   });
+
+  it('compacts multi-line descriptions by default.', () => {
+    const parsedComment = parseComment(`/**
+* A description
+*
+* with blank lines
+*/`);
+
+    const ast = commentParserToESTree(parsedComment, 'jsdoc');
+
+    expect(ast.description).to.equal('A description\nwith blank lines');
+    expect(ast.descriptionLines.length).to.equal(2);
+    expect(ast.descriptionEndLine).to.equal(3);
+  });
+
+  it('preserves multi-line descriptions by option `spacing`.', () => {
+    const parsedComment = parseComment(`/**
+* A description
+*
+* with blank lines
+*/`);
+
+    const ast = commentParserToESTree(parsedComment, 'jsdoc',
+      {spacing: 'preserve'});
+
+    expect(ast.description).to.equal('A description\n\nwith blank lines');
+    expect(ast.descriptionLines.length).to.equal(3);
+    expect(ast.descriptionEndLine).to.equal(3);
+  });
 });

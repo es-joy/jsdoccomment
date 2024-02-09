@@ -62,10 +62,13 @@ export type JsdocBlock = {
  * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
+ * @param {'compact'|'preserve'} [opts.spacing] By default, empty lines are
+ *        compacted; set to 'preserve' to preserve empty comment lines.
  * @param {boolean} [opts.throwOnTypeParsingErrors]
  * @returns {JsdocBlock}
  */
-export function commentParserToESTree(jsdoc: import('./index.js').JsdocBlockWithInline, mode: import('jsdoc-type-pratt-parser').ParseMode, { throwOnTypeParsingErrors }?: {
+export function commentParserToESTree(jsdoc: import('./index.js').JsdocBlockWithInline, mode: import('jsdoc-type-pratt-parser').ParseMode, { spacing, throwOnTypeParsingErrors }?: {
+    spacing?: "compact" | "preserve" | undefined;
     throwOnTypeParsingErrors?: boolean | undefined;
 }): JsdocBlock;
 export namespace jsdocVisitorKeys {
