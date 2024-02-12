@@ -250,10 +250,15 @@ const commentParserToESTree = (jsdoc, mode, {
           }
           const holder = lastTag || ast;
           holder.description += (holder.description ? '\n' : '') + description;
+
+          // Check if there are any description lines and if not then this is a
+          // one line comment block. Do not include `delimiter` /
+          // `postDelimiter`.
+          const isDelimiterLine = holder.descriptionLines.length === 0 && delimiter === '/**';
           holder.descriptionLines.push({
-            delimiter,
+            delimiter: isDelimiterLine ? '' : delimiter,
             description,
-            postDelimiter,
+            postDelimiter: isDelimiterLine ? '' : postDelimiter,
             initial,
             type: 'JsdocDescriptionLine'
           });
@@ -344,13 +349,22 @@ const commentParserToESTree = (jsdoc, mode, {
       /** @type {JsdocTag} */
       lastTag.rawType += /** @type {JsdocTag} */lastTag.rawType ? '\n' + rawType : rawType;
     }
-    if (spacing === 'compact' && description || spacing === 'preserve' && delimiter !== '/**') {
+
+    // In `compact` mode skip processing if `description` is an empty string.
+    // In `preserve` mode process when `description` is not the `empty string
+    // or the `delimiter` is not `/**` ensuring empty lines are preserved.
+    if (spacing === 'compact' && description || spacing === 'preserve' && (description || delimiter !== '/**')) {
       const holder = lastTag || ast;
+
+      // Check if there are any description lines and if not then this is a
+      // multi-line comment block with description on 0th line. Treat
+      // `delimiter` / `postDelimiter` / `initial` as being on a new line.
+      const isDelimiterLine = holder.descriptionLines.length === 0 && delimiter === '/**';
       holder.descriptionLines.push(holder.descriptionLines.length ? {
-        delimiter,
+        delimiter: isDelimiterLine ? '*' : delimiter,
         description,
-        postDelimiter,
-        initial,
+        postDelimiter: isDelimiterLine ? ' ' : postDelimiter,
+        initial: isDelimiterLine ? `${holder.initial} ` : initial,
         type: 'JsdocDescriptionLine'
       } : lastTag ? {
         delimiter: '',
@@ -359,10 +373,10 @@ const commentParserToESTree = (jsdoc, mode, {
         initial: '',
         type: 'JsdocDescriptionLine'
       } : {
-        delimiter,
+        delimiter: isDelimiterLine ? '*' : delimiter,
         description,
-        postDelimiter,
-        initial,
+        postDelimiter: isDelimiterLine ? ' ' : postDelimiter,
+        initial: isDelimiterLine ? `${holder.initial} ` : initial,
         type: 'JsdocDescriptionLine'
       });
       if (!tag) {

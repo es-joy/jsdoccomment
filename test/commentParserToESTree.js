@@ -3,6 +3,7 @@ import {expect} from 'chai';
 
 import {commentParserToESTree} from '../src/commentParserToESTree.js';
 import {parseComment} from '../src/parseComment.js';
+import {estreeToString} from '../src/index.js';
 
 const singleLineWithTag = {
   type: 'JsdocBlock',
@@ -133,10 +134,10 @@ const singleLineWithInlineTag = ({
   description,
   descriptionLines: [
     {
-      delimiter: '/**',
+      delimiter: '',
       description,
       initial: '',
-      postDelimiter: ' ',
+      postDelimiter: '',
       type: 'JsdocDescriptionLine'
     }
   ],
@@ -226,6 +227,63 @@ const singleTagWithInlineTag = ({
   ],
   inlineTags: []
 });
+
+// Data for round trip parsing tests w/ `preserve` option  ----
+
+/** @type {string[]} */
+const commentBlocks = [];
+/** @type {(string|undefined)[]} */
+const commentResults = [];
+
+commentBlocks.push(`/** Should parse */`);
+commentResults.push(commentBlocks.at(-1));
+
+commentBlocks.push(`/** This is {@link Something} */`);
+commentResults.push(commentBlocks.at(-1));
+
+commentBlocks.push(`/**
+ * Should parse
+ */`);
+commentResults.push(commentBlocks.at(-1));
+
+commentBlocks.push(`/**
+ * Should parse
+ *
+ * with empty line.
+ */`);
+commentResults.push(commentBlocks.at(-1));
+
+commentBlocks.push(`/**
+ * Should parse one line. */`);
+
+// A multi-line comment closing delimiter on last line creates one more line.
+// Use `${' '}` to prevent IDEs from removing trailing spaces.
+commentResults.push(`/**
+ * Should parse one line.${' '}
+ */`);
+
+commentBlocks.push(`/**
+ * Should parse
+ *
+ * with empty line.
+ *
+ * @param {boolean} and tag
+ *
+ */`);
+commentResults.push(commentBlocks.at(-1));
+
+commentBlocks.push(`/** It should
+ *
+ * parse */`);
+
+// A multi-line comment with description on 0th line moves it to the 1st line.
+// A multi-line comment closing delimiter on last line creates one more line.
+// Use `${' '}` to prevent IDEs from removing trailing spaces.
+commentResults.push(`/**${' '}
+ * It should
+ *
+ * parse${' '}
+ */`);
 
 describe('commentParserToESTree', function () {
   it('handles single line jsdoc comment with tag', () => {
@@ -729,10 +787,10 @@ description`
         descriptionEndLine: 0,
         descriptionLines: [
           {
-            delimiter: '/**',
+            delimiter: '',
             description: 'Some multiline description *',
             initial: '',
-            postDelimiter: ' ',
+            postDelimiter: '',
             type: 'JsdocDescriptionLine'
           }
         ],
@@ -767,9 +825,9 @@ description`
         descriptionEndLine: 1,
         descriptionLines: [
           {
-            delimiter: '/**',
+            delimiter: '*',
             description: 'Some',
-            initial: '',
+            initial: ' ',
             postDelimiter: ' ',
             type: 'JsdocDescriptionLine'
           },
@@ -940,19 +998,23 @@ description`
     expect(ast.descriptionLines.length).to.equal(2);
     expect(ast.descriptionEndLine).to.equal(3);
   });
+});
 
-  it('preserves multi-line descriptions by option `spacing`.', () => {
-    const parsedComment = parseComment(`/**
-* A description
-*
-* with blank lines
-*/`);
+// The following tests are data defined from `commentBlocks` and
+// `commentResults`. The goal is round trip testing from
+// parseComment -> commentParserToESTree -> estreeToString.
+describe('commentParserToESTree (`preserve` option / round trip)', function () {
+  // eslint-disable-next-line unicorn/no-for-loop -- For loop used
+  for (let i = 0; i < commentBlocks.length; i++) {
+    it(`preserves empty lines - commentBlock[${i}]`, () => {
+      const parsedComment = parseComment(commentBlocks[i]);
 
-    const ast = commentParserToESTree(parsedComment, 'jsdoc',
-      {spacing: 'preserve'});
+      const ast = commentParserToESTree(parsedComment, 'jsdoc',
+        {spacing: 'preserve'});
 
-    expect(ast.description).to.equal('A description\n\nwith blank lines');
-    expect(ast.descriptionLines.length).to.equal(3);
-    expect(ast.descriptionEndLine).to.equal(3);
-  });
+      const result = estreeToString(ast);
+
+      expect(result).to.equal(commentResults[i]);
+    });
+  }
 });
