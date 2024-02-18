@@ -1,6 +1,3 @@
-// eslint-disable-next-line no-shadow -- Needed for TS
-import {expect} from 'chai';
-
 import {parseComment} from '../src/index.js';
 
 describe('parseComment (node)', function () {

@@ -1,6 +1,3 @@
-// eslint-disable-next-line no-shadow -- Needed for TS
-import {expect} from 'chai';
-
 import estreeToString from '../src/estreeToString.js';
 import {commentParserToESTree} from '../src/commentParserToESTree.js';
 import {parseComment} from '../src/parseComment.js';
