@@ -1,5 +1,7 @@
-import {commentParserToESTree} from '../src/commentParserToESTree.js';
-import {parseComment} from '../src/parseComment.js';
+import {
+  commentParserToESTree,
+  parseComment
+} from '../src/index.js';
 
 const singleLineWithTag = {
   type: 'JsdocBlock',

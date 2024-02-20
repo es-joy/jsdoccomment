@@ -1,6 +1,8 @@
-import estreeToString from '../src/estreeToString.js';
-import {commentParserToESTree} from '../src/commentParserToESTree.js';
-import {parseComment} from '../src/parseComment.js';
+import {
+  commentParserToESTree,
+  estreeToString,
+  parseComment
+} from '../src/index.js';
 
 /** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const singleLineWithTag = {

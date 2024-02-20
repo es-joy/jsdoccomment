@@ -1,5 +1,7 @@
-import {commentHandler} from '../src/index.js';
-import {parseComment} from '../src/parseComment.js';
+import {
+  commentHandler,
+  parseComment
+} from '../src/index.js';
 
 describe('commentHandler', function () {
   it('Returns `true` with match', function () {
