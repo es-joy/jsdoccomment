@@ -103,6 +103,25 @@ preserveResults.push(`/**${' '}
  * parse${' '}
  */`);
 
+// commentBlock[7] ----
+
+commentBlocks.push(`/**
+ * @param {(boolean | string)} foo - multiple types w/ parens
+ */`);
+compactResults.push(commentBlocks.at(-1));
+preserveResults.push(commentBlocks.at(-1));
+
+// commentBlock[8] ----
+
+commentBlocks.push(`/**
+ * @param {(
+ *    boolean |
+ *    string
+ * )} foo - multiple types across lines w/ parens
+ */`);
+compactResults.push(commentBlocks.at(-1));
+preserveResults.push(commentBlocks.at(-1));
+
 export {
   commentBlocks,
   compactResults,
