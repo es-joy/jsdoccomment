@@ -8,11 +8,13 @@ import {
 const singleLineWithTag = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '',
   description: '',
   descriptionLines: [],
   initial: '',
   hasPreterminalDescription: 0,
   terminal: '*/',
+  preterminalLineBreak: '',
   endLine: 0,
   lastDescriptionLine: 0,
   lineEnd: '',
@@ -54,11 +56,13 @@ const singleLineWithTag = {
 const jsdocBlock = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '\n',
   description: '',
   descriptionLines: [],
   initial: '',
   hasPreterminalDescription: 0,
   terminal: '*/',
+  preterminalLineBreak: '\n',
   endLine: 4,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -69,6 +73,13 @@ const jsdocBlock = {
       delimiter: '*',
       description: 'multi-line\ndescription',
       descriptionLines: [
+        {
+          delimiter: '',
+          description: '',
+          postDelimiter: '',
+          initial: '',
+          type: 'JsdocDescriptionLine'
+        },
         {
           delimiter: '*',
           description: 'multi-line',
@@ -115,6 +126,7 @@ const jsdocBlock = {
 const jsdocBlockMultilineDesc = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '\n',
   description: '',
   descriptionLines: [
     {
@@ -136,6 +148,7 @@ const jsdocBlockMultilineDesc = {
   hasPreterminalDescription: 0,
   inlineTags: [],
   terminal: '*/',
+  preterminalLineBreak: '\n',
   endLine: 4,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -177,6 +190,7 @@ const jsdocBlockMultilineDesc = {
 const jsdocBlockNoTags = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '\n',
   description: 'test',
   descriptionLines: [
     {
@@ -190,6 +204,7 @@ const jsdocBlockNoTags = {
   initial: '',
   hasPreterminalDescription: 0,
   terminal: '*/',
+  preterminalLineBreak: '\n',
   endLine: 2,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -201,11 +216,13 @@ const jsdocBlockNoTags = {
 /** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const blockWithTagNameYetNoType = {
   delimiter: '/**',
+  delimiterLineBreak: '\n',
   description: '',
   descriptionLines: [],
   initial: '',
   hasPreterminalDescription: 0,
   terminal: '*/',
+  preterminalLineBreak: '\n',
   endLine: 2,
   lastDescriptionLine: 1,
   lineEnd: '',
