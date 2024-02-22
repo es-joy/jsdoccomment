@@ -89,6 +89,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
 /**
  * @typedef {{
  *   delimiter: string,
+ *   delimiterLineBreak: string,
  *   description: string,
  *   descriptionEndLine?: Integer,
  *   descriptionLines: JsdocDescriptionLine[],
@@ -103,6 +104,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   postDelimiter: string,
  *   tags: JsdocTag[],
  *   terminal: string,
+ *   preterminalLineBreak: string,
  *   type: "JsdocBlock",
  * }} JsdocBlock
  */
@@ -146,8 +148,15 @@ const commentParserToESTree = (jsdoc, mode, {
     // Strip out `}` that encapsulates and is not part of
     //   the type
     stripEncapsulatingBrackets(lastTag);
+
     if (lastTag.typeLines.length) {
       stripEncapsulatingBrackets(lastTag.typeLines, true);
+    }
+
+    // Remove single empty line description.
+    if (lastTag.descriptionLines.length === 1 &&
+      lastTag.descriptionLines[0].description === '') {
+      lastTag.descriptionLines.length = 0;
     }
 
     // With even a multiline type now in full, add parsing
@@ -185,6 +194,7 @@ const commentParserToESTree = (jsdoc, mode, {
   /** @type {JsdocBlock} */
   const ast = {
     delimiter: delimiterRoot,
+    delimiterLineBreak: '\n',
     description: '',
 
     descriptionLines: [],
@@ -194,6 +204,7 @@ const commentParserToESTree = (jsdoc, mode, {
     tags: [],
     // `terminal` will be overwritten if there are other entries
     terminal: endRoot,
+    preterminalLineBreak: '\n',
     hasPreterminalDescription: 0,
     endLine,
     postDelimiter: postDelimiterRoot,
@@ -212,6 +223,9 @@ const commentParserToESTree = (jsdoc, mode, {
 
   /** @type {JsdocTag|null} */
   let lastTag = null;
+
+  // Tracks when first valid tag description line is seen.
+  let tagDescriptionSeen = false;
 
   let descLineStateOpen = true;
 
@@ -250,7 +264,23 @@ const commentParserToESTree = (jsdoc, mode, {
       // to still process
       if (end && !tag) {
         ast.terminal = end;
+
+        // Check if there are any description lines and if not then this is a
+        // one line comment block.
+        const isDelimiterLine = ast.descriptionLines.length === 0 &&
+          delimiter === '/**';
+
+        // Remove delimiter line break for one line comments blocks.
+        if (isDelimiterLine) {
+          ast.delimiterLineBreak = '';
+        }
+
         if (description) {
+          // Remove terminal line break at end when description is defined.
+          if (ast.terminal === '*/') {
+            ast.preterminalLineBreak = '';
+          }
+
           if (lastTag) {
             ast.hasPreterminalTagDescription = 1;
           } else {
@@ -260,11 +290,8 @@ const commentParserToESTree = (jsdoc, mode, {
           const holder = lastTag || ast;
           holder.description += (holder.description ? '\n' : '') + description;
 
-          // Check if there are any description lines and if not then this is a
-          // one line comment block. Do not include `delimiter` /
-          // `postDelimiter`.
-          const isDelimiterLine = holder.descriptionLines.length === 0 &&
-            delimiter === '/**';
+          // Do not include `delimiter` / `postDelimiter` for opening
+          // delimiter line.
 
           holder.descriptionLines.push({
             delimiter: isDelimiterLine ? '' : delimiter,
@@ -343,6 +370,7 @@ const commentParserToESTree = (jsdoc, mode, {
       tagObj.tag = tagObj.tag.replace(/^@/u, '');
 
       lastTag = tagObj;
+      tagDescriptionSeen = false;
 
       tags.push(tagObj);
     }
@@ -373,10 +401,12 @@ const commentParserToESTree = (jsdoc, mode, {
         : rawType;
     }
 
-    // In `compact` mode skip processing if `description` is an empty string.
+    // In `compact` mode skip processing if `description` is an empty string
+    // unless lastTag is being processed.
+    //
     // In `preserve` mode process when `description` is not the `empty string
     // or the `delimiter` is not `/**` ensuring empty lines are preserved.
-    if ((spacing === 'compact' && description) ||
+    if (((spacing === 'compact' && description) || lastTag) ||
         (spacing === 'preserve' && (description || delimiter !== '/**'))) {
       const holder = lastTag || ast;
 
@@ -386,36 +416,60 @@ const commentParserToESTree = (jsdoc, mode, {
       const isDelimiterLine = holder.descriptionLines.length === 0 &&
         delimiter === '/**';
 
-      holder.descriptionLines.push(
-        holder.descriptionLines.length
-          ? {
-            delimiter: isDelimiterLine ? '*' : delimiter,
-            description,
-            postDelimiter: isDelimiterLine ? ' ' : postDelimiter,
-            initial: isDelimiterLine ? `${holder.initial} ` : initial,
-            type: 'JsdocDescriptionLine'
+      // Remove delimiter line break for one line comments blocks.
+      if (isDelimiterLine) {
+        ast.delimiterLineBreak = '';
+      }
+
+      // Track when the first description line is seen to avoid adding empty
+      // description lines for tag type lines.
+      tagDescriptionSeen ||= Boolean(lastTag &&
+        (rawType === '' || rawType?.endsWith('}')));
+
+      if (lastTag) {
+        if (tagDescriptionSeen) {
+          // The first tag description line is a continuation after type /
+          // name parsing.
+          const isFirstDescriptionLine = holder.descriptionLines.length === 0;
+
+          // For `compact` spacing must allow through first description line.
+          if ((spacing === 'compact' &&
+              (description || isFirstDescriptionLine)) ||
+              spacing === 'preserve') {
+            holder.descriptionLines.push({
+              delimiter: isFirstDescriptionLine ? '' : delimiter,
+              description,
+              postDelimiter: isFirstDescriptionLine ? '' : postDelimiter,
+              initial: isFirstDescriptionLine ? '' : initial,
+              type: 'JsdocDescriptionLine'
+            });
           }
-          : lastTag
-            ? {
-              delimiter: '',
-              description,
-              postDelimiter: '',
-              initial: '',
-              type: 'JsdocDescriptionLine'
-            }
-            : {
-              delimiter: isDelimiterLine ? '*' : delimiter,
-              description,
-              postDelimiter: isDelimiterLine ? ' ' : postDelimiter,
-              initial: isDelimiterLine ? `${holder.initial} ` : initial,
-              type: 'JsdocDescriptionLine'
-            }
-      );
+        }
+      } else {
+        holder.descriptionLines.push({
+          delimiter: isDelimiterLine ? '' : delimiter,
+          description,
+          postDelimiter: isDelimiterLine ? '' : postDelimiter,
+          initial: isDelimiterLine ? `` : initial,
+          type: 'JsdocDescriptionLine'
+        });
+      }
 
       if (!tag) {
-        holder.description += (!holder.description && !lastTag)
-          ? description
-          : '\n' + description;
+        if (lastTag) {
+          // For `compact` spacing must filter out any empty description lines
+          // after the initial `holder.description` has content.
+          if (tagDescriptionSeen && !(spacing === 'compact' &&
+            holder.description && description === '')) {
+            holder.description += !holder.description
+              ? description
+              : '\n' + description;
+          }
+        } else {
+          holder.description += !holder.description
+            ? description
+            : '\n' + description;
+        }
       }
     }
 
@@ -423,6 +477,11 @@ const commentParserToESTree = (jsdoc, mode, {
     if (end && tag) {
       ast.terminal = end;
       ast.hasPreterminalTagDescription = 1;
+
+      // Remove terminal line break at end when tag is defined on last line.
+      if (ast.terminal === '*/') {
+        ast.preterminalLineBreak = '';
+      }
 
       cleanUpLastTag(/** @type {JsdocTag} */ (lastTag));
     }
