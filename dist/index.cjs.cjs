@@ -1211,6 +1211,10 @@ const parseComment = (commentOrNode, indent = '') => {
       });
       break;
     case 'object':
+      if (commentOrNode === null) {
+        throw new TypeError(`'commentOrNode' is not a string or object.`);
+      }
+
       // Preserve JSDoc block start/end indentation.
       [block] = commentParser.parse(`${indent}/*${commentOrNode.value}*/`, {
         // @see https://github.com/yavorskiy/comment-parser/issues/21
