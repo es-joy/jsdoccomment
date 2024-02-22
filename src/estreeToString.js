@@ -125,8 +125,6 @@ function JsdocBlock (node, opts) {
   return result;
 }
 
-// JsdocTag - new implementation ----------------------------------------------
-
 /**
  * @param {import('./commentParserToESTree.js').JsdocTag} node
  * @param {ESTreeToStringOptions} opts
@@ -134,12 +132,9 @@ function JsdocBlock (node, opts) {
  */
 function JsdocTag (node, opts) {
   const {
-    name, postName, postTag, postType,
-    initial, delimiter, postDelimiter, tag
+    delimiter, descriptionLines, initial, name, parsedType, postDelimiter,
+    postName, postTag, postType, tag, typeLines
   } = node;
-
-  // New uses of fields.
-  const {descriptionLines, parsedType, typeLines} = node;
 
   let result = `${initial}${delimiter}${postDelimiter}@${tag}${postTag}`;
 
