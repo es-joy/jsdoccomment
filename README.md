@@ -103,16 +103,18 @@ Has the following visitable properties:
 
 Has the following custom non-visitable property:
 
-1. `lastDescriptionLine` - A number
-2. `endLine` - A number representing the line number with `end`/`terminal`
-3. `descriptionStartLine` - A 0+ number indicating the line where any
+1. `delimiterLineBreak` - A string containing any line break after `delimiter`.
+2. `lastDescriptionLine` - A number
+3. `endLine` - A number representing the line number with `end`/`terminal`
+4. `descriptionStartLine` - A 0+ number indicating the line where any
     description begins
-4. `descriptionEndLine` - A 0+ number indicating the line where the description
+5. `descriptionEndLine` - A 0+ number indicating the line where the description
     ends
-5. `hasPreterminalDescription` - Set to 0 or 1. On if has a block description
+6. `hasPreterminalDescription` - Set to 0 or 1. On if has a block description
     on the same line as the terminal `*/`.
-6. `hasPreterminalTagDescription` - Set to 0 or 1. On if has a tag description
+7. `hasPreterminalTagDescription` - Set to 0 or 1. On if has a tag description
     on the same line as the terminal `*/`.
+8. `preterminalLineBreak` - A string containing any line break before `terminal`.
 
 May also have the following non-visitable properties from `comment-parser`:
 
