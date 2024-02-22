@@ -84,6 +84,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
 /**
  * @typedef {{
  *   delimiter: string,
+ *   delimiterLineBreak: string,
  *   description: string,
  *   descriptionEndLine?: Integer,
  *   descriptionLines: JsdocDescriptionLine[],
@@ -98,6 +99,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   postDelimiter: string,
  *   tags: JsdocTag[],
  *   terminal: string,
+ *   preterminalLineBreak: string,
  *   type: "JsdocBlock",
  * }} JsdocBlock
  */
@@ -150,6 +152,11 @@ const commentParserToESTree = (jsdoc, mode, {
       stripEncapsulatingBrackets(lastTag.typeLines, true);
     }
 
+    // Remove single empty line description.
+    if (lastTag.descriptionLines.length === 1 && lastTag.descriptionLines[0].description === '') {
+      lastTag.descriptionLines.length = 0;
+    }
+
     // With even a multiline type now in full, add parsing
     let parsedType = null;
     try {
@@ -182,6 +189,7 @@ const commentParserToESTree = (jsdoc, mode, {
   /** @type {JsdocBlock} */
   const ast = {
     delimiter: delimiterRoot,
+    delimiterLineBreak: '\n',
     description: '',
     descriptionLines: [],
     inlineTags: blockInlineTags.map(t => inlineTagToAST(t)),
@@ -189,6 +197,7 @@ const commentParserToESTree = (jsdoc, mode, {
     tags: [],
     // `terminal` will be overwritten if there are other entries
     terminal: endRoot,
+    preterminalLineBreak: '\n',
     hasPreterminalDescription: 0,
     endLine,
     postDelimiter: postDelimiterRoot,
@@ -206,6 +215,9 @@ const commentParserToESTree = (jsdoc, mode, {
 
   /** @type {JsdocTag|null} */
   let lastTag = null;
+
+  // Tracks when first valid tag description line is seen.
+  let tagDescriptionSeen = false;
   let descLineStateOpen = true;
   source.forEach((info, idx) => {
     const {
@@ -242,7 +254,20 @@ const commentParserToESTree = (jsdoc, mode, {
       // to still process
       if (end && !tag) {
         ast.terminal = end;
+
+        // Check if there are any description lines and if not then this is a
+        // one line comment block.
+        const isDelimiterLine = ast.descriptionLines.length === 0 && delimiter === '/**';
+
+        // Remove delimiter line break for one line comments blocks.
+        if (isDelimiterLine) {
+          ast.delimiterLineBreak = '';
+        }
         if (description) {
+          // Remove terminal line break at end when description is defined.
+          if (ast.terminal === '*/') {
+            ast.preterminalLineBreak = '';
+          }
           if (lastTag) {
             ast.hasPreterminalTagDescription = 1;
           } else {
@@ -251,10 +276,9 @@ const commentParserToESTree = (jsdoc, mode, {
           const holder = lastTag || ast;
           holder.description += (holder.description ? '\n' : '') + description;
 
-          // Check if there are any description lines and if not then this is a
-          // one line comment block. Do not include `delimiter` /
-          // `postDelimiter`.
-          const isDelimiterLine = holder.descriptionLines.length === 0 && delimiter === '/**';
+          // Do not include `delimiter` / `postDelimiter` for opening
+          // delimiter line.
+
           holder.descriptionLines.push({
             delimiter: isDelimiterLine ? '' : delimiter,
             description,
@@ -328,6 +352,7 @@ const commentParserToESTree = (jsdoc, mode, {
       };
       tagObj.tag = tagObj.tag.replace(/^@/u, '');
       lastTag = tagObj;
+      tagDescriptionSeen = false;
       tags.push(tagObj);
     }
     if (rawType) {
@@ -350,37 +375,63 @@ const commentParserToESTree = (jsdoc, mode, {
       lastTag.rawType += /** @type {JsdocTag} */lastTag.rawType ? '\n' + rawType : rawType;
     }
 
-    // In `compact` mode skip processing if `description` is an empty string.
+    // In `compact` mode skip processing if `description` is an empty string
+    // unless lastTag is being processed.
+    //
     // In `preserve` mode process when `description` is not the `empty string
     // or the `delimiter` is not `/**` ensuring empty lines are preserved.
-    if (spacing === 'compact' && description || spacing === 'preserve' && (description || delimiter !== '/**')) {
+    if (spacing === 'compact' && description || lastTag || spacing === 'preserve' && (description || delimiter !== '/**')) {
       const holder = lastTag || ast;
 
       // Check if there are any description lines and if not then this is a
       // multi-line comment block with description on 0th line. Treat
       // `delimiter` / `postDelimiter` / `initial` as being on a new line.
       const isDelimiterLine = holder.descriptionLines.length === 0 && delimiter === '/**';
-      holder.descriptionLines.push(holder.descriptionLines.length ? {
-        delimiter: isDelimiterLine ? '*' : delimiter,
-        description,
-        postDelimiter: isDelimiterLine ? ' ' : postDelimiter,
-        initial: isDelimiterLine ? `${holder.initial} ` : initial,
-        type: 'JsdocDescriptionLine'
-      } : lastTag ? {
-        delimiter: '',
-        description,
-        postDelimiter: '',
-        initial: '',
-        type: 'JsdocDescriptionLine'
-      } : {
-        delimiter: isDelimiterLine ? '*' : delimiter,
-        description,
-        postDelimiter: isDelimiterLine ? ' ' : postDelimiter,
-        initial: isDelimiterLine ? `${holder.initial} ` : initial,
-        type: 'JsdocDescriptionLine'
-      });
+
+      // Remove delimiter line break for one line comments blocks.
+      if (isDelimiterLine) {
+        ast.delimiterLineBreak = '';
+      }
+
+      // Track when the first description line is seen to avoid adding empty
+      // description lines for tag type lines.
+      tagDescriptionSeen || (tagDescriptionSeen = Boolean(lastTag && (rawType === '' || (rawType === null || rawType === void 0 ? void 0 : rawType.endsWith('}')))));
+      if (lastTag) {
+        if (tagDescriptionSeen) {
+          // The first tag description line is a continuation after type /
+          // name parsing.
+          const isFirstDescriptionLine = holder.descriptionLines.length === 0;
+
+          // For `compact` spacing must allow through first description line.
+          if (spacing === 'compact' && (description || isFirstDescriptionLine) || spacing === 'preserve') {
+            holder.descriptionLines.push({
+              delimiter: isFirstDescriptionLine ? '' : delimiter,
+              description,
+              postDelimiter: isFirstDescriptionLine ? '' : postDelimiter,
+              initial: isFirstDescriptionLine ? '' : initial,
+              type: 'JsdocDescriptionLine'
+            });
+          }
+        }
+      } else {
+        holder.descriptionLines.push({
+          delimiter: isDelimiterLine ? '' : delimiter,
+          description,
+          postDelimiter: isDelimiterLine ? '' : postDelimiter,
+          initial: isDelimiterLine ? `` : initial,
+          type: 'JsdocDescriptionLine'
+        });
+      }
       if (!tag) {
-        holder.description += !holder.description && !lastTag ? description : '\n' + description;
+        if (lastTag) {
+          // For `compact` spacing must filter out any empty description lines
+          // after the initial `holder.description` has content.
+          if (tagDescriptionSeen && !(spacing === 'compact' && holder.description && description === '')) {
+            holder.description += !holder.description ? description : '\n' + description;
+          }
+        } else {
+          holder.description += !holder.description ? description : '\n' + description;
+        }
       }
     }
 
@@ -388,6 +439,11 @@ const commentParserToESTree = (jsdoc, mode, {
     if (end && tag) {
       ast.terminal = end;
       ast.hasPreterminalTagDescription = 1;
+
+      // Remove terminal line break at end when tag is defined on last line.
+      if (ast.terminal === '*/') {
+        ast.preterminalLineBreak = '';
+      }
       cleanUpLastTag( /** @type {JsdocTag} */lastTag);
     }
   });
@@ -433,268 +489,177 @@ const commentHandler = settings => {
 };
 
 /**
- * @param {string} str
- * @returns {string}
+ * @typedef {import('./index.js').ESTreeToStringOptions} ESTreeToStringOptions
  */
-const toCamelCase = str => {
-  return str.toLowerCase().replaceAll(/^[a-z]/gu, init => {
-    return init.toUpperCase();
-  }).replaceAll(/_(?<wordInit>[a-z])/gu, (_, n1, o, s, {
-    wordInit
-  }) => {
-    return wordInit.toUpperCase();
-  });
+
+/** @type {Record<string, Function>} */
+const stringifiers = {
+  JsdocBlock,
+  /**
+   * @param {import('./commentParserToESTree.js').JsdocDescriptionLine} node
+   * @returns {string}
+   */
+  JsdocDescriptionLine({
+    initial,
+    delimiter,
+    postDelimiter,
+    description
+  }) {
+    return `${initial}${delimiter}${postDelimiter}${description}`;
+  },
+  /**
+   * @param {import('./commentParserToESTree.js').JsdocTypeLine} node
+   * @returns {string}
+   */
+  JsdocTypeLine({
+    initial,
+    delimiter,
+    postDelimiter,
+    rawType
+  }) {
+    return `${initial}${delimiter}${postDelimiter}${rawType}`;
+  },
+  /**
+   * @param {import('./commentParserToESTree.js').JsdocInlineTag} node
+   */
+  JsdocInlineTag({
+    format,
+    namepathOrURL,
+    tag,
+    text
+  }) {
+    return format === 'pipe' ? `{@${tag} ${namepathOrURL}|${text}}` : format === 'plain' ? `{@${tag} ${namepathOrURL}}` : format === 'prefix' ? `[${text}]{@${tag} ${namepathOrURL}}`
+    // "space"
+    : `{@${tag} ${namepathOrURL} ${text}}`;
+  },
+  JsdocTag
 };
 
 /**
- * @param {RegExpMatchArray & {
- *   indices: {
- *     groups: {
- *       [key: string]: [number, number]
- *     }
- *   }
- *   groups: {[key: string]: string}
- * }} match An inline tag regexp match.
- * @returns {'pipe' | 'plain' | 'prefix' | 'space'}
+ * @todo convert for use by escodegen (until may be patched to support
+ *   custom entries?).
+ * @param {import('./commentParserToESTree.js').JsdocBlock|
+ *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+ *   import('./commentParserToESTree.js').JsdocTypeLine|
+ *   import('./commentParserToESTree.js').JsdocTag|
+ *   import('./commentParserToESTree.js').JsdocInlineTag|
+ *   import('jsdoc-type-pratt-parser').RootResult
+ * } node
+ * @param {ESTreeToStringOptions} opts
+ * @throws {Error}
+ * @returns {string}
  */
-function determineFormat(match) {
-  const {
-    separator,
-    text
-  } = match.groups;
-  const [, textEnd] = match.indices.groups.text;
-  const [tagStart] = match.indices.groups.tag;
-  if (!text) {
-    return 'plain';
-  } else if (separator === '|') {
-    return 'pipe';
-  } else if (textEnd < tagStart) {
-    return 'prefix';
+function estreeToString(node, opts = {}) {
+  if (Object.prototype.hasOwnProperty.call(stringifiers, node.type)) {
+    return stringifiers[
+    /**
+     * @type {import('./commentParserToESTree.js').JsdocBlock|
+     *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+     *   import('./commentParserToESTree.js').JsdocTypeLine|
+     *   import('./commentParserToESTree.js').JsdocTag}
+     */
+    node.type](node, opts);
   }
-  return 'space';
+
+  // We use raw type instead but it is a key as other apps may wish to traverse
+  if (node.type.startsWith('JsdocType')) {
+    return opts.preferRawType ? '' : `{${jsdocTypePrattParser.stringify( /** @type {import('jsdoc-type-pratt-parser').RootResult} */
+    node)}}`;
+  }
+  throw new Error(`Unhandled node type: ${node.type}`);
 }
 
 /**
- * @typedef {import('./index.js').InlineTag} InlineTag
+ * @param {import('./commentParserToESTree.js').JsdocBlock} node
+ * @param {ESTreeToStringOptions} opts
+ * @returns {string}
  */
-
-/**
- * Extracts inline tags from a description.
- * @param {string} description
- * @returns {InlineTag[]} Array of inline tags from the description.
- */
-function parseDescription(description) {
-  /** @type {InlineTag[]} */
-  const result = [];
-
-  // This could have been expressed in a single pattern,
-  // but having two avoids a potentially exponential time regex.
-
-  const prefixedTextPattern = new RegExp(/(?:\[(?<text>[^\]]+)\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)\}/gu, 'gud');
-  // The pattern used to match for text after tag uses a negative lookbehind
-  // on the ']' char to avoid matching the prefixed case too.
-  const suffixedAfterPattern = new RegExp(/(?<!\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)\s*(?<separator>[\s|])?\s*(?<text>[^}]*)\}/gu, 'gud');
-  const matches = [...description.matchAll(prefixedTextPattern), ...description.matchAll(suffixedAfterPattern)];
-  for (const mtch of matches) {
-    const match =
-    /**
-    * @type {RegExpMatchArray & {
-    *   indices: {
-    *     groups: {
-    *       [key: string]: [number, number]
-    *     }
-    *   }
-    *   groups: {[key: string]: string}
-    * }}
-    */
-    mtch;
-    const {
-      tag,
-      namepathOrURL,
-      text
-    } = match.groups;
-    const [start, end] = match.indices[0];
-    const format = determineFormat(match);
-    result.push({
-      tag,
-      namepathOrURL,
-      text,
-      format,
-      start,
-      end
-    });
+function JsdocBlock(node, opts) {
+  const {
+    delimiter,
+    delimiterLineBreak,
+    descriptionLines,
+    initial,
+    postDelimiter,
+    preterminalLineBreak,
+    tags,
+    terminal
+  } = node;
+  const terminalPrepend = preterminalLineBreak !== '' ? `${preterminalLineBreak}${initial} ` : '';
+  let result = `${initial}${delimiter}${postDelimiter}${delimiterLineBreak}`;
+  for (let i = 0; i < descriptionLines.length; i++) {
+    result += estreeToString(descriptionLines[i]);
+    if (i !== descriptionLines.length - 1 || tags.length) {
+      result += '\n';
+    }
   }
+  for (let i = 0; i < tags.length; i++) {
+    result += estreeToString(tags[i], opts);
+    if (i !== tags.length - 1) {
+      result += '\n';
+    }
+  }
+  result += `${terminalPrepend}${terminal}`;
   return result;
 }
 
-/**
- * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
- * into the `inlineTags` tokens, and populates `spec.inlineTags`
- * @param {import('comment-parser').Block} block
- * @returns {import('./index.js').JsdocBlockWithInline}
- */
-function parseInlineTags(block) {
-  const inlineTags =
-  /**
-   * @type {(import('./commentParserToESTree.js').JsdocInlineTagNoType & {
-   *   line?: import('./commentParserToESTree.js').Integer
-   * })[]}
-   */
-  parseDescription(block.description);
+// JsdocTag - new implementation ----------------------------------------------
 
-  /** @type {import('./index.js').JsdocBlockWithInline} */
-  block.inlineTags = inlineTags;
-  for (const tag of block.tags) {
-    /**
-     * @type {import('./index.js').JsdocTagWithInline}
-     */
-    tag.inlineTags = parseDescription(tag.description);
+/**
+ * @param {import('./commentParserToESTree.js').JsdocTag} node
+ * @param {ESTreeToStringOptions} opts
+ * @returns {string}
+ */
+function JsdocTag(node, opts) {
+  const {
+    name,
+    postName,
+    postTag,
+    postType,
+    initial,
+    delimiter,
+    postDelimiter,
+    tag
+  } = node;
+
+  // New uses of fields.
+  const {
+    descriptionLines,
+    parsedType,
+    typeLines
+  } = node;
+  let result = `${initial}${delimiter}${postDelimiter}@${tag}${postTag}`;
+
+  // Could do `rawType` but may have been changed; could also do
+  //   `typeLines` but not as likely to be changed
+  // parsedType
+  // Comment this out later in favor of `parsedType`
+  // We can't use raw `typeLines` as first argument has delimiter on it
+  if (opts.preferRawType || !parsedType) {
+    if (typeLines.length) {
+      result += '{';
+      for (let i = 0; i < typeLines.length; i++) {
+        result += estreeToString(typeLines[i]);
+        if (i !== typeLines.length - 1) {
+          result += '\n';
+        }
+      }
+      result += '}';
+    }
+  } else if (parsedType !== null && parsedType !== void 0 && parsedType.type.startsWith('JsdocType')) {
+    result += `{${jsdocTypePrattParser.stringify( /** @type {import('jsdoc-type-pratt-parser').RootResult} */
+    parsedType)}}`;
   }
-  return (
-    /**
-     * @type {import('./index.js').JsdocBlockWithInline}
-     */
-    block
-  );
+  result += name ? `${postType}${name}${postName}` : postType;
+  for (let i = 0; i < descriptionLines.length; i++) {
+    const descriptionLine = descriptionLines[i];
+    result += estreeToString(descriptionLine);
+    if (i !== descriptionLines.length - 1) {
+      result += '\n';
+    }
+  }
+  return result;
 }
-
-/* eslint-disable prefer-named-capture-group -- Temporary */
-const {
-  name: nameTokenizer,
-  tag: tagTokenizer,
-  type: typeTokenizer,
-  description: descriptionTokenizer
-} = commentParser.tokenizers;
-
-/**
- * @param {import('comment-parser').Spec} spec
- * @returns {boolean}
- */
-const hasSeeWithLink = spec => {
-  return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
-};
-const defaultNoTypes = ['default', 'defaultvalue', 'description', 'example', 'file', 'fileoverview', 'license', 'overview', 'see', 'summary'];
-const defaultNoNames = ['access', 'author', 'default', 'defaultvalue', 'description', 'example', 'exception', 'file', 'fileoverview', 'kind', 'license', 'overview', 'return', 'returns', 'since', 'summary', 'throws', 'version', 'variation'];
-const optionalBrackets = /^\[(?<name>[^=]*)=[^\]]*\]/u;
-const preserveTypeTokenizer = typeTokenizer('preserve');
-const preserveDescriptionTokenizer = descriptionTokenizer('preserve');
-const plainNameTokenizer = nameTokenizer();
-
-/**
- * Can't import `comment-parser/es6/parser/tokenizers/index.js`,
- *   so we redefine here.
- * @typedef {(spec: import('comment-parser').Spec) =>
- *   import('comment-parser').Spec} CommentParserTokenizer
- */
-
-/**
- * @param {object} [cfg]
- * @param {string[]} [cfg.noTypes]
- * @param {string[]} [cfg.noNames]
- * @returns {CommentParserTokenizer[]}
- */
-const getTokenizers = ({
-  noTypes = defaultNoTypes,
-  noNames = defaultNoNames
-} = {}) => {
-  // trim
-  return [
-  // Tag
-  tagTokenizer(),
-  /**
-   * Type tokenizer.
-   * @param {import('comment-parser').Spec} spec
-   * @returns {import('comment-parser').Spec}
-   */
-  spec => {
-    if (noTypes.includes(spec.tag)) {
-      return spec;
-    }
-    return preserveTypeTokenizer(spec);
-  },
-  /**
-   * Name tokenizer.
-   * @param {import('comment-parser').Spec} spec
-   * @returns {import('comment-parser').Spec}
-   */
-  spec => {
-    if (spec.tag === 'template') {
-      // const preWS = spec.postTag;
-      const remainder = spec.source[0].tokens.description;
-      const pos = remainder.search(/(?<![\s,])\s/u);
-      let name = pos === -1 ? remainder : remainder.slice(0, pos);
-      const extra = remainder.slice(pos);
-      let postName = '',
-        description = '',
-        lineEnd = '';
-      if (pos > -1) {
-        [, postName, description, lineEnd] = /** @type {RegExpMatchArray} */
-        extra.match(/(\s*)([^\r]*)(\r)?/u);
-      }
-      if (optionalBrackets.test(name)) {
-        var _name$match;
-        name =
-        /** @type {string} */
-        /** @type {RegExpMatchArray} */
-        (_name$match = name.match(optionalBrackets)) === null || _name$match === void 0 || (_name$match = _name$match.groups) === null || _name$match === void 0 ? void 0 : _name$match.name;
-        spec.optional = true;
-      } else {
-        spec.optional = false;
-      }
-      spec.name = name;
-      const {
-        tokens
-      } = spec.source[0];
-      tokens.name = name;
-      tokens.postName = postName;
-      tokens.description = description;
-      tokens.lineEnd = lineEnd || '';
-      return spec;
-    }
-    if (noNames.includes(spec.tag) || hasSeeWithLink(spec)) {
-      return spec;
-    }
-    return plainNameTokenizer(spec);
-  },
-  /**
-   * Description tokenizer.
-   * @param {import('comment-parser').Spec} spec
-   * @returns {import('comment-parser').Spec}
-   */
-  spec => {
-    return preserveDescriptionTokenizer(spec);
-  }];
-};
-
-/**
- * Accepts a comment token or complete comment string and converts it into
- * `comment-parser` AST.
- * @param {string | {value: string}} commentOrNode
- * @param {string} [indent] Whitespace
- * @returns {import('./index.js').JsdocBlockWithInline}
- */
-const parseComment = (commentOrNode, indent = '') => {
-  let block;
-  switch (typeof commentOrNode) {
-    case 'string':
-      // Preserve JSDoc block start/end indentation.
-      [block] = commentParser.parse(`${indent}${commentOrNode}`, {
-        // @see https://github.com/yavorskiy/comment-parser/issues/21
-        tokenizers: getTokenizers()
-      });
-      break;
-    case 'object':
-      // Preserve JSDoc block start/end indentation.
-      [block] = commentParser.parse(`${indent}/*${commentOrNode.value}*/`, {
-        // @see https://github.com/yavorskiy/comment-parser/issues/21
-        tokenizers: getTokenizers()
-      });
-      break;
-    default:
-      throw new TypeError(`'commentOrNode' is not a string or object.`);
-  }
-  return parseInlineTags(block);
-};
 
 /* eslint-disable jsdoc/imports-as-dependencies -- https://github.com/gajus/eslint-plugin-jsdoc/issues/1114 */
 /**
@@ -1009,163 +974,268 @@ const getJSDocComment = function (sourceCode, node, settings) {
 };
 
 /**
- * @typedef {import('./index.js').ESTreeToStringOptions} ESTreeToStringOptions
+ * @param {RegExpMatchArray & {
+ *   indices: {
+ *     groups: {
+ *       [key: string]: [number, number]
+ *     }
+ *   }
+ *   groups: {[key: string]: string}
+ * }} match An inline tag regexp match.
+ * @returns {'pipe' | 'plain' | 'prefix' | 'space'}
+ */
+function determineFormat(match) {
+  const {
+    separator,
+    text
+  } = match.groups;
+  const [, textEnd] = match.indices.groups.text;
+  const [tagStart] = match.indices.groups.tag;
+  if (!text) {
+    return 'plain';
+  } else if (separator === '|') {
+    return 'pipe';
+  } else if (textEnd < tagStart) {
+    return 'prefix';
+  }
+  return 'space';
+}
+
+/**
+ * @typedef {import('./index.js').InlineTag} InlineTag
  */
 
-const stringifiers = {
-  /**
-   * @param {import('./commentParserToESTree.js').JsdocBlock} node
-   * @param {ESTreeToStringOptions} opts
-   * @param {string[]} descriptionLines
-   * @param {string[]} tags
-   * @returns {string}
-   */
-  JsdocBlock({
-    delimiter,
-    postDelimiter,
-    lineEnd,
-    initial,
-    terminal,
-    endLine
-  }, opts, descriptionLines, tags) {
-    var _descriptionLines$at, _tags$at;
-    const alreadyHasLine = descriptionLines.length && !tags.length && ((_descriptionLines$at = descriptionLines.at(-1)) === null || _descriptionLines$at === void 0 ? void 0 : _descriptionLines$at.endsWith('\n')) || tags.length && ((_tags$at = tags.at(-1)) === null || _tags$at === void 0 ? void 0 : _tags$at.endsWith('\n'));
-    return `${initial}${delimiter}${postDelimiter}${endLine ? `
-` : ''}${
-    // Could use `node.description` (and `node.lineEnd`), but lines may have
-    //   been modified
-    descriptionLines.length ? descriptionLines.join(lineEnd + '\n') + (tags.length ? lineEnd + '\n' : '') : ''}${tags.length ? tags.join(lineEnd + '\n') : ''}${endLine && !alreadyHasLine ? `${lineEnd}
- ${initial}` : endLine ? ` ${initial}` : ''}${terminal}`;
-  },
-  /**
-   * @param {import('./commentParserToESTree.js').JsdocDescriptionLine} node
-   * @returns {string}
-   */
-  JsdocDescriptionLine({
-    initial,
-    delimiter,
-    postDelimiter,
-    description
-  }) {
-    return `${initial}${delimiter}${postDelimiter}${description}`;
-  },
-  /**
-   * @param {import('./commentParserToESTree.js').JsdocTypeLine} node
-   * @returns {string}
-   */
-  JsdocTypeLine({
-    initial,
-    delimiter,
-    postDelimiter,
-    rawType
-  }) {
-    return `${initial}${delimiter}${postDelimiter}${rawType}`;
-  },
-  /**
-   * @param {import('./commentParserToESTree.js').JsdocInlineTag} node
-   */
-  JsdocInlineTag({
-    format,
-    namepathOrURL,
-    tag,
-    text
-  }) {
-    return format === 'pipe' ? `{@${tag} ${namepathOrURL}|${text}}` : format === 'plain' ? `{@${tag} ${namepathOrURL}}` : format === 'prefix' ? `[${text}]{@${tag} ${namepathOrURL}}`
-    // "space"
-    : `{@${tag} ${namepathOrURL} ${text}}`;
-  },
-  /**
-   * @param {import('./commentParserToESTree.js').JsdocTag} node
-   * @param {ESTreeToStringOptions} opts
-   * @param {string} parsedType
-   * @param {string[]} typeLines
-   * @param {string[]} descriptionLines
-   * @returns {string}
-   */
-  JsdocTag(node, opts, parsedType, typeLines, descriptionLines) {
+/**
+ * Extracts inline tags from a description.
+ * @param {string} description
+ * @returns {InlineTag[]} Array of inline tags from the description.
+ */
+function parseDescription(description) {
+  /** @type {InlineTag[]} */
+  const result = [];
+
+  // This could have been expressed in a single pattern,
+  // but having two avoids a potentially exponential time regex.
+
+  const prefixedTextPattern = new RegExp(/(?:\[(?<text>[^\]]+)\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)\}/gu, 'gud');
+  // The pattern used to match for text after tag uses a negative lookbehind
+  // on the ']' char to avoid matching the prefixed case too.
+  const suffixedAfterPattern = new RegExp(/(?<!\])\{@(?<tag>[^}\s]+)\s?(?<namepathOrURL>[^}\s|]*)\s*(?<separator>[\s|])?\s*(?<text>[^}]*)\}/gu, 'gud');
+  const matches = [...description.matchAll(prefixedTextPattern), ...description.matchAll(suffixedAfterPattern)];
+  for (const mtch of matches) {
+    const match =
+    /**
+    * @type {RegExpMatchArray & {
+    *   indices: {
+    *     groups: {
+    *       [key: string]: [number, number]
+    *     }
+    *   }
+    *   groups: {[key: string]: string}
+    * }}
+    */
+    mtch;
     const {
-      description,
-      name,
-      postName,
-      postTag,
-      postType,
-      initial,
-      delimiter,
-      postDelimiter,
-      tag
-      // , rawType
-    } = node;
-    return `${initial}${delimiter}${postDelimiter}@${tag}${postTag}${
-    // Could do `rawType` but may have been changed; could also do
-    //   `typeLines` but not as likely to be changed
-    // parsedType
-    // Comment this out later in favor of `parsedType`
-    // We can't use raw `typeLines` as first argument has delimiter on it
-    opts.preferRawType || !parsedType ? typeLines.length ? `{${typeLines.join('\n')}}` : '' : parsedType}${postType}${name ? `${name}${postName || (description ? '\n' : '')}` : ''}${descriptionLines.join('\n')}`;
+      tag,
+      namepathOrURL,
+      text
+    } = match.groups;
+    const [start, end] = match.indices[0];
+    const format = determineFormat(match);
+    result.push({
+      tag,
+      namepathOrURL,
+      text,
+      format,
+      start,
+      end
+    });
   }
+  return result;
+}
+
+/**
+ * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
+ * into the `inlineTags` tokens, and populates `spec.inlineTags`
+ * @param {import('comment-parser').Block} block
+ * @returns {import('./index.js').JsdocBlockWithInline}
+ */
+function parseInlineTags(block) {
+  const inlineTags =
+  /**
+   * @type {(import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+   *   line?: import('./commentParserToESTree.js').Integer
+   * })[]}
+   */
+  parseDescription(block.description);
+
+  /** @type {import('./index.js').JsdocBlockWithInline} */
+  block.inlineTags = inlineTags;
+  for (const tag of block.tags) {
+    /**
+     * @type {import('./index.js').JsdocTagWithInline}
+     */
+    tag.inlineTags = parseDescription(tag.description);
+  }
+  return (
+    /**
+     * @type {import('./index.js').JsdocBlockWithInline}
+     */
+    block
+  );
+}
+
+/* eslint-disable prefer-named-capture-group -- Temporary */
+const {
+  name: nameTokenizer,
+  tag: tagTokenizer,
+  type: typeTokenizer,
+  description: descriptionTokenizer
+} = commentParser.tokenizers;
+
+/**
+ * @param {import('comment-parser').Spec} spec
+ * @returns {boolean}
+ */
+const hasSeeWithLink = spec => {
+  return spec.tag === 'see' && /\{@link.+?\}/u.test(spec.source[0].source);
 };
-const visitorKeys = {
-  ...jsdocVisitorKeys,
-  ...jsdocTypePrattParser.visitorKeys
+const defaultNoTypes = ['default', 'defaultvalue', 'description', 'example', 'file', 'fileoverview', 'license', 'overview', 'see', 'summary'];
+const defaultNoNames = ['access', 'author', 'default', 'defaultvalue', 'description', 'example', 'exception', 'file', 'fileoverview', 'kind', 'license', 'overview', 'return', 'returns', 'since', 'summary', 'throws', 'version', 'variation'];
+const optionalBrackets = /^\[(?<name>[^=]*)=[^\]]*\]/u;
+const preserveTypeTokenizer = typeTokenizer('preserve');
+const preserveDescriptionTokenizer = descriptionTokenizer('preserve');
+const plainNameTokenizer = nameTokenizer();
+
+/**
+ * Can't import `comment-parser/es6/parser/tokenizers/index.js`,
+ *   so we redefine here.
+ * @typedef {(spec: import('comment-parser').Spec) =>
+ *   import('comment-parser').Spec} CommentParserTokenizer
+ */
+
+/**
+ * @param {object} [cfg]
+ * @param {string[]} [cfg.noTypes]
+ * @param {string[]} [cfg.noNames]
+ * @returns {CommentParserTokenizer[]}
+ */
+const getTokenizers = ({
+  noTypes = defaultNoTypes,
+  noNames = defaultNoNames
+} = {}) => {
+  // trim
+  return [
+  // Tag
+  tagTokenizer(),
+  /**
+   * Type tokenizer.
+   * @param {import('comment-parser').Spec} spec
+   * @returns {import('comment-parser').Spec}
+   */
+  spec => {
+    if (noTypes.includes(spec.tag)) {
+      return spec;
+    }
+    return preserveTypeTokenizer(spec);
+  },
+  /**
+   * Name tokenizer.
+   * @param {import('comment-parser').Spec} spec
+   * @returns {import('comment-parser').Spec}
+   */
+  spec => {
+    if (spec.tag === 'template') {
+      // const preWS = spec.postTag;
+      const remainder = spec.source[0].tokens.description;
+      const pos = remainder.search(/(?<![\s,])\s/u);
+      let name = pos === -1 ? remainder : remainder.slice(0, pos);
+      const extra = remainder.slice(pos);
+      let postName = '',
+        description = '',
+        lineEnd = '';
+      if (pos > -1) {
+        [, postName, description, lineEnd] = /** @type {RegExpMatchArray} */
+        extra.match(/(\s*)([^\r]*)(\r)?/u);
+      }
+      if (optionalBrackets.test(name)) {
+        var _name$match;
+        name =
+        /** @type {string} */
+        /** @type {RegExpMatchArray} */
+        (_name$match = name.match(optionalBrackets)) === null || _name$match === void 0 || (_name$match = _name$match.groups) === null || _name$match === void 0 ? void 0 : _name$match.name;
+        spec.optional = true;
+      } else {
+        spec.optional = false;
+      }
+      spec.name = name;
+      const {
+        tokens
+      } = spec.source[0];
+      tokens.name = name;
+      tokens.postName = postName;
+      tokens.description = description;
+      tokens.lineEnd = lineEnd || '';
+      return spec;
+    }
+    if (noNames.includes(spec.tag) || hasSeeWithLink(spec)) {
+      return spec;
+    }
+    return plainNameTokenizer(spec);
+  },
+  /**
+   * Description tokenizer.
+   * @param {import('comment-parser').Spec} spec
+   * @returns {import('comment-parser').Spec}
+   */
+  spec => {
+    return preserveDescriptionTokenizer(spec);
+  }];
 };
 
 /**
- * @todo convert for use by escodegen (until may be patched to support
- *   custom entries?).
- * @param {import('./commentParserToESTree.js').JsdocBlock|
- *   import('./commentParserToESTree.js').JsdocDescriptionLine|
- *   import('./commentParserToESTree.js').JsdocTypeLine|
- *   import('./commentParserToESTree.js').JsdocTag|
- *   import('./commentParserToESTree.js').JsdocInlineTag|
- *   import('jsdoc-type-pratt-parser').RootResult
- * } node
- * @param {ESTreeToStringOptions} opts
- * @throws {Error}
+ * Accepts a comment token or complete comment string and converts it into
+ * `comment-parser` AST.
+ * @param {string | {value: string}} commentOrNode
+ * @param {string} [indent] Whitespace
+ * @returns {import('./index.js').JsdocBlockWithInline}
+ */
+const parseComment = (commentOrNode, indent = '') => {
+  let block;
+  switch (typeof commentOrNode) {
+    case 'string':
+      // Preserve JSDoc block start/end indentation.
+      [block] = commentParser.parse(`${indent}${commentOrNode}`, {
+        // @see https://github.com/yavorskiy/comment-parser/issues/21
+        tokenizers: getTokenizers()
+      });
+      break;
+    case 'object':
+      // Preserve JSDoc block start/end indentation.
+      [block] = commentParser.parse(`${indent}/*${commentOrNode.value}*/`, {
+        // @see https://github.com/yavorskiy/comment-parser/issues/21
+        tokenizers: getTokenizers()
+      });
+      break;
+    default:
+      throw new TypeError(`'commentOrNode' is not a string or object.`);
+  }
+  return parseInlineTags(block);
+};
+
+/**
+ * @param {string} str
  * @returns {string}
  */
-function estreeToString(node, opts = {}) {
-  if (Object.prototype.hasOwnProperty.call(stringifiers, node.type)) {
-    const childNodeOrArray = visitorKeys[node.type];
-    const args = /** @type {(string[]|string|null)[]} */
-    childNodeOrArray.map(key => {
-      // @ts-expect-error
-      return Array.isArray(node[key])
-      // @ts-expect-error
-      ? node[key].map((
-      /**
-       * @type {import('./commentParserToESTree.js').JsdocBlock|
-       *   import('./commentParserToESTree.js').JsdocDescriptionLine|
-       *   import('./commentParserToESTree.js').JsdocTypeLine|
-       *   import('./commentParserToESTree.js').JsdocTag|
-       *   import('./commentParserToESTree.js').JsdocInlineTag}
-       */
-      item) => {
-        return estreeToString(item, opts);
-      })
-      // @ts-expect-error
-      : node[key] === undefined || node[key] === null ? null
-      // @ts-expect-error
-      : estreeToString(node[key], opts);
-    });
-    return stringifiers[
-    /**
-     * @type {import('./commentParserToESTree.js').JsdocBlock|
-     *   import('./commentParserToESTree.js').JsdocDescriptionLine|
-     *   import('./commentParserToESTree.js').JsdocTypeLine|
-     *   import('./commentParserToESTree.js').JsdocTag}
-     */
-    node.type](node, opts,
-    // @ts-expect-error
-    ...args);
-  }
-
-  // We use raw type instead but it is a key as other apps may wish to traverse
-  if (node.type.startsWith('JsdocType')) {
-    return opts.preferRawType ? '' : `{${jsdocTypePrattParser.stringify( /** @type {import('jsdoc-type-pratt-parser').RootResult} */
-    node)}}`;
-  }
-  throw new Error(`Unhandled node type: ${node.type}`);
-}
+const toCamelCase = str => {
+  return str.toLowerCase().replaceAll(/^[a-z]/gu, init => {
+    return init.toUpperCase();
+  }).replaceAll(/_(?<wordInit>[a-z])/gu, (_, n1, o, s, {
+    wordInit
+  }) => {
+    return wordInit.toUpperCase();
+  });
+};
 
 Object.defineProperty(exports, "jsdocTypeVisitorKeys", {
   enumerable: true,

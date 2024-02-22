@@ -41,6 +41,7 @@ export type JsdocTag = {
 export type Integer = number;
 export type JsdocBlock = {
     delimiter: string;
+    delimiterLineBreak: string;
     description: string;
     descriptionEndLine?: Integer;
     descriptionLines: JsdocDescriptionLine[];
@@ -55,6 +56,7 @@ export type JsdocBlock = {
     postDelimiter: string;
     tags: JsdocTag[];
     terminal: string;
+    preterminalLineBreak: string;
     type: "JsdocBlock";
 };
 /**
