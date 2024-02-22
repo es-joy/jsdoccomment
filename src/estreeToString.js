@@ -89,8 +89,6 @@ function estreeToString (node, opts = {}) {
   throw new Error(`Unhandled node type: ${node.type}`);
 }
 
-export default estreeToString;
-
 /**
  * @param {import('./commentParserToESTree.js').JsdocBlock} node
  * @param {ESTreeToStringOptions} opts
@@ -186,3 +184,5 @@ function JsdocTag (node, opts) {
 
   return result;
 }
+
+export {estreeToString};

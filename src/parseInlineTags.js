@@ -85,7 +85,7 @@ function parseDescription (description) {
  * @param {import('comment-parser').Block} block
  * @returns {import('./index.js').JsdocBlockWithInline}
  */
-export default function parseInlineTags (block) {
+export function parseInlineTags (block) {
   const inlineTags =
     /**
      * @type {(import('./commentParserToESTree.js').JsdocInlineTagNoType & {

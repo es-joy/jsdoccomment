@@ -4,7 +4,7 @@ import {
   tokenizers
 } from 'comment-parser';
 
-import parseInlineTags from './parseInlineTags.js';
+import {parseInlineTags} from './parseInlineTags.js';
 
 const {
   name: nameTokenizer,
