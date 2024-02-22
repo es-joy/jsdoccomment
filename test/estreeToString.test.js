@@ -441,4 +441,18 @@ describe('`estreeToString`', function () {
       }));
     }).to.throw('Unhandled node type: UnknownType');
   });
+
+  it('handles JsdocType / pratt type', function () {
+    expect(estreeToString({
+      type: 'JsdocTypeName',
+      value: 'string'
+    })).to.equal('{string}');
+  });
+
+  it('handles JsdocType / pratt type (preferRawType)', function () {
+    expect(estreeToString({
+      type: 'JsdocTypeName',
+      value: 'string'
+    }, {preferRawType: true})).to.equal('');
+  });
 });
