@@ -6,7 +6,6 @@ export * from "./estreeToString.js";
 export * from "./jsdoccomment.js";
 export * from "./parseComment.js";
 export * from "./parseInlineTags.js";
-export * from "./toCamelCase.js";
 export type InlineTag = import('./commentParserToESTree.js').JsdocInlineTagNoType & {
     start: number;
     end: number;

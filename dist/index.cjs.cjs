@@ -723,24 +723,24 @@ const getTSFunctionComment = function (astNode) {
   const {
     parent
   } = astNode;
-  /* c8 ignore next 3 */
+  /* v8 ignore next 3 */
   if (!parent) {
     return astNode;
   }
   const grandparent = parent.parent;
-  /* c8 ignore next 3 */
+  /* v8 ignore next 3 */
   if (!grandparent) {
     return astNode;
   }
   const greatGrandparent = grandparent.parent;
   const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
 
-  // istanbul ignore if
+  /* v8 ignore next 3 */
   if ( /** @type {ESLintOrTSNode} */parent.type !== 'TSTypeAnnotation') {
     return astNode;
   }
   switch ( /** @type {ESLintOrTSNode} */grandparent.type) {
-    // @ts-expect-error
+    // @ts-expect-error -- For `ClassProperty`.
     case 'PropertyDefinition':
     case 'ClassProperty':
     case 'TSDeclareFunction':
@@ -748,69 +748,67 @@ const getTSFunctionComment = function (astNode) {
     case 'TSPropertySignature':
       return grandparent;
     case 'ArrowFunctionExpression':
-      /* c8 ignore next 3 */
+      /* v8 ignore next 3 */
       if (!greatGrandparent) {
         return astNode;
       }
-      // istanbul ignore else
       if (greatGrandparent.type === 'VariableDeclarator'
 
       // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
       ) {
-        /* c8 ignore next 3 */
+        /* v8 ignore next 3 */
         if (!greatGreatGrandparent || !greatGreatGrandparent.parent) {
           return astNode;
         }
         return greatGreatGrandparent.parent;
       }
 
-      // istanbul ignore next
+      /* v8 ignore next */
       return astNode;
     case 'FunctionExpression':
-      /* c8 ignore next 3 */
+      /* v8 ignore next 3 */
       if (!greatGreatGrandparent) {
         return astNode;
       }
-      // istanbul ignore else
+      /* v8 ignore next 3 */
       if (greatGrandparent.type === 'MethodDefinition') {
         return greatGrandparent;
       }
 
     // Fallthrough
     default:
-      // istanbul ignore if
+      /* v8 ignore next 3 */
       if (grandparent.type !== 'Identifier') {
-        // istanbul ignore next
         return astNode;
       }
   }
 
-  /* c8 ignore next 3 */
+  /* v8 ignore next 3 */
   if (!greatGreatGrandparent) {
     return astNode;
   }
 
-  // istanbul ignore next
+  /* v8 ignore next */
   switch (greatGrandparent.type) {
     case 'ArrowFunctionExpression':
-      // istanbul ignore else
+      /* v8 ignore next 6 */
       if (greatGreatGrandparent.type === 'VariableDeclarator' && greatGreatGrandparent.parent.type === 'VariableDeclaration') {
         return greatGreatGrandparent.parent;
       }
 
-      // istanbul ignore next
+      /* v8 ignore next */
       return astNode;
     case 'FunctionDeclaration':
       return greatGrandparent;
     case 'VariableDeclarator':
-      // istanbul ignore else
+      /* v8 ignore next 3 */
       if (greatGreatGrandparent.type === 'VariableDeclaration') {
         return greatGreatGrandparent;
       }
 
     // Fallthrough
     default:
-      // istanbul ignore next
+      /* v8 ignore next */
       return astNode;
   }
 };
@@ -838,7 +836,7 @@ const getReducedASTNode = function (node, sourceCode) {
     case 'TSEnumDeclaration':
     case 'ClassDeclaration':
     case 'FunctionDeclaration':
-      /* c8 ignore next 3 */
+      /* v8 ignore next 3 */
       if (!parent) {
         return node;
       }
@@ -849,7 +847,7 @@ const getReducedASTNode = function (node, sourceCode) {
     case 'ArrowFunctionExpression':
     case 'TSEmptyBodyFunctionExpression':
     case 'FunctionExpression':
-      /* c8 ignore next 3 */
+      /* v8 ignore next 3 */
       if (!parent) {
         return node;
       }
@@ -939,7 +937,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
     break;
   }
 
-  /* c8 ignore next 3 */
+  /* v8 ignore next 3 */
   if (!tokenBefore || !currentNode.loc || !tokenBefore.loc) {
     return null;
   }
@@ -1221,20 +1219,6 @@ const parseComment = (commentOrNode, indent = '') => {
   return parseInlineTags(block);
 };
 
-/**
- * @param {string} str
- * @returns {string}
- */
-const toCamelCase = str => {
-  return str.toLowerCase().replaceAll(/^[a-z]/gu, init => {
-    return init.toUpperCase();
-  }).replaceAll(/_(?<wordInit>[a-z])/gu, (_, n1, o, s, {
-    wordInit
-  }) => {
-    return wordInit.toUpperCase();
-  });
-};
-
 Object.defineProperty(exports, "jsdocTypeVisitorKeys", {
   enumerable: true,
   get: function () { return jsdocTypePrattParser.visitorKeys; }
@@ -1253,7 +1237,6 @@ exports.hasSeeWithLink = hasSeeWithLink;
 exports.jsdocVisitorKeys = jsdocVisitorKeys;
 exports.parseComment = parseComment;
 exports.parseInlineTags = parseInlineTags;
-exports.toCamelCase = toCamelCase;
 Object.keys(jsdocTypePrattParser).forEach(function (k) {
   if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
     enumerable: true,
