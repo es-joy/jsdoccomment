@@ -854,14 +854,14 @@ describe('parseComment (string)', function () {
 
 describe('parseComment (error)', function () {
   it('Throws on invalid argument (null)', function () {
-    // @ts-expect-error
+    // @ts-expect-error -- Testing bad arg.
     expect(() => parseComment(null)).to.throw(
       `'commentOrNode' is not a string or object.`
     );
   });
 
   it('Throws on invalid argument (boolean)', function () {
-    // @ts-expect-error
+    // @ts-expect-error -- Testing bad arg.
     expect(() => parseComment(false)).to.throw(
       `'commentOrNode' is not a string or object.`
     );

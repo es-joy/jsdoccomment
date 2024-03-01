@@ -86,7 +86,7 @@ const getTSFunctionComment = function (astNode) {
   }
 
   switch (/** @type {ESLintOrTSNode} */ (grandparent).type) {
-  // @ts-expect-error
+  // @ts-expect-error -- For `ClassProperty`.
   case 'PropertyDefinition': case 'ClassProperty':
   case 'TSDeclareFunction':
   case 'TSMethodSignature':
