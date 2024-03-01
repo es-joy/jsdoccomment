@@ -64,20 +64,18 @@ Provides info on JSDoc tags:
 
 Also currently exports these utilities:
 
-- `getTokenizers` - Used with `parseComment` (its main core)
-- `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
-- `commentHandler` - Used by `eslint-plugin-jsdoc`. Might be removed in future.
+- `getTokenizers` - Used with `parseComment` (its main core).
+- `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`.
+- `commentHandler` - Used by `eslint-plugin-jsdoc`.
 - `commentParserToESTree`- Converts [comment-parser](https://github.com/syavorsky/comment-parser)
-    AST to ESTree/ESLint/Babel friendly AST
+    AST to ESTree/ESLint/Babel friendly AST.
 - `jsdocVisitorKeys` - The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
-    for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`. Might change.
+    for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`.
 - `jsdocTypeVisitorKeys` - [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
     for `jsdoc-type-pratt-parser`.
-- `getTokenizers` - A utility. Might be removed in future.
-- `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
 - `defaultNoTypes` = The tags which allow no types by default:
     `default`, `defaultvalue`, `description`, `example`, `file`,
-    `fileoverview`, `license`, `overview`, `see`, `summary`;
+    `fileoverview`, `license`, `overview`, `see`, `summary`
 - `defaultNoNames` - The tags which allow no names by default:
     `access`, `author`, `default`, `defaultvalue`, `description`, `example`,
     `exception`, `file`, `fileoverview`, `kind`, `license`, `overview`,
