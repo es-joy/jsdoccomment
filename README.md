@@ -62,11 +62,9 @@ Provides info on JSDoc tags:
 
 ### Miscellaneous
 
-Also currently exports these utilities, though they might be removed in the
-future:
+Also currently exports these utilities:
 
 - `getTokenizers` - Used with `parseComment` (its main core)
-- `toCamelCase` - Convert to CamelCase.
 - `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
 - `commentHandler` - Used by `eslint-plugin-jsdoc`. Might be removed in future.
 - `commentParserToESTree`- Converts [comment-parser](https://github.com/syavorsky/comment-parser)
@@ -76,7 +74,6 @@ future:
 - `jsdocTypeVisitorKeys` - [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
     for `jsdoc-type-pratt-parser`.
 - `getTokenizers` - A utility. Might be removed in future.
-- `toCamelCase` - A utility. Might be removed in future.
 - `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
 - `defaultNoTypes` = The tags which allow no types by default:
     `default`, `defaultvalue`, `description`, `example`, `file`,
