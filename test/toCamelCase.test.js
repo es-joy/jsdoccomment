@@ -1,4 +1,4 @@
-import {toCamelCase} from '../src/index.js';
+import {toCamelCase} from '../src/toCamelCase.js';
 
 describe('toCamelCase', function () {
   it('work with underscores', function () {
