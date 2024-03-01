@@ -68,19 +68,19 @@ const looksLikeExport = function (astNode) {
  */
 const getTSFunctionComment = function (astNode) {
   const {parent} = astNode;
-  /* c8 ignore next 3 */
+  /* v8 ignore next 3 */
   if (!parent) {
     return astNode;
   }
   const grandparent = parent.parent;
-  /* c8 ignore next 3 */
+  /* v8 ignore next 3 */
   if (!grandparent) {
     return astNode;
   }
   const greatGrandparent = grandparent.parent;
   const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
 
-  // istanbul ignore if
+  /* v8 ignore next 3 */
   if (/** @type {ESLintOrTSNode} */ (parent).type !== 'TSTypeAnnotation') {
     return astNode;
   }
@@ -93,53 +93,52 @@ const getTSFunctionComment = function (astNode) {
   case 'TSPropertySignature':
     return grandparent;
   case 'ArrowFunctionExpression':
-    /* c8 ignore next 3 */
+    /* v8 ignore next 3 */
     if (!greatGrandparent) {
       return astNode;
     }
-    // istanbul ignore else
+
     if (
       greatGrandparent.type === 'VariableDeclarator'
 
     // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
     ) {
-      /* c8 ignore next 3 */
+      /* v8 ignore next 3 */
       if (!greatGreatGrandparent || !greatGreatGrandparent.parent) {
         return astNode;
       }
       return greatGreatGrandparent.parent;
     }
 
-    // istanbul ignore next
+    /* v8 ignore next */
     return astNode;
   case 'FunctionExpression':
-    /* c8 ignore next 3 */
+    /* v8 ignore next 3 */
     if (!greatGreatGrandparent) {
       return astNode;
     }
-    // istanbul ignore else
+    /* v8 ignore next 3 */
     if (greatGrandparent.type === 'MethodDefinition') {
       return greatGrandparent;
     }
 
   // Fallthrough
   default:
-    // istanbul ignore if
+    /* v8 ignore next 3 */
     if (grandparent.type !== 'Identifier') {
-      // istanbul ignore next
       return astNode;
     }
   }
 
-  /* c8 ignore next 3 */
+  /* v8 ignore next 3 */
   if (!greatGreatGrandparent) {
     return astNode;
   }
 
-  // istanbul ignore next
+  /* v8 ignore next */
   switch (greatGrandparent.type) {
   case 'ArrowFunctionExpression':
-    // istanbul ignore else
+    /* v8 ignore next 6 */
     if (
       greatGreatGrandparent.type === 'VariableDeclarator' &&
       greatGreatGrandparent.parent.type === 'VariableDeclaration'
@@ -147,19 +146,19 @@ const getTSFunctionComment = function (astNode) {
       return greatGreatGrandparent.parent;
     }
 
-    // istanbul ignore next
+    /* v8 ignore next */
     return astNode;
   case 'FunctionDeclaration':
     return greatGrandparent;
   case 'VariableDeclarator':
-    // istanbul ignore else
+    /* v8 ignore next 3 */
     if (greatGreatGrandparent.type === 'VariableDeclaration') {
       return greatGreatGrandparent;
     }
 
     // Fallthrough
   default:
-    // istanbul ignore next
+    /* v8 ignore next */
     return astNode;
   }
 };
@@ -200,7 +199,7 @@ const getReducedASTNode = function (node, sourceCode) {
   case 'TSEnumDeclaration':
   case 'ClassDeclaration':
   case 'FunctionDeclaration':
-    /* c8 ignore next 3 */
+    /* v8 ignore next 3 */
     if (!parent) {
       return node;
     }
@@ -212,7 +211,7 @@ const getReducedASTNode = function (node, sourceCode) {
   case 'ArrowFunctionExpression':
   case 'TSEmptyBodyFunctionExpression':
   case 'FunctionExpression':
-    /* c8 ignore next 3 */
+    /* v8 ignore next 3 */
     if (!parent) {
       return node;
     }
@@ -317,7 +316,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
     break;
   }
 
-  /* c8 ignore next 3 */
+  /* v8 ignore next 3 */
   if (!tokenBefore || !currentNode.loc || !tokenBefore.loc) {
     return null;
   }
