@@ -68,7 +68,6 @@
     "@types/esquery": "^1.5.3",
     "@types/estraverse": "^5.1.7",
     "@types/estree": "^1.0.5",
-    "@typescript-eslint/types": "^7.1.0",
     "@typhonjs-build-test/esm-d-ts": "^0.3.0-next.1",
     "@typhonjs-typedoc/typedoc-pkg": "^0.0.4",
     "@vitest/coverage-v8": "^1.3.0",
