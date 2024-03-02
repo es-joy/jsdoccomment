@@ -23,7 +23,7 @@ import {
  * any leading white space or delimiter.
  *
  * @param {(
- *   import('../src/commentParserToESTree.js').JsdocDescriptionLine[])
+ *   import('../src/commentParserToESTree').JsdocDescriptionLine[])
  * } descriptionLines -
  * @returns {string} Complete description line string.
  */

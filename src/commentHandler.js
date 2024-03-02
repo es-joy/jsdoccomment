@@ -9,16 +9,12 @@ import {
 } from './commentParserToESTree.js';
 
 /**
- * @typedef {import('./index.js').CommentHandler} CommentHandler
- */
-
-/**
  * @param {{[name: string]: any}} settings
- * @returns {CommentHandler}
+ * @returns {import('.').CommentHandler}
  */
 const commentHandler = (settings) => {
   /**
-   * @type {CommentHandler}
+   * @type {import('.').CommentHandler}
    */
   return (commentSelector, jsdoc) => {
     const {mode} = settings;
