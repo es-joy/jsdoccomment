@@ -62,25 +62,20 @@ Provides info on JSDoc tags:
 
 ### Miscellaneous
 
-Also currently exports these utilities, though they might be removed in the
-future:
+Also currently exports these utilities:
 
-- `getTokenizers` - Used with `parseComment` (its main core)
-- `toCamelCase` - Convert to CamelCase.
-- `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
-- `commentHandler` - Used by `eslint-plugin-jsdoc`. Might be removed in future.
+- `getTokenizers` - Used with `parseComment` (its main core).
+- `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`.
+- `commentHandler` - Used by `eslint-plugin-jsdoc`.
 - `commentParserToESTree`- Converts [comment-parser](https://github.com/syavorsky/comment-parser)
-    AST to ESTree/ESLint/Babel friendly AST
+    AST to ESTree/ESLint/Babel friendly AST.
 - `jsdocVisitorKeys` - The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
-    for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`. Might change.
+    for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`.
 - `jsdocTypeVisitorKeys` - [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
     for `jsdoc-type-pratt-parser`.
-- `getTokenizers` - A utility. Might be removed in future.
-- `toCamelCase` - A utility. Might be removed in future.
-- `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`
 - `defaultNoTypes` = The tags which allow no types by default:
     `default`, `defaultvalue`, `description`, `example`, `file`,
-    `fileoverview`, `license`, `overview`, `see`, `summary`;
+    `fileoverview`, `license`, `overview`, `see`, `summary`
 - `defaultNoNames` - The tags which allow no names by default:
     `access`, `author`, `default`, `defaultvalue`, `description`, `example`,
     `exception`, `file`, `fileoverview`, `kind`, `license`, `overview`,
@@ -103,16 +98,18 @@ Has the following visitable properties:
 
 Has the following custom non-visitable property:
 
-1. `lastDescriptionLine` - A number
-2. `endLine` - A number representing the line number with `end`/`terminal`
-3. `descriptionStartLine` - A 0+ number indicating the line where any
+1. `delimiterLineBreak` - A string containing any line break after `delimiter`.
+2. `lastDescriptionLine` - A number
+3. `endLine` - A number representing the line number with `end`/`terminal`
+4. `descriptionStartLine` - A 0+ number indicating the line where any
     description begins
-4. `descriptionEndLine` - A 0+ number indicating the line where the description
+5. `descriptionEndLine` - A 0+ number indicating the line where the description
     ends
-5. `hasPreterminalDescription` - Set to 0 or 1. On if has a block description
+6. `hasPreterminalDescription` - Set to 0 or 1. On if has a block description
     on the same line as the terminal `*/`.
-6. `hasPreterminalTagDescription` - Set to 0 or 1. On if has a tag description
+7. `hasPreterminalTagDescription` - Set to 0 or 1. On if has a tag description
     on the same line as the terminal `*/`.
+8. `preterminalLineBreak` - A string containing any line break before `terminal`.
 
 May also have the following non-visitable properties from `comment-parser`:
 

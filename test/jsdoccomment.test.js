@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-shadow -- Needed for TS
-import {expect} from 'chai';
 import {parse as espreeParse} from 'espree';
 import {traverse} from 'estraverse';
 import {SourceCode} from 'eslint';

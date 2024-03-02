@@ -1,6 +1,3 @@
-// eslint-disable-next-line no-shadow -- Needed for TS
-import {expect} from 'chai';
-
 import {parseComment} from '../src/index.js';
 
 describe('parseComment (node)', function () {
@@ -852,5 +849,21 @@ describe('parseComment (string)', function () {
       problems: [],
       inlineTags: []
     });
+  });
+});
+
+describe('parseComment (error)', function () {
+  it('Throws on invalid argument (null)', function () {
+    // @ts-expect-error -- Testing bad arg.
+    expect(() => parseComment(null)).to.throw(
+      `'commentOrNode' is not a string or object.`
+    );
+  });
+
+  it('Throws on invalid argument (boolean)', function () {
+    // @ts-expect-error -- Testing bad arg.
+    expect(() => parseComment(false)).to.throw(
+      `'commentOrNode' is not a string or object.`
+    );
   });
 });

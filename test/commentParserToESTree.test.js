@@ -1,16 +1,17 @@
-// eslint-disable-next-line no-shadow -- Needed for TS
-import {expect} from 'chai';
-
-import {commentParserToESTree} from '../src/commentParserToESTree.js';
-import {parseComment} from '../src/parseComment.js';
+import {
+  commentParserToESTree,
+  parseComment
+} from '../src/index.js';
 
 const singleLineWithTag = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '',
   description: '',
   descriptionLines: [],
   initial: '',
   terminal: '*/',
+  preterminalLineBreak: '',
   endLine: 0,
   hasPreterminalDescription: 0,
   hasPreterminalTagDescription: 1,
@@ -54,10 +55,12 @@ const singleLineWithTag = {
 const singleLineWithMultilineTag = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '',
   description: '',
   descriptionLines: [],
   initial: '',
   terminal: '*/',
+  preterminalLineBreak: '',
   endLine: 1,
   hasPreterminalDescription: 0,
   hasPreterminalTagDescription: 1,
@@ -130,13 +133,14 @@ const singleLineWithInlineTag = ({
 }) => ({
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '',
   description,
   descriptionLines: [
     {
-      delimiter: '/**',
+      delimiter: '',
       description,
       initial: '',
-      postDelimiter: ' ',
+      postDelimiter: '',
       type: 'JsdocDescriptionLine'
     }
   ],
@@ -144,6 +148,7 @@ const singleLineWithInlineTag = ({
   descriptionEndLine: 0,
   initial: '',
   terminal: '*/',
+  preterminalLineBreak: '',
   endLine: 0,
   hasPreterminalDescription: 1,
   lastDescriptionLine: 0,
@@ -178,10 +183,12 @@ const singleTagWithInlineTag = ({
 }) => ({
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '',
   description: '',
   descriptionLines: [],
   initial: '',
   terminal: '*/',
+  preterminalLineBreak: '',
   endLine: 0,
   hasPreterminalDescription: 0,
   hasPreterminalTagDescription: 1,
@@ -276,10 +283,12 @@ description`
 
       expect(parsed).to.deep.equal({
         delimiter: '/**',
+        delimiterLineBreak: '',
         description: '',
         descriptionLines: [],
         initial: '',
         terminal: '*/',
+        preterminalLineBreak: '',
         endLine: 0,
         hasPreterminalDescription: 0,
         hasPreterminalTagDescription: 1,
@@ -348,10 +357,12 @@ description`
     expect(ast).to.deep.equal({
       type: 'JsdocBlock',
       delimiter: '/**',
+      delimiterLineBreak: '',
       description: '',
       descriptionLines: [],
       initial: '',
       terminal: '*/',
+      preterminalLineBreak: '\n',
       endLine: 1,
       hasPreterminalDescription: 0,
       lastDescriptionLine: 0,
@@ -403,10 +414,12 @@ description`
     expect(ast).to.deep.equal({
       type: 'JsdocBlock',
       delimiter: '/**',
+      delimiterLineBreak: '\n',
       description: '',
       descriptionLines: [],
       initial: '',
       terminal: '*/',
+      preterminalLineBreak: '',
       endLine: 1,
       hasPreterminalDescription: 0,
       hasPreterminalTagDescription: 1,
@@ -460,10 +473,12 @@ description`
     expect(ast).to.deep.equal({
       type: 'JsdocBlock',
       delimiter: '/**',
+      delimiterLineBreak: '\n',
       description: '',
       descriptionLines: [],
       initial: '',
       terminal: '*/',
+      preterminalLineBreak: '\n',
       endLine: 2,
       hasPreterminalDescription: 0,
       lastDescriptionLine: 1,
@@ -521,10 +536,12 @@ description`
 
       expect(ast).to.deep.equal({
         delimiter: '/**',
+        delimiterLineBreak: '\n',
         description: '',
         descriptionLines: [],
         initial: '',
         terminal: '*/',
+        preterminalLineBreak: '\n',
         endLine: 6,
         hasPreterminalDescription: 0,
         lastDescriptionLine: 1,
@@ -653,10 +670,12 @@ description`
       expect(ast).to.deep.equal({
         type: 'JsdocBlock',
         delimiter: '/**',
+        delimiterLineBreak: '\n',
         description: '',
         descriptionLines: [],
         initial: '',
         terminal: '*/',
+        preterminalLineBreak: '\n',
         endLine: 4,
         hasPreterminalDescription: 0,
         lastDescriptionLine: 1,
@@ -665,13 +684,20 @@ description`
         tags: [
           {
             delimiter: '*',
-            description: '\nmultiline\ndescription',
+            description: 'multiline\ndescription',
             descriptionLines: [
               {
                 delimiter: '',
-                description: 'multiline',
+                description: '',
                 postDelimiter: '',
                 initial: '',
+                type: 'JsdocDescriptionLine'
+              },
+              {
+                delimiter: '*',
+                description: 'multiline',
+                postDelimiter: ' ',
+                initial: ' ',
                 type: 'JsdocDescriptionLine'
               },
               {
@@ -725,14 +751,15 @@ description`
       expect(ast).to.deep.equal({
         type: 'JsdocBlock',
         delimiter: '/**',
+        delimiterLineBreak: '',
         description: 'Some multiline description *',
         descriptionEndLine: 0,
         descriptionLines: [
           {
-            delimiter: '/**',
+            delimiter: '',
             description: 'Some multiline description *',
             initial: '',
-            postDelimiter: ' ',
+            postDelimiter: '',
             type: 'JsdocDescriptionLine'
           }
         ],
@@ -745,7 +772,8 @@ description`
         postDelimiter: ' ',
         tags: [],
         inlineTags: [],
-        terminal: '*/'
+        terminal: '*/',
+        preterminalLineBreak: ''
       });
     }
   );
@@ -763,14 +791,15 @@ description`
       expect(ast).to.deep.equal({
         type: 'JsdocBlock',
         delimiter: '/**',
+        delimiterLineBreak: '',
         description: 'Some\nmultiline description *',
         descriptionEndLine: 1,
         descriptionLines: [
           {
-            delimiter: '/**',
+            delimiter: '',
             description: 'Some',
             initial: '',
-            postDelimiter: ' ',
+            postDelimiter: '',
             type: 'JsdocDescriptionLine'
           },
           {
@@ -790,7 +819,8 @@ description`
         postDelimiter: ' ',
         tags: [],
         inlineTags: [],
-        terminal: '*/'
+        terminal: '*/',
+        preterminalLineBreak: ''
       });
     }
   );
@@ -811,6 +841,7 @@ description`
       expect(ast).to.deep.equal({
         type: 'JsdocBlock',
         delimiter: '/**',
+        delimiterLineBreak: '\n',
         description: 'Some\nmultiline\ndescription',
         descriptionStartLine: 1,
         descriptionEndLine: 3,
@@ -839,6 +870,7 @@ description`
         ],
         initial: '',
         terminal: '*/',
+        preterminalLineBreak: '\n',
         endLine: 4,
         hasPreterminalDescription: 0,
         lastDescriptionLine: 4,
@@ -861,10 +893,12 @@ description`
 
     expect(ast).to.deep.equal({
       delimiter: '/**',
+      delimiterLineBreak: '\n',
       description: '',
       descriptionLines: [],
       initial: '',
       terminal: '*/',
+      preterminalLineBreak: '\n',
       endLine: 2,
       hasPreterminalDescription: 0,
       lastDescriptionLine: 1,

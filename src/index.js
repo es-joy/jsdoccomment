@@ -42,16 +42,9 @@ export {visitorKeys as jsdocTypeVisitorKeys} from 'jsdoc-type-pratt-parser';
 
 export * from 'jsdoc-type-pratt-parser';
 
-export {default as commentHandler} from './commentHandler.js';
-
-export {default as toCamelCase} from './toCamelCase.js';
-
-export * from './parseComment.js';
-
-export {default as parseInlineTags} from './parseInlineTags.js';
-
+export * from './commentHandler.js';
 export * from './commentParserToESTree.js';
-
+export * from './estreeToString.js';
 export * from './jsdoccomment.js';
-
-export {default as estreeToString} from './estreeToString.js';
+export * from './parseComment.js';
+export * from './parseInlineTags.js';

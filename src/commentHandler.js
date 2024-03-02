@@ -40,4 +40,4 @@ const commentHandler = (settings) => {
   };
 };
 
-export default commentHandler;
+export {commentHandler};

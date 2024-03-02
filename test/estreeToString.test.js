@@ -1,19 +1,20 @@
-// eslint-disable-next-line no-shadow -- Needed for TS
-import {expect} from 'chai';
-
-import estreeToString from '../src/estreeToString.js';
-import {commentParserToESTree} from '../src/commentParserToESTree.js';
-import {parseComment} from '../src/parseComment.js';
+import {
+  commentParserToESTree,
+  estreeToString,
+  parseComment
+} from '../src/index.js';
 
 /** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const singleLineWithTag = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '',
   description: '',
   descriptionLines: [],
   initial: '',
   hasPreterminalDescription: 0,
   terminal: '*/',
+  preterminalLineBreak: '',
   endLine: 0,
   lastDescriptionLine: 0,
   lineEnd: '',
@@ -55,11 +56,13 @@ const singleLineWithTag = {
 const jsdocBlock = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '\n',
   description: '',
   descriptionLines: [],
   initial: '',
   hasPreterminalDescription: 0,
   terminal: '*/',
+  preterminalLineBreak: '\n',
   endLine: 4,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -70,6 +73,13 @@ const jsdocBlock = {
       delimiter: '*',
       description: 'multi-line\ndescription',
       descriptionLines: [
+        {
+          delimiter: '',
+          description: '',
+          postDelimiter: '',
+          initial: '',
+          type: 'JsdocDescriptionLine'
+        },
         {
           delimiter: '*',
           description: 'multi-line',
@@ -116,6 +126,7 @@ const jsdocBlock = {
 const jsdocBlockMultilineDesc = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '\n',
   description: '',
   descriptionLines: [
     {
@@ -137,6 +148,7 @@ const jsdocBlockMultilineDesc = {
   hasPreterminalDescription: 0,
   inlineTags: [],
   terminal: '*/',
+  preterminalLineBreak: '\n',
   endLine: 4,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -178,6 +190,7 @@ const jsdocBlockMultilineDesc = {
 const jsdocBlockNoTags = {
   type: 'JsdocBlock',
   delimiter: '/**',
+  delimiterLineBreak: '\n',
   description: 'test',
   descriptionLines: [
     {
@@ -191,6 +204,7 @@ const jsdocBlockNoTags = {
   initial: '',
   hasPreterminalDescription: 0,
   terminal: '*/',
+  preterminalLineBreak: '\n',
   endLine: 2,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -202,11 +216,13 @@ const jsdocBlockNoTags = {
 /** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const blockWithTagNameYetNoType = {
   delimiter: '/**',
+  delimiterLineBreak: '\n',
   description: '',
   descriptionLines: [],
   initial: '',
   hasPreterminalDescription: 0,
   terminal: '*/',
+  preterminalLineBreak: '\n',
   endLine: 2,
   lastDescriptionLine: 1,
   lineEnd: '',
@@ -424,5 +440,19 @@ describe('`estreeToString`', function () {
         type: 'UnknownType'
       }));
     }).to.throw('Unhandled node type: UnknownType');
+  });
+
+  it('handles JsdocType / pratt type', function () {
+    expect(estreeToString({
+      type: 'JsdocTypeName',
+      value: 'string'
+    })).to.equal('{string}');
+  });
+
+  it('handles JsdocType / pratt type (preferRawType)', function () {
+    expect(estreeToString({
+      type: 'JsdocTypeName',
+      value: 'string'
+    }, {preferRawType: true})).to.equal('');
   });
 });
