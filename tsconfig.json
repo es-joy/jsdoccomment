@@ -1,16 +1,12 @@
 {
   "compilerOptions": {
     "lib": ["es2022"],
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
+    "moduleResolution": "Bundler",
+    "module": "es2022",
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
-    "declaration": true,
-    "declarationMap": true,
     "strict": true,
-    "target": "es6",
-    "outDir": "dist",
     "types": ["vitest/globals"]
   },
   "include": ["src/**/*.js", "test/**/*.js", "typings/espree.d.ts"],
