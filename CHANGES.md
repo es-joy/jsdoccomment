@@ -1,8 +1,23 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.43.0
+
+This release brings surgical round trip parsing to generated AST and reconstruction of JSDoc comment blocks via: `parseComment` ->
+`commentParserToESTree` -> `estreeToString`.
+
+- feat: new option `spacing` for `commentParserToESTree`; the default is `compact` removing empty description lines.
+Set to `preserve` to retain empty description lines.
+- feat: new properties in the `JsdocBlock` generated AST `delimiterLineBreak` and `preterminalLineBreak` that encode
+any line break after the opening `delimiter` and before the closing `terminal` string. Values are either `\n` or an
+empty string.
+- chore: update devDeps / switch to Vitest.
+
+Thanks:
+- [@typhonrt](https://github.com/typhonrt)
+
 ## 0.42.0
 
-- feat: expand argument for `parseComment` to accept a comment token string (@typhonrt)
+- feat: expand argument for `parseComment` to accept a comment token string ([@typhonrt](https://github.com/typhonrt))
 - chore: update devDeps.
 
 ## 0.41.0
