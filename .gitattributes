@@ -1,0 +1,2 @@
+# Set line endings / allows Windows checkout to pass Eslint rules.
+* text eol=lf
