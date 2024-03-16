@@ -33,6 +33,7 @@
     "prepublishOnly": "pnpm i && npm run build",
     "test": "npm run lint && npm run build && vitest run --coverage",
     "test-ui": "vitest --ui --coverage",
+    "tsc": "tsc",
     "types": "esm-d-ts gen ./src/index.js --output ./dist/index.d.ts"
   },
   "typedocOptions": {
@@ -53,7 +54,9 @@
     "node": ">=16"
   },
   "dependencies": {
-    "@typescript-eslint/types": "^7.1.0",
+    "@typescript-eslint/types": "^7.2.0",
+    "@types/eslint": "^8.56.5",
+    "@types/estree": "^1.0.5",
     "comment-parser": "1.4.1",
     "esquery": "^1.5.0",
     "jsdoc-type-pratt-parser": "~4.0.0"
@@ -64,10 +67,8 @@
     "@babel/preset-env": "^7.23.9",
     "@brettz9/eslint-plugin": "^1.0.4",
     "@rollup/plugin-babel": "^6.0.4",
-    "@types/eslint": "^8.56.2",
     "@types/esquery": "^1.5.3",
     "@types/estraverse": "^5.1.7",
-    "@types/estree": "^1.0.5",
     "@typhonjs-build-test/esm-d-ts": "^0.3.0-next.1",
     "@typhonjs-typedoc/typedoc-pkg": "^0.0.4",
     "@vitest/coverage-v8": "^1.3.0",
@@ -91,6 +92,13 @@
     "espree": "^10.0.0",
     "estraverse": "^5.3.0",
     "rollup": "^4.9.6",
+    "typescript": "^5.4.2",
     "vitest": "^1.3.0"
-  }
+  },
+  "files": [
+    "/dist",
+    "/src",
+    "CHANGES.md",
+    "LICENSE-MIT.txt"
+  ]
 }
