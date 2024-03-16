@@ -3,10 +3,12 @@
     "lib": ["es2022"],
     "moduleResolution": "Bundler",
     "module": "es2022",
+    "target": "es2022",
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
     "strict": true,
+    "skipLibCheck": true,
     "types": ["vitest/globals"]
   },
   "include": ["src/**/*.js", "test/**/*.js", "typings/espree.d.ts"],
