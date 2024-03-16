@@ -1,7 +1,6 @@
 import {
   configDefaults,
   defineConfig
-  // eslint-disable-next-line n/no-unpublished-import -- This is exported.
 } from 'vitest/config';
 
 export default defineConfig({
