@@ -1,6 +1,10 @@
 # @es-joy/jsdoccomment
 
-[![Node.js CI status](https://github.com/brettz9/getJSDocComment/workflows/Node.js%20CI/badge.svg)](https://github.com/brettz9/getJSDocComment/actions)
+[![NPM](https://img.shields.io/npm/v/@es-joy/jsdoccomment.svg?label=npm)](https://www.npmjs.com/package/@es-joy/jsdoccomment)
+[![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg?style=flat)](https://github.com/es-joy/jsdoccomment/blob/main/LICENSE-MIT.txt)
+[![Build Status](https://github.com/es-joy/jsdoccomment/workflows/CI/CD/badge.svg)](#)
+[![API Docs](https://img.shields.io/badge/API%20Documentation-476ff0)](https://es-joy.github.io/jsdoccomment/)
+
 
 This project aims to preserve and expand upon the
 `SourceCode#getJSDocComment` functionality of the deprecated ESLint method.
@@ -208,7 +212,7 @@ npm i @es-joy/jsdoccomment
 
 ## Changelog
 
-The changelog can be found on the [CHANGES.md](./CHANGES.md).
+The changelog can be found on the [CHANGES.md](https://github.com/es-joy/jsdoccomment/blob/main/CHANGES.md).
 <!--## Contributing
 
 Everyone is welcome to contribute. Please take a moment to review the [contributing guidelines](CONTRIBUTING.md).
@@ -216,9 +220,9 @@ Everyone is welcome to contribute. Please take a moment to review the [contribut
 ## Authors and license
 
 [Brett Zamir](http://brett-zamir.me/) and
-[contributors](https://github.com/es-joy/jsdoc-eslint-parser/graphs/contributors).
+[contributors](https://github.com/es-joy/jsdoccomment/graphs/contributors).
 
-MIT License, see the included [LICENSE-MIT.txt](LICENSE-MIT.txt) file.
+MIT License, see the included [LICENSE-MIT.txt](https://github.com/es-joy/jsdoccomment/blob/main/LICENSE-MIT.txt) file.
 
 ## To-dos
 

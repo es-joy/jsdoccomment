@@ -1,5 +1,5 @@
 /**
- * @typedef {import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+ * @typedef {import('./commentParserToESTree').JsdocInlineTagNoType & {
  *   start: number,
  *   end: number,
  * }} InlineTag
@@ -7,9 +7,9 @@
 
 /**
  * @typedef {import('comment-parser').Spec & {
- *   line?: import('./commentParserToESTree.js').Integer,
- *   inlineTags: (import('./commentParserToESTree.js').JsdocInlineTagNoType & {
- *     line?: import('./commentParserToESTree.js').Integer
+ *   line?: import('./commentParserToESTree').Integer,
+ *   inlineTags: (import('./commentParserToESTree').JsdocInlineTagNoType & {
+ *     line?: import('./commentParserToESTree').Integer
  *   })[]
  * }} JsdocTagWithInline
  */
@@ -21,8 +21,8 @@
  *   source: import('comment-parser').Line[],
  *   problems: import('comment-parser').Problem[],
  *   tags: JsdocTagWithInline[],
- *   inlineTags: (import('./commentParserToESTree.js').JsdocInlineTagNoType & {
- *     line?: import('./commentParserToESTree.js').Integer
+ *   inlineTags: (import('./commentParserToESTree').JsdocInlineTagNoType & {
+ *     line?: import('./commentParserToESTree').Integer
  *   })[]
  * }} JsdocBlockWithInline
  */
@@ -34,7 +34,7 @@
 /**
  * @callback CommentHandler
  * @param {string} commentSelector
- * @param {import('./index.js').JsdocBlockWithInline} jsdoc
+ * @param {import('.').JsdocBlockWithInline} jsdoc
  * @returns {boolean}
  */
 

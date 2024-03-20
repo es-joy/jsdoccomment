@@ -127,7 +127,7 @@ const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
 
 /**
  * Converts comment parser AST to ESTree format.
- * @param {import('./index.js').JsdocBlockWithInline} jsdoc
+ * @param {import('.').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
  * @param {'compact'|'preserve'} [opts.spacing] By default, empty lines are

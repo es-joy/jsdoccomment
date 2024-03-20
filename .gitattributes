@@ -1,0 +1,6 @@
+# Set line endings / allows Windows checkout to pass Eslint rules.
+* text eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary

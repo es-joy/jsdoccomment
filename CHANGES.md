@@ -10,7 +10,10 @@ Set to `preserve` to retain empty description lines.
 - feat: new properties in the `JsdocBlock` generated AST `delimiterLineBreak` and `preterminalLineBreak` that encode
 any line break after the opening `delimiter` and before the closing `terminal` string. Values are either `\n` or an
 empty string.
+
 - chore: update devDeps / switch to Vitest.
+
+- New [API documentation](https://es-joy.github.io/jsdoccomment/).
 
 Thanks:
 - [@typhonrt](https://github.com/typhonrt)

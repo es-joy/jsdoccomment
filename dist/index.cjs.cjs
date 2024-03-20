@@ -127,7 +127,7 @@ const inlineTagToAST = ({
 
 /**
  * Converts comment parser AST to ESTree format.
- * @param {import('./index.js').JsdocBlockWithInline} jsdoc
+ * @param {import('.').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {object} opts
  * @param {'compact'|'preserve'} [opts.spacing] By default, empty lines are
@@ -460,16 +460,12 @@ const jsdocVisitorKeys = {
 };
 
 /**
- * @typedef {import('./index.js').CommentHandler} CommentHandler
- */
-
-/**
  * @param {{[name: string]: any}} settings
- * @returns {CommentHandler}
+ * @returns {import('.').CommentHandler}
  */
 const commentHandler = settings => {
   /**
-   * @type {CommentHandler}
+   * @type {import('.').CommentHandler}
    */
   return (commentSelector, jsdoc) => {
     const {
@@ -488,15 +484,11 @@ const commentHandler = settings => {
   };
 };
 
-/**
- * @typedef {import('./index.js').ESTreeToStringOptions} ESTreeToStringOptions
- */
-
 /** @type {Record<string, Function>} */
 const stringifiers = {
   JsdocBlock,
   /**
-   * @param {import('./commentParserToESTree.js').JsdocDescriptionLine} node
+   * @param {import('./commentParserToESTree').JsdocDescriptionLine} node
    * @returns {string}
    */
   JsdocDescriptionLine({
@@ -508,7 +500,7 @@ const stringifiers = {
     return `${initial}${delimiter}${postDelimiter}${description}`;
   },
   /**
-   * @param {import('./commentParserToESTree.js').JsdocTypeLine} node
+   * @param {import('./commentParserToESTree').JsdocTypeLine} node
    * @returns {string}
    */
   JsdocTypeLine({
@@ -520,7 +512,7 @@ const stringifiers = {
     return `${initial}${delimiter}${postDelimiter}${rawType}`;
   },
   /**
-   * @param {import('./commentParserToESTree.js').JsdocInlineTag} node
+   * @param {import('./commentParserToESTree').JsdocInlineTag} node
    */
   JsdocInlineTag({
     format,
@@ -538,14 +530,14 @@ const stringifiers = {
 /**
  * @todo convert for use by escodegen (until may be patched to support
  *   custom entries?).
- * @param {import('./commentParserToESTree.js').JsdocBlock|
- *   import('./commentParserToESTree.js').JsdocDescriptionLine|
- *   import('./commentParserToESTree.js').JsdocTypeLine|
- *   import('./commentParserToESTree.js').JsdocTag|
- *   import('./commentParserToESTree.js').JsdocInlineTag|
+ * @param {import('./commentParserToESTree').JsdocBlock|
+ *   import('./commentParserToESTree').JsdocDescriptionLine|
+ *   import('./commentParserToESTree').JsdocTypeLine|
+ *   import('./commentParserToESTree').JsdocTag|
+ *   import('./commentParserToESTree').JsdocInlineTag|
  *   import('jsdoc-type-pratt-parser').RootResult
  * } node
- * @param {ESTreeToStringOptions} opts
+ * @param {import('.').ESTreeToStringOptions} opts
  * @throws {Error}
  * @returns {string}
  */
@@ -553,10 +545,10 @@ function estreeToString(node, opts = {}) {
   if (Object.prototype.hasOwnProperty.call(stringifiers, node.type)) {
     return stringifiers[
     /**
-     * @type {import('./commentParserToESTree.js').JsdocBlock|
-     *   import('./commentParserToESTree.js').JsdocDescriptionLine|
-     *   import('./commentParserToESTree.js').JsdocTypeLine|
-     *   import('./commentParserToESTree.js').JsdocTag}
+     * @type {import('./commentParserToESTree').JsdocBlock|
+     *   import('./commentParserToESTree').JsdocDescriptionLine|
+     *   import('./commentParserToESTree').JsdocTypeLine|
+     *   import('./commentParserToESTree').JsdocTag}
      */
     node.type](node, opts);
   }
@@ -570,8 +562,8 @@ function estreeToString(node, opts = {}) {
 }
 
 /**
- * @param {import('./commentParserToESTree.js').JsdocBlock} node
- * @param {ESTreeToStringOptions} opts
+ * @param {import('./commentParserToESTree').JsdocBlock} node
+ * @param {import('.').ESTreeToStringOptions} opts
  * @returns {string}
  */
 function JsdocBlock(node, opts) {
@@ -604,8 +596,8 @@ function JsdocBlock(node, opts) {
 }
 
 /**
- * @param {import('./commentParserToESTree.js').JsdocTag} node
- * @param {ESTreeToStringOptions} opts
+ * @param {import('./commentParserToESTree').JsdocTag} node
+ * @param {import('.').ESTreeToStringOptions} opts
  * @returns {string}
  */
 function JsdocTag(node, opts) {
@@ -655,7 +647,6 @@ function JsdocTag(node, opts) {
   return result;
 }
 
-/* eslint-disable jsdoc/imports-as-dependencies -- https://github.com/gajus/eslint-plugin-jsdoc/issues/1114 */
 /**
  * Obtained originally from {@link https://github.com/eslint/eslint/blob/master/lib/util/source-code.js#L313}.
  *
@@ -994,16 +985,12 @@ function determineFormat(match) {
 }
 
 /**
- * @typedef {import('./index.js').InlineTag} InlineTag
- */
-
-/**
  * Extracts inline tags from a description.
  * @param {string} description
- * @returns {InlineTag[]} Array of inline tags from the description.
+ * @returns {import('.').InlineTag[]} Array of inline tags from the description.
  */
 function parseDescription(description) {
-  /** @type {InlineTag[]} */
+  /** @type {import('.').InlineTag[]} */
   const result = [];
 
   // This could have been expressed in a single pattern,
@@ -1050,28 +1037,28 @@ function parseDescription(description) {
  * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
  * @param {import('comment-parser').Block} block
- * @returns {import('./index.js').JsdocBlockWithInline}
+ * @returns {import('.').JsdocBlockWithInline}
  */
 function parseInlineTags(block) {
   const inlineTags =
   /**
-   * @type {(import('./commentParserToESTree.js').JsdocInlineTagNoType & {
-   *   line?: import('./commentParserToESTree.js').Integer
+   * @type {(import('./commentParserToESTree').JsdocInlineTagNoType & {
+   *   line?: import('./commentParserToESTree').Integer
    * })[]}
    */
   parseDescription(block.description);
 
-  /** @type {import('./index.js').JsdocBlockWithInline} */
+  /** @type {import('.').JsdocBlockWithInline} */
   block.inlineTags = inlineTags;
   for (const tag of block.tags) {
     /**
-     * @type {import('./index.js').JsdocTagWithInline}
+     * @type {import('.').JsdocTagWithInline}
      */
     tag.inlineTags = parseDescription(tag.description);
   }
   return (
     /**
-     * @type {import('./index.js').JsdocBlockWithInline}
+     * @type {import('.').JsdocBlockWithInline}
      */
     block
   );
@@ -1190,7 +1177,7 @@ const getTokenizers = ({
  * `comment-parser` AST.
  * @param {string | {value: string}} commentOrNode
  * @param {string} [indent] Whitespace
- * @returns {import('./index.js').JsdocBlockWithInline}
+ * @returns {import('.').JsdocBlockWithInline}
  */
 const parseComment = (commentOrNode, indent = '') => {
   let block;

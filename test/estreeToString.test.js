@@ -4,7 +4,7 @@ import {
   parseComment
 } from '../src/index.js';
 
-/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
+/** @type {import('../src/commentParserToESTree').JsdocBlock} */
 const singleLineWithTag = {
   type: 'JsdocBlock',
   delimiter: '/**',
@@ -52,7 +52,7 @@ const singleLineWithTag = {
   ]
 };
 
-/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
+/** @type {import('../src/commentParserToESTree').JsdocBlock} */
 const jsdocBlock = {
   type: 'JsdocBlock',
   delimiter: '/**',
@@ -122,7 +122,7 @@ const jsdocBlock = {
   ]
 };
 
-/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
+/** @type {import('../src/commentParserToESTree').JsdocBlock} */
 const jsdocBlockMultilineDesc = {
   type: 'JsdocBlock',
   delimiter: '/**',
@@ -186,7 +186,7 @@ const jsdocBlockMultilineDesc = {
   ]
 };
 
-/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
+/** @type {import('../src/commentParserToESTree').JsdocBlock} */
 const jsdocBlockNoTags = {
   type: 'JsdocBlock',
   delimiter: '/**',
@@ -213,7 +213,7 @@ const jsdocBlockNoTags = {
   tags: []
 };
 
-/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
+/** @type {import('../src/commentParserToESTree').JsdocBlock} */
 const blockWithTagNameYetNoType = {
   delimiter: '/**',
   delimiterLineBreak: '\n',
@@ -250,7 +250,7 @@ const blockWithTagNameYetNoType = {
   type: 'JsdocBlock'
 };
 
-/** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
+/** @type {import('../src/commentParserToESTree').JsdocBlock} */
 const jsdocBlockEmptyTags = {
   ...JSON.parse(JSON.stringify(jsdocBlockNoTags)),
   tags: []
@@ -380,7 +380,7 @@ describe('`estreeToString`', function () {
   );
 
   it('handles pipe inline tag', function () {
-    /** @type {import('../src/commentParserToESTree.js').JsdocInlineTag} */
+    /** @type {import('../src/commentParserToESTree').JsdocInlineTag} */
     const ast = {
       tag: 'link',
       namepathOrURL: 'Something',
@@ -393,7 +393,7 @@ describe('`estreeToString`', function () {
   });
 
   it('handles plain inline tag', function () {
-    /** @type {import('../src/commentParserToESTree.js').JsdocInlineTag} */
+    /** @type {import('../src/commentParserToESTree').JsdocInlineTag} */
     const ast = {
       tag: 'link',
       namepathOrURL: 'Something',
@@ -406,7 +406,7 @@ describe('`estreeToString`', function () {
   });
 
   it('handles space inline tag', function () {
-    /** @type {import('../src/commentParserToESTree.js').JsdocInlineTag} */
+    /** @type {import('../src/commentParserToESTree').JsdocInlineTag} */
     const ast = {
       tag: 'link',
       namepathOrURL: 'Something',
@@ -419,7 +419,7 @@ describe('`estreeToString`', function () {
   });
 
   it('handles prefix inline tag', function () {
-    /** @type {import('../src/commentParserToESTree.js').JsdocInlineTag} */
+    /** @type {import('../src/commentParserToESTree').JsdocInlineTag} */
     const ast = {
       tag: 'link',
       namepathOrURL: 'Something',

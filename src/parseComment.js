@@ -145,7 +145,7 @@ const getTokenizers = ({
  * `comment-parser` AST.
  * @param {string | {value: string}} commentOrNode
  * @param {string} [indent] Whitespace
- * @returns {import('./index.js').JsdocBlockWithInline}
+ * @returns {import('.').JsdocBlockWithInline}
  */
 const parseComment = (commentOrNode, indent = '') => {
   let block;

@@ -1,15 +1,11 @@
 import {stringify as prattStringify} from 'jsdoc-type-pratt-parser';
 
-/**
- * @typedef {import('./index.js').ESTreeToStringOptions} ESTreeToStringOptions
- */
-
 /** @type {Record<string, Function>} */
 const stringifiers = {
   JsdocBlock,
 
   /**
-   * @param {import('./commentParserToESTree.js').JsdocDescriptionLine} node
+   * @param {import('./commentParserToESTree').JsdocDescriptionLine} node
    * @returns {string}
    */
   JsdocDescriptionLine ({
@@ -19,7 +15,7 @@ const stringifiers = {
   },
 
   /**
-   * @param {import('./commentParserToESTree.js').JsdocTypeLine} node
+   * @param {import('./commentParserToESTree').JsdocTypeLine} node
    * @returns {string}
    */
   JsdocTypeLine ({
@@ -29,7 +25,7 @@ const stringifiers = {
   },
 
   /**
-   * @param {import('./commentParserToESTree.js').JsdocInlineTag} node
+   * @param {import('./commentParserToESTree').JsdocInlineTag} node
    */
   JsdocInlineTag ({format, namepathOrURL, tag, text}) {
     return format === 'pipe'
@@ -48,14 +44,14 @@ const stringifiers = {
 /**
  * @todo convert for use by escodegen (until may be patched to support
  *   custom entries?).
- * @param {import('./commentParserToESTree.js').JsdocBlock|
- *   import('./commentParserToESTree.js').JsdocDescriptionLine|
- *   import('./commentParserToESTree.js').JsdocTypeLine|
- *   import('./commentParserToESTree.js').JsdocTag|
- *   import('./commentParserToESTree.js').JsdocInlineTag|
+ * @param {import('./commentParserToESTree').JsdocBlock|
+ *   import('./commentParserToESTree').JsdocDescriptionLine|
+ *   import('./commentParserToESTree').JsdocTypeLine|
+ *   import('./commentParserToESTree').JsdocTag|
+ *   import('./commentParserToESTree').JsdocInlineTag|
  *   import('jsdoc-type-pratt-parser').RootResult
  * } node
- * @param {ESTreeToStringOptions} opts
+ * @param {import('.').ESTreeToStringOptions} opts
  * @throws {Error}
  * @returns {string}
  */
@@ -63,10 +59,10 @@ function estreeToString (node, opts = {}) {
   if (Object.prototype.hasOwnProperty.call(stringifiers, node.type)) {
     return stringifiers[
       /**
-       * @type {import('./commentParserToESTree.js').JsdocBlock|
-       *   import('./commentParserToESTree.js').JsdocDescriptionLine|
-       *   import('./commentParserToESTree.js').JsdocTypeLine|
-       *   import('./commentParserToESTree.js').JsdocTag}
+       * @type {import('./commentParserToESTree').JsdocBlock|
+       *   import('./commentParserToESTree').JsdocDescriptionLine|
+       *   import('./commentParserToESTree').JsdocTypeLine|
+       *   import('./commentParserToESTree').JsdocTag}
        */
       (node).type
     ](
@@ -90,8 +86,8 @@ function estreeToString (node, opts = {}) {
 }
 
 /**
- * @param {import('./commentParserToESTree.js').JsdocBlock} node
- * @param {ESTreeToStringOptions} opts
+ * @param {import('./commentParserToESTree').JsdocBlock} node
+ * @param {import('.').ESTreeToStringOptions} opts
  * @returns {string}
  */
 function JsdocBlock (node, opts) {
@@ -126,8 +122,8 @@ function JsdocBlock (node, opts) {
 }
 
 /**
- * @param {import('./commentParserToESTree.js').JsdocTag} node
- * @param {ESTreeToStringOptions} opts
+ * @param {import('./commentParserToESTree').JsdocTag} node
+ * @param {import('.').ESTreeToStringOptions} opts
  * @returns {string}
  */
 function JsdocTag (node, opts) {
