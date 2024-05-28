@@ -204,6 +204,9 @@ camel-cased type name, e.g., `JsdocTypeUnion`.
 
 The `jsdoc-type-pratt-parser` visitor keys are also preserved without change.
 
+You can get a sense of the structure of these types using the parser's
+[tester](https://jsdoc-type-pratt-parser.github.io/jsdoc-type-pratt-parser/).
+
 ## Installation
 
 ```shell
