@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.43.1
+
+- fix: for `@template` name parsing, ensure (default-)bracketed name is not broken with internal spaces.
+
 ## 0.43.0
 
 This release brings surgical round trip parsing to generated AST and reconstruction of JSDoc comment blocks via: `parseComment` ->

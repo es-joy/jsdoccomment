@@ -850,6 +850,123 @@ describe('parseComment (string)', function () {
       inlineTags: []
     });
   });
+
+  it('Handle simple @template', function () {
+    const parsed = parseComment(
+      `/**\n * @template [SomeBracketedName] Desc.\n */`
+    );
+
+    expect(parsed).to.deep.equal({
+      description: '',
+      tags: [
+        {
+          tag: 'template',
+          name: '[SomeBracketedName]',
+          type: '',
+          optional: false,
+          description: 'Desc.',
+          problems: [],
+          source: [
+            {
+              number: 1,
+              source: ' * @template [SomeBracketedName] Desc.',
+              tokens: {
+                start: ' ',
+                delimiter: '*',
+                postDelimiter: ' ',
+                tag: '@template',
+                postTag: ' ',
+                name: '[SomeBracketedName]',
+                postName: ' ',
+                type: '',
+                postType: '',
+                description: 'Desc.',
+                end: '',
+                lineEnd: ''
+              }
+            },
+            {
+              number: 2,
+              source: ' */',
+              tokens: {
+                start: ' ',
+                delimiter: '',
+                postDelimiter: '',
+                tag: '',
+                postTag: '',
+                name: '',
+                postName: '',
+                type: '',
+                postType: '',
+                description: '',
+                end: '*/',
+                lineEnd: ''
+              }
+            }
+          ],
+          inlineTags: []
+        }
+      ],
+      source: [
+        {
+          number: 0,
+          source: '/**',
+          tokens: {
+            start: '',
+            delimiter: '/**',
+            postDelimiter: '',
+            tag: '',
+            postTag: '',
+            name: '',
+            postName: '',
+            type: '',
+            postType: '',
+            description: '',
+            end: '',
+            lineEnd: ''
+          }
+        },
+        {
+          number: 1,
+          source: ' * @template [SomeBracketedName] Desc.',
+          tokens: {
+            start: ' ',
+            delimiter: '*',
+            postDelimiter: ' ',
+            tag: '@template',
+            postTag: ' ',
+            name: '[SomeBracketedName]',
+            postName: ' ',
+            type: '',
+            postType: '',
+            description: 'Desc.',
+            end: '',
+            lineEnd: ''
+          }
+        },
+        {
+          number: 2,
+          source: ' */',
+          tokens: {
+            start: ' ',
+            delimiter: '',
+            postDelimiter: '',
+            tag: '',
+            postTag: '',
+            name: '',
+            postName: '',
+            type: '',
+            postType: '',
+            description: '',
+            end: '*/',
+            lineEnd: ''
+          }
+        }
+      ],
+      problems: [],
+      inlineTags: []
+    });
+  });
 });
 
 describe('parseComment (error)', function () {
