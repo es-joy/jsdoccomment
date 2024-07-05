@@ -887,12 +887,16 @@ const getReducedASTNode = function (node, sourceCode) {
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
+ * @param {{nonJSDoc?: boolean}} [opts]
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
  * @private
  */
-const findJSDocComment = (astNode, sourceCode, settings) => {
+const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
   var _parenthesisToken, _parenthesisToken2;
+  const {
+    nonJSDoc
+  } = opts;
   const {
     minLines,
     maxLines
@@ -921,7 +925,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
     if (!tokenBefore || !isCommentToken(tokenBefore)) {
       return null;
     }
-    if (tokenBefore.type === 'Line') {
+    if (!nonJSDoc && tokenBefore.type === 'Line') {
       currentNode = tokenBefore;
       continue;
     }
@@ -932,7 +936,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
   if (!tokenBefore || !currentNode.loc || !tokenBefore.loc) {
     return null;
   }
-  if (tokenBefore.type === 'Block' && /^\*\s/u.test(tokenBefore.value) && currentNode.loc.start.line - ( /** @type {import('eslint').AST.Token} */(_parenthesisToken = parenthesisToken) !== null && _parenthesisToken !== void 0 ? _parenthesisToken : tokenBefore).loc.end.line >= minLines && currentNode.loc.start.line - ( /** @type {import('eslint').AST.Token} */(_parenthesisToken2 = parenthesisToken) !== null && _parenthesisToken2 !== void 0 ? _parenthesisToken2 : tokenBefore).loc.end.line <= maxLines) {
+  if ((nonJSDoc && (tokenBefore.type !== 'Block' || !/^\*\s/u.test(tokenBefore.value)) || !nonJSDoc && tokenBefore.type === 'Block' && /^\*\s/u.test(tokenBefore.value)) && currentNode.loc.start.line - ( /** @type {import('eslint').AST.Token} */(_parenthesisToken = parenthesisToken) !== null && _parenthesisToken !== void 0 ? _parenthesisToken : tokenBefore).loc.end.line >= minLines && currentNode.loc.start.line - ( /** @type {import('eslint').AST.Token} */(_parenthesisToken2 = parenthesisToken) !== null && _parenthesisToken2 !== void 0 ? _parenthesisToken2 : tokenBefore).loc.end.line <= maxLines) {
     return tokenBefore;
   }
   return null;
@@ -954,6 +958,26 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
 const getJSDocComment = function (sourceCode, node, settings) {
   const reducedNode = getReducedASTNode(node, sourceCode);
   return findJSDocComment(reducedNode, sourceCode, settings);
+};
+
+/**
+ * Retrieves the comment preceding a given node.
+ *
+ * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
+ * @param {import('eslint').Rule.Node} node The AST node to get
+ *   the comment for.
+ * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
+ *   settings in context
+ * @returns {Token|null} The Block comment
+ *   token containing the JSDoc comment for the given node or
+ *   null if not found.
+ * @public
+ */
+const getNonJsdocComment = function (sourceCode, node, settings) {
+  const reducedNode = getReducedASTNode(node, sourceCode);
+  return findJSDocComment(reducedNode, sourceCode, settings, {
+    nonJSDoc: true
+  });
 };
 
 /**
@@ -1228,6 +1252,7 @@ exports.estreeToString = estreeToString;
 exports.findJSDocComment = findJSDocComment;
 exports.getDecorator = getDecorator;
 exports.getJSDocComment = getJSDocComment;
+exports.getNonJsdocComment = getNonJsdocComment;
 exports.getReducedASTNode = getReducedASTNode;
 exports.getTokenizers = getTokenizers;
 exports.hasSeeWithLink = hasSeeWithLink;

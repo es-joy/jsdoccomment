@@ -170,6 +170,28 @@ declare function getJSDocComment(
   },
 ): Token | null;
 /**
+ * Retrieves the comment preceding a given node.
+ *
+ * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
+ * @param {import('eslint').Rule.Node} node The AST node to get
+ *   the comment for.
+ * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
+ *   settings in context
+ * @returns {Token|null} The Block comment
+ *   token containing the JSDoc comment for the given node or
+ *   null if not found.
+ * @public
+ */
+declare function getNonJsdocComment(
+  sourceCode: eslint.SourceCode,
+  node: eslint.Rule.Node,
+  settings: {
+    [name: string]: any;
+    maxLines: int;
+    minLines: int;
+  },
+): Token | null;
+/**
  * @param {(import('estree').Comment|import('eslint').Rule.Node) & {
  *   declaration?: any,
  *   decorators?: any[],
@@ -195,6 +217,7 @@ declare function getDecorator(
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
+ * @param {{nonJSDoc?: boolean}} [opts]
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
  * @private
@@ -206,6 +229,9 @@ declare function findJSDocComment(
     [name: string]: any;
     maxLines: int;
     minLines: int;
+  },
+  opts?: {
+    nonJSDoc?: boolean;
   },
 ): Token | null;
 
@@ -311,6 +337,7 @@ export {
   findJSDocComment,
   getDecorator,
   getJSDocComment,
+  getNonJsdocComment,
   getReducedASTNode,
   getTokenizers,
   hasSeeWithLink,

@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.43.1",
+  "version": "0.44.0",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment along with other jsdoc utilities",
@@ -31,7 +31,7 @@
     "lint": "npm run eslint --",
     "open": "open ./coverage/index.html",
     "prepublishOnly": "pnpm i && npm run build",
-    "test": "npm run lint && npm run build && vitest run --coverage",
+    "test": "npm run lint && npm run build && npm run test-ui",
     "test-ui": "vitest --ui --coverage",
     "tsc": "tsc",
     "types": "esm-d-ts gen ./src/index.js --output ./dist/index.d.ts"

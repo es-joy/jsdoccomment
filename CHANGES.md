@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.44.0
+
+- feat: add `getNonJsdocComment` for getting non-JSDoc comments above node
+
 ## 0.43.1
 
 - fix: for `@template` name parsing, ensure (default-)bracketed name is not broken with internal spaces.

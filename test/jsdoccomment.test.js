@@ -3,8 +3,9 @@ import {traverse} from 'estraverse';
 import {SourceCode} from 'eslint';
 
 import {
-  getReducedASTNode
+  getReducedASTNode,
   // getJSDocComment, getDecorator, findJSDocComment
+  getNonJsdocComment
 } from '../src/index.js';
 
 const ESPREE_DEFAULT_CONFIG = {
@@ -54,5 +55,57 @@ describe('`getReducedASTNode`', function () {
       /** @type {import('eslint').Rule.Node} */ (ast.body[0]), sourceCode
     );
     expect(parsed.type).to.equal('FunctionDeclaration');
+  });
+});
+
+describe('`getComment`', function () {
+  it('gets line comment', function () {
+    const code = `// Test
+function quux () {}`;
+    const ast = parseAddingParents(code);
+    const sourceCode = new SourceCode(code, ast);
+
+    const comment = getNonJsdocComment(
+      sourceCode,
+      /** @type {import('eslint').Rule.Node} */ (ast.body[0]),
+      {
+        minLines: 0, maxLines: 1
+      }
+    );
+    expect(comment?.type).to.equal('Line');
+    expect(comment?.value).to.equal(' Test');
+  });
+
+  it('gets non-JSDoc multiline comments', function () {
+    const code = `/* Test */
+function quux () {}`;
+    const ast = parseAddingParents(code);
+    const sourceCode = new SourceCode(code, ast);
+
+    const comment = getNonJsdocComment(
+      sourceCode,
+      /** @type {import('eslint').Rule.Node} */ (ast.body[0]),
+      {
+        minLines: 0, maxLines: 1
+      }
+    );
+    expect(comment?.type).to.equal('Block');
+    expect(comment?.value).to.equal(' Test ');
+  });
+
+  it('ignores JSDoc multiline comments', function () {
+    const code = `/** Test */
+function quux () {}`;
+    const ast = parseAddingParents(code);
+    const sourceCode = new SourceCode(code, ast);
+
+    const comment = getNonJsdocComment(
+      sourceCode,
+      /** @type {import('eslint').Rule.Node} */ (ast.body[0]),
+      {
+        minLines: 0, maxLines: 1
+      }
+    );
+    expect(comment).to.equal(null);
   });
 });

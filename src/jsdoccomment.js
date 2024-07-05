@@ -274,11 +274,13 @@ const getReducedASTNode = function (node, sourceCode) {
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
+ * @param {{nonJSDoc?: boolean}} [opts]
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
  * @private
  */
-const findJSDocComment = (astNode, sourceCode, settings) => {
+const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
+  const {nonJSDoc} = opts;
   const {minLines, maxLines} = settings;
 
   /** @type {import('eslint').Rule.Node|import('estree').Comment} */
@@ -308,7 +310,7 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
     if (!tokenBefore || !isCommentToken(tokenBefore)) {
       return null;
     }
-    if (tokenBefore.type === 'Line') {
+    if (!nonJSDoc && tokenBefore.type === 'Line') {
       currentNode = tokenBefore;
       continue;
     }
@@ -321,8 +323,12 @@ const findJSDocComment = (astNode, sourceCode, settings) => {
   }
 
   if (
-    tokenBefore.type === 'Block' &&
-    (/^\*\s/u).test(tokenBefore.value) &&
+    (
+      (nonJSDoc && (tokenBefore.type !== 'Block' ||
+        !(/^\*\s/u).test(tokenBefore.value))) ||
+      (!nonJSDoc && tokenBefore.type === 'Block' &&
+      (/^\*\s/u).test(tokenBefore.value))
+    ) &&
     currentNode.loc.start.line - (
       /** @type {import('eslint').AST.Token} */
       (parenthesisToken ?? tokenBefore)
@@ -357,6 +363,28 @@ const getJSDocComment = function (sourceCode, node, settings) {
   return findJSDocComment(reducedNode, sourceCode, settings);
 };
 
+/**
+ * Retrieves the comment preceding a given node.
+ *
+ * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
+ * @param {import('eslint').Rule.Node} node The AST node to get
+ *   the comment for.
+ * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
+ *   settings in context
+ * @returns {Token|null} The Block comment
+ *   token containing the JSDoc comment for the given node or
+ *   null if not found.
+ * @public
+ */
+const getNonJsdocComment = function (sourceCode, node, settings) {
+  const reducedNode = getReducedASTNode(node, sourceCode);
+
+  return findJSDocComment(reducedNode, sourceCode, settings, {
+    nonJSDoc: true
+  });
+};
+
 export {
-  getReducedASTNode, getJSDocComment, getDecorator, findJSDocComment
+  getReducedASTNode, getJSDocComment, getNonJsdocComment,
+  getDecorator, findJSDocComment
 };
