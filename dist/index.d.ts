@@ -220,7 +220,6 @@ declare function getDecorator(
  * @param {{nonJSDoc?: boolean}} [opts]
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
- * @private
  */
 declare function findJSDocComment(
   astNode: eslint.Rule.Node,
@@ -234,6 +233,17 @@ declare function findJSDocComment(
     nonJSDoc?: boolean;
   },
 ): Token | null;
+/**
+ * Checks for the presence of a comment following the given node and
+ * returns it.
+ *
+ * @param {import('eslint').SourceCode} sourceCode
+ * @param {import('eslint').Rule.Node} astNode The AST node to get
+ *   the comment for.
+ * @returns {Token|null} The comment token containing the comment
+ *    for the given node or null if not found.
+ */
+declare function getFollowingComment(sourceCode: eslint.SourceCode, astNode: eslint.Rule.Node): Token | null;
 
 declare function hasSeeWithLink(spec: comment_parser.Spec): boolean;
 declare const defaultNoTypes: string[];
@@ -336,6 +346,7 @@ export {
   estreeToString,
   findJSDocComment,
   getDecorator,
+  getFollowingComment,
   getJSDocComment,
   getNonJsdocComment,
   getReducedASTNode,

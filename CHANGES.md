@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## ?
+
+- feat: get following comment (experimental)
+
 ## 0.44.0
 
 - feat: add `getNonJsdocComment` for getting non-JSDoc comments above node

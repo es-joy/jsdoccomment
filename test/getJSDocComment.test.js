@@ -14,7 +14,7 @@ const getSettings = (ctxt) => {
 /** @type {import('eslint').Rule.RuleModule} */
 const rule = {
   create (ctxt) {
-    const sourceCode = ctxt.getSourceCode();
+    const {sourceCode} = ctxt;
     const settings = getSettings(ctxt);
     if (!settings) {
       return {};

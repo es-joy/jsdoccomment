@@ -753,7 +753,6 @@ const getTSFunctionComment = function (astNode) {
         }
         return greatGreatGrandparent.parent;
       }
-
       /* v8 ignore next */
       return astNode;
     case 'FunctionExpression':
@@ -761,7 +760,6 @@ const getTSFunctionComment = function (astNode) {
       if (!greatGreatGrandparent) {
         return astNode;
       }
-      /* v8 ignore next 3 */
       if (greatGrandparent.type === 'MethodDefinition') {
         return greatGrandparent;
       }
@@ -778,28 +776,22 @@ const getTSFunctionComment = function (astNode) {
   if (!greatGreatGrandparent) {
     return astNode;
   }
-
-  /* v8 ignore next */
   switch (greatGrandparent.type) {
     case 'ArrowFunctionExpression':
-      /* v8 ignore next 6 */
       if (greatGreatGrandparent.type === 'VariableDeclarator' && greatGreatGrandparent.parent.type === 'VariableDeclaration') {
         return greatGreatGrandparent.parent;
       }
-
-      /* v8 ignore next */
       return astNode;
     case 'FunctionDeclaration':
       return greatGrandparent;
     case 'VariableDeclarator':
-      /* v8 ignore next 3 */
       if (greatGreatGrandparent.type === 'VariableDeclaration') {
         return greatGreatGrandparent;
       }
-
+    /* v8 ignore next 2 */
     // Fallthrough
     default:
-      /* v8 ignore next */
+      /* v8 ignore next 3 */
       return astNode;
   }
 };
@@ -890,7 +882,6 @@ const getReducedASTNode = function (node, sourceCode) {
  * @param {{nonJSDoc?: boolean}} [opts]
  * @returns {Token|null} The Block comment token containing the JSDoc comment
  *    for the given node or null if not found.
- * @private
  */
 const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
   var _parenthesisToken, _parenthesisToken2;
@@ -978,6 +969,73 @@ const getNonJsdocComment = function (sourceCode, node, settings) {
   return findJSDocComment(reducedNode, sourceCode, settings, {
     nonJSDoc: true
   });
+};
+
+/**
+  * @param {import('estree').Node|import('eslint').AST.Token|
+  *   import('estree').Comment
+  * } nodeA The AST node or token to compare
+  * @param {import('estree').Node|import('eslint').AST.Token|
+  *   import('estree').Comment} nodeB The
+  *   AST node or token to compare
+  */
+const compareLocEndToStart = (nodeA, nodeB) => {
+  var _nodeA$loc$end$line, _nodeA$loc, _nodeB$loc$start$line, _nodeB$loc;
+  /* v8 ignore next */
+  return ((_nodeA$loc$end$line = (_nodeA$loc = nodeA.loc) === null || _nodeA$loc === void 0 ? void 0 : _nodeA$loc.end.line) !== null && _nodeA$loc$end$line !== void 0 ? _nodeA$loc$end$line : 0) === ((_nodeB$loc$start$line = (_nodeB$loc = nodeB.loc) === null || _nodeB$loc === void 0 ? void 0 : _nodeB$loc.start.line) !== null && _nodeB$loc$start$line !== void 0 ? _nodeB$loc$start$line : 0);
+};
+
+/**
+ * Checks for the presence of a comment following the given node and
+ * returns it.
+ *
+ * @param {import('eslint').SourceCode} sourceCode
+ * @param {import('eslint').Rule.Node} astNode The AST node to get
+ *   the comment for.
+ * @returns {Token|null} The comment token containing the comment
+ *    for the given node or null if not found.
+ */
+const getFollowingComment = function (sourceCode, astNode) {
+  /**
+   * @param {import('estree').Node} node The
+   *   AST node to get the comment for.
+   */
+  const getTokensAfterIgnoringParentheses = node => {
+    const tokenAfter = sourceCode.getTokenAfter(node, {
+      includeComments: true
+    });
+
+    // while (
+    //   tokenAfter && tokenAfter.type === 'Punctuator' &&
+    //   tokenAfter.value === ')'
+    // ) {
+    //   [tokenAfter] = sourceCode.getTokensAfter(tokenAfter, {
+    //     includeComments: true
+    //   });
+    // }
+    return tokenAfter;
+  };
+
+  /**
+   * @param {import('estree').Node} node The
+   *   AST node to get the comment for.
+   */
+  const tokenAfterIgnoringParentheses = node => {
+    const tokenAfter = getTokensAfterIgnoringParentheses(node);
+    return tokenAfter && isCommentToken(tokenAfter) && compareLocEndToStart(node, tokenAfter) ? tokenAfter : null;
+  };
+  let tokenAfter = tokenAfterIgnoringParentheses(astNode);
+  if (!tokenAfter) {
+    switch (astNode.type) {
+      case 'FunctionDeclaration':
+        tokenAfter = tokenAfterIgnoringParentheses(astNode.body);
+        break;
+      case 'ExpressionStatement':
+        tokenAfter = tokenAfterIgnoringParentheses(astNode.expression);
+        break;
+    }
+  }
+  return tokenAfter;
 };
 
 /**
@@ -1251,6 +1309,7 @@ exports.defaultNoTypes = defaultNoTypes;
 exports.estreeToString = estreeToString;
 exports.findJSDocComment = findJSDocComment;
 exports.getDecorator = getDecorator;
+exports.getFollowingComment = getFollowingComment;
 exports.getJSDocComment = getJSDocComment;
 exports.getNonJsdocComment = getNonJsdocComment;
 exports.getReducedASTNode = getReducedASTNode;
