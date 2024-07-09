@@ -681,7 +681,7 @@ const isCommentToken = token => {
 };
 
 /**
- * @param {(import('estree').Comment|import('eslint').Rule.Node) & {
+ * @param {(ESLintOrTSNode|import('estree').Comment) & {
  *   declaration?: any,
  *   decorators?: any[],
  *   parent?: import('eslint').Rule.Node & {
@@ -698,7 +698,7 @@ const getDecorator = node => {
 /**
  * Check to see if it is a ES6 export declaration.
  *
- * @param {import('eslint').Rule.Node} astNode An AST node.
+ * @param {ESLintOrTSNode} astNode An AST node.
  * @returns {boolean} whether the given node represents an export declaration.
  * @private
  */
@@ -707,8 +707,8 @@ const looksLikeExport = function (astNode) {
 };
 
 /**
- * @param {import('eslint').Rule.Node} astNode
- * @returns {import('eslint').Rule.Node}
+ * @param {ESLintOrTSNode} astNode
+ * @returns {ESLintOrTSNode}
  */
 const getTSFunctionComment = function (astNode) {
   const {
@@ -802,9 +802,9 @@ const allowableCommentNode = new Set(['AssignmentPattern', 'VariableDeclaration'
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
  *
- * @param {import('eslint').Rule.Node} node An AST node.
+ * @param {ESLintOrTSNode} node An AST node.
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode.
- * @returns {import('eslint').Rule.Node} The AST node that
+ * @returns {ESLintOrTSNode} The AST node that
  *   can be evaluated for appropriate JSDoc comments.
  */
 const getReducedASTNode = function (node, sourceCode) {
@@ -836,7 +836,7 @@ const getReducedASTNode = function (node, sourceCode) {
       }
       if (!invokedExpression.has(parent.type)) {
         /**
-         * @type {import('eslint').Rule.Node|Token|null}
+         * @type {ESLintOrTSNode|Token|null}
          */
         let token = node;
         do {
@@ -848,10 +848,12 @@ const getReducedASTNode = function (node, sourceCode) {
         if (token && token.type === 'Block') {
           return node;
         }
-        if (sourceCode.getCommentsBefore(node).length) {
+        if (sourceCode.getCommentsBefore( /** @type {import('eslint').Rule.Node} */
+        node).length) {
           return node;
         }
-        while (!sourceCode.getCommentsBefore(parent).length && !/Function/u.test(parent.type) && !allowableCommentNode.has(parent.type)) {
+        while (!sourceCode.getCommentsBefore( /** @type {import('eslint').Rule.Node} */
+        parent).length && !/Function/u.test(parent.type) && !allowableCommentNode.has(parent.type)) {
           ({
             parent
           } = parent);
@@ -875,7 +877,7 @@ const getReducedASTNode = function (node, sourceCode) {
 /**
  * Checks for the presence of a JSDoc comment for the given node and returns it.
  *
- * @param {import('eslint').Rule.Node} astNode The AST node to get
+ * @param {ESLintOrTSNode} astNode The AST node to get
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
@@ -893,22 +895,25 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
     maxLines
   } = settings;
 
-  /** @type {import('eslint').Rule.Node|import('estree').Comment} */
+  /** @type {ESLintOrTSNode|import('estree').Comment} */
   let currentNode = astNode;
   let tokenBefore = null;
   let parenthesisToken = null;
   while (currentNode) {
-    const decorator = getDecorator(currentNode);
+    const decorator = getDecorator( /** @type {import('eslint').Rule.Node} */
+    currentNode);
     if (decorator) {
       const dec = /** @type {unknown} */decorator;
       currentNode = /** @type {import('eslint').Rule.Node} */dec;
     }
-    tokenBefore = sourceCode.getTokenBefore(currentNode, {
+    tokenBefore = sourceCode.getTokenBefore( /** @type {import('eslint').Rule.Node} */
+    currentNode, {
       includeComments: true
     });
     if (tokenBefore && tokenBefore.type === 'Punctuator' && tokenBefore.value === '(') {
       parenthesisToken = tokenBefore;
-      [tokenBefore] = sourceCode.getTokensBefore(currentNode, {
+      [tokenBefore] = sourceCode.getTokensBefore( /** @type {import('eslint').Rule.Node} */
+      currentNode, {
         count: 2,
         includeComments: true
       });
@@ -955,7 +960,7 @@ const getJSDocComment = function (sourceCode, node, settings) {
  * Retrieves the comment preceding a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {import('eslint').Rule.Node} node The AST node to get
+ * @param {ESLintOrTSNode} node The AST node to get
  *   the comment for.
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
  *   settings in context
@@ -972,10 +977,10 @@ const getNonJsdocComment = function (sourceCode, node, settings) {
 };
 
 /**
-  * @param {import('estree').Node|import('eslint').AST.Token|
+  * @param {ESLintOrTSNode|import('eslint').AST.Token|
   *   import('estree').Comment
   * } nodeA The AST node or token to compare
-  * @param {import('estree').Node|import('eslint').AST.Token|
+  * @param {ESLintOrTSNode|import('eslint').AST.Token|
   *   import('estree').Comment} nodeB The
   *   AST node or token to compare
   */
@@ -989,49 +994,52 @@ const compareLocEndToStart = (nodeA, nodeB) => {
  * Checks for the presence of a comment following the given node and
  * returns it.
  *
+ * This method is experimental.
+ *
  * @param {import('eslint').SourceCode} sourceCode
- * @param {import('eslint').Rule.Node} astNode The AST node to get
+ * @param {ESLintOrTSNode} astNode The AST node to get
  *   the comment for.
  * @returns {Token|null} The comment token containing the comment
  *    for the given node or null if not found.
  */
 const getFollowingComment = function (sourceCode, astNode) {
   /**
-   * @param {import('estree').Node} node The
+   * @param {ESLintOrTSNode} node The
    *   AST node to get the comment for.
    */
-  const getTokensAfterIgnoringParentheses = node => {
-    const tokenAfter = sourceCode.getTokenAfter(node, {
+  const getTokensAfterIgnoringSemis = node => {
+    let tokenAfter = sourceCode.getTokenAfter( /** @type {import('eslint').Rule.Node} */
+    node, {
       includeComments: true
     });
-
-    // while (
-    //   tokenAfter && tokenAfter.type === 'Punctuator' &&
-    //   tokenAfter.value === ')'
-    // ) {
-    //   [tokenAfter] = sourceCode.getTokensAfter(tokenAfter, {
-    //     includeComments: true
-    //   });
-    // }
+    while (tokenAfter && tokenAfter.type === 'Punctuator' &&
+    // tokenAfter.value === ')' // Don't apparently need to ignore
+    tokenAfter.value === ';') {
+      [tokenAfter] = sourceCode.getTokensAfter(tokenAfter, {
+        includeComments: true
+      });
+    }
     return tokenAfter;
   };
 
   /**
-   * @param {import('estree').Node} node The
+   * @param {ESLintOrTSNode} node The
    *   AST node to get the comment for.
    */
-  const tokenAfterIgnoringParentheses = node => {
-    const tokenAfter = getTokensAfterIgnoringParentheses(node);
+  const tokenAfterIgnoringSemis = node => {
+    const tokenAfter = getTokensAfterIgnoringSemis(node);
     return tokenAfter && isCommentToken(tokenAfter) && compareLocEndToStart(node, tokenAfter) ? tokenAfter : null;
   };
-  let tokenAfter = tokenAfterIgnoringParentheses(astNode);
+  let tokenAfter = tokenAfterIgnoringSemis(astNode);
   if (!tokenAfter) {
     switch (astNode.type) {
       case 'FunctionDeclaration':
-        tokenAfter = tokenAfterIgnoringParentheses(astNode.body);
+        tokenAfter = tokenAfterIgnoringSemis( /** @type {ESLintOrTSNode} */
+        astNode.body);
         break;
       case 'ExpressionStatement':
-        tokenAfter = tokenAfterIgnoringParentheses(astNode.expression);
+        tokenAfter = tokenAfterIgnoringSemis( /** @type {ESLintOrTSNode} */
+        astNode.expression);
         break;
     }
   }

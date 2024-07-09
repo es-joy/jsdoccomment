@@ -1,6 +1,6 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## ?
+## 0.45.0
 
 - feat: get following comment (experimental)
 

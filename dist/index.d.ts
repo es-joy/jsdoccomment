@@ -141,12 +141,12 @@ type int = number;
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
  *
- * @param {import('eslint').Rule.Node} node An AST node.
+ * @param {ESLintOrTSNode} node An AST node.
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode.
- * @returns {import('eslint').Rule.Node} The AST node that
+ * @returns {ESLintOrTSNode} The AST node that
  *   can be evaluated for appropriate JSDoc comments.
  */
-declare function getReducedASTNode(node: eslint.Rule.Node, sourceCode: eslint.SourceCode): eslint.Rule.Node;
+declare function getReducedASTNode(node: ESLintOrTSNode, sourceCode: eslint.SourceCode): ESLintOrTSNode;
 /**
  * Retrieves the JSDoc comment for a given node.
  *
@@ -173,7 +173,7 @@ declare function getJSDocComment(
  * Retrieves the comment preceding a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {import('eslint').Rule.Node} node The AST node to get
+ * @param {ESLintOrTSNode} node The AST node to get
  *   the comment for.
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
  *   settings in context
@@ -184,7 +184,7 @@ declare function getJSDocComment(
  */
 declare function getNonJsdocComment(
   sourceCode: eslint.SourceCode,
-  node: eslint.Rule.Node,
+  node: ESLintOrTSNode,
   settings: {
     [name: string]: any;
     maxLines: int;
@@ -192,7 +192,7 @@ declare function getNonJsdocComment(
   },
 ): Token | null;
 /**
- * @param {(import('estree').Comment|import('eslint').Rule.Node) & {
+ * @param {(ESLintOrTSNode|import('estree').Comment) & {
  *   declaration?: any,
  *   decorators?: any[],
  *   parent?: import('eslint').Rule.Node & {
@@ -202,7 +202,7 @@ declare function getNonJsdocComment(
  * @returns {import('@typescript-eslint/types').TSESTree.Decorator|undefined}
  */
 declare function getDecorator(
-  node: (estree.Comment | eslint.Rule.Node) & {
+  node: (ESLintOrTSNode | estree.Comment) & {
     declaration?: any;
     decorators?: any[];
     parent?: eslint.Rule.Node & {
@@ -213,7 +213,7 @@ declare function getDecorator(
 /**
  * Checks for the presence of a JSDoc comment for the given node and returns it.
  *
- * @param {import('eslint').Rule.Node} astNode The AST node to get
+ * @param {ESLintOrTSNode} astNode The AST node to get
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
@@ -222,7 +222,7 @@ declare function getDecorator(
  *    for the given node or null if not found.
  */
 declare function findJSDocComment(
-  astNode: eslint.Rule.Node,
+  astNode: ESLintOrTSNode,
   sourceCode: eslint.SourceCode,
   settings: {
     [name: string]: any;
@@ -237,13 +237,15 @@ declare function findJSDocComment(
  * Checks for the presence of a comment following the given node and
  * returns it.
  *
+ * This method is experimental.
+ *
  * @param {import('eslint').SourceCode} sourceCode
- * @param {import('eslint').Rule.Node} astNode The AST node to get
+ * @param {ESLintOrTSNode} astNode The AST node to get
  *   the comment for.
  * @returns {Token|null} The comment token containing the comment
  *    for the given node or null if not found.
  */
-declare function getFollowingComment(sourceCode: eslint.SourceCode, astNode: eslint.Rule.Node): Token | null;
+declare function getFollowingComment(sourceCode: eslint.SourceCode, astNode: ESLintOrTSNode): Token | null;
 
 declare function hasSeeWithLink(spec: comment_parser.Spec): boolean;
 declare const defaultNoTypes: string[];
