@@ -472,8 +472,7 @@ const getFollowingComment = function (sourceCode, astNode) {
       );
       break;
 
-    /* v8 ignore next 4 */
-    // Todo: Delve into other type properties to find other inner comments
+    /* v8 ignore next 3 */
     default:
       break;
     }
