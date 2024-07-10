@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.46.0
+
+- chore: update esquery, drop bundling of types, update devDeps
+
 ## 0.45.0
 
 - feat: get following comment (experimental)
