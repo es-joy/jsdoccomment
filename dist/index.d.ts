@@ -164,9 +164,9 @@ declare function getJSDocComment(
   sourceCode: eslint.SourceCode,
   node: eslint.Rule.Node,
   settings: {
-    [name: string]: any;
     maxLines: int;
     minLines: int;
+    [name: string]: any;
   },
 ): Token | null;
 /**
@@ -186,9 +186,9 @@ declare function getNonJsdocComment(
   sourceCode: eslint.SourceCode,
   node: ESLintOrTSNode,
   settings: {
-    [name: string]: any;
     maxLines: int;
     minLines: int;
+    [name: string]: any;
   },
 ): Token | null;
 /**
@@ -225,9 +225,9 @@ declare function findJSDocComment(
   astNode: ESLintOrTSNode,
   sourceCode: eslint.SourceCode,
   settings: {
-    [name: string]: any;
     maxLines: int;
     minLines: int;
+    [name: string]: any;
   },
   opts?: {
     nonJSDoc?: boolean;

@@ -164,8 +164,7 @@ const commentParserToESTree = (jsdoc, mode, {
     } catch (err) {
       // Ignore
       if (lastTag.rawType && throwOnTypeParsingErrors) {
-        /** @type {Error} */err.message = `Tag @${lastTag.tag} with raw type ` + `\`${lastTag.rawType}\` had parsing error: ${
-        /** @type {Error} */err.message}`;
+        /** @type {Error} */err.message = `Tag @${lastTag.tag} with raw type ` + `\`${lastTag.rawType}\` had parsing error: ${/** @type {Error} */err.message}`;
         throw err;
       }
     }
