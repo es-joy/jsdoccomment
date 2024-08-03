@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "moduleResolution": "Bundler",
     "module": "esnext",
     "target": "esnext",

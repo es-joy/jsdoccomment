@@ -252,7 +252,7 @@ const blockWithTagNameYetNoType = {
 
 /** @type {import('../src/commentParserToESTree').JsdocBlock} */
 const jsdocBlockEmptyTags = {
-  ...JSON.parse(JSON.stringify(jsdocBlockNoTags)),
+  ...structuredClone(jsdocBlockNoTags),
   tags: []
 };
 

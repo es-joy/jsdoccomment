@@ -851,7 +851,7 @@ describe('parseComment (string)', function () {
     });
   });
 
-  it('Handle simple @template', function () {
+  it('Handle simple @template with bracketed name', function () {
     const parsed = parseComment(
       `/**\n * @template [SomeBracketedName] Desc.\n */`
     );

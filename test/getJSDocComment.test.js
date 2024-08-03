@@ -96,10 +96,7 @@ ruleTester.run('getJSDocComment', rule, {
           }
         )
       );
-    `,
-    parserOptions: {
-      ecmaVersion: 2015
-    }
+    `
   }, {
     code: `
       app.use(
@@ -110,9 +107,6 @@ ruleTester.run('getJSDocComment', rule, {
           }
         )
       );
-    `,
-    parserOptions: {
-      ecmaVersion: 2015
-    }
+    `
   }]
 });

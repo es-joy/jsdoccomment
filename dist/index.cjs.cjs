@@ -472,9 +472,9 @@ const commentHandler = settings => {
     } = settings;
     const selector = esquery.parse(commentSelector);
     const ast = commentParserToESTree(jsdoc, mode);
-    const _ast = /** @type {unknown} */ast;
+    const castAst = /** @type {unknown} */ast;
     return esquery.matches( /** @type {import('estree').Node} */
-    _ast, selector, undefined, {
+    castAst, selector, undefined, {
       visitorKeys: {
         ...jsdocTypePrattParser.visitorKeys,
         ...jsdocVisitorKeys

@@ -23,10 +23,10 @@ const commentHandler = (settings) => {
 
     const ast = commentParserToESTree(jsdoc, mode);
 
-    const _ast = /** @type {unknown} */ (ast);
+    const castAst = /** @type {unknown} */ (ast);
 
     return esquery.matches(/** @type {import('estree').Node} */ (
-      _ast
+      castAst
     ), selector, undefined, {
       visitorKeys: {
         ...jsdocTypePrattParserVisitorKeys,
