@@ -92,7 +92,7 @@ const getTokenizers = ({
 
         let pos;
         if (remainder.startsWith('[') && remainder.includes(']')) {
-          const endingBracketPos = remainder.indexOf(']');
+          const endingBracketPos = remainder.lastIndexOf(']');
           pos = remainder.slice(endingBracketPos).search(/(?<![\s,])\s/u);
           if (pos > -1) { // Add offset to starting point if space found
             pos += endingBracketPos;

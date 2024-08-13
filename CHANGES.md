@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.47.0
+
+- fix(`parseComment`): assume closing bracket of name is final instead of
+    first one
+- chore: flat config/ESLint 9; change browser targets; lint; update devDeps.
+
 ## 0.46.0
 
 - chore: update esquery, drop bundling of types, update devDeps
