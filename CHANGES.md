@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.48.0
+
+- chore: bump jsdoc-type-pratt-parser and devDeps.
+
 ## 0.47.0
 
 - fix(`parseComment`): assume closing bracket of name is final instead of
