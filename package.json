@@ -31,7 +31,7 @@
     "lint": "npm run eslint --",
     "open": "open ./coverage/index.html",
     "prepublishOnly": "pnpm i && npm run build",
-    "test": "npm run lint && npm run build && npm run test-ui",
+    "test": "npm run lint && npm run build && npm run test-cov",
     "test-ui": "vitest --ui --coverage",
     "test-cov": "vitest --coverage",
     "tsc": "tsc",
