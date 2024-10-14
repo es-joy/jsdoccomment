@@ -101,7 +101,7 @@ const getTokenizers = ({
           pos = remainder.search(/(?<![\s,])\s/u);
         }
 
-        let name = pos === -1 ? remainder : remainder.slice(0, pos);
+        const name = pos === -1 ? remainder : remainder.slice(0, pos);
         const extra = remainder.slice(pos);
         let postName = '', description = '', lineEnd = '';
         if (pos > -1) {
@@ -110,16 +110,12 @@ const getTokenizers = ({
           );
         }
 
-        if (optionalBrackets.test(name)) {
-          name = /** @type {string} */ (
-            /** @type {RegExpMatchArray} */ (
-              name.match(optionalBrackets)
-            )?.groups?.name
-          );
-          spec.optional = true;
-        } else {
-          spec.optional = false;
-        }
+        spec.optional = optionalBrackets.test(name);
+        // name = /** @type {string} */ (
+        //   /** @type {RegExpMatchArray} */ (
+        //     name.match(optionalBrackets)
+        //   )?.groups?.name
+        // );
 
         spec.name = name;
         const {tokens} = spec.source[0];

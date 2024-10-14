@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.49.0
+
+- fix: avoid changing `name` for `@template`; should be able to recover
+    optional brackets and defaults in AST
+
 ## 0.48.0
 
 - chore: bump jsdoc-type-pratt-parser and devDeps.

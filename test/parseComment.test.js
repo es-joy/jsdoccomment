@@ -68,7 +68,7 @@ describe('parseComment (node)', function () {
       tags: [
         {
           tag: 'template',
-          name: 'SomeName',
+          name: '[SomeName=DefaultValue]',
           type: '',
           optional: true,
           description: '',
@@ -83,7 +83,7 @@ describe('parseComment (node)', function () {
                 description: '',
                 end: '*/',
                 lineEnd: '',
-                name: 'SomeName',
+                name: '[SomeName=DefaultValue]',
                 postDelimiter: ' ',
                 postName: '',
                 postTag: ' ',
@@ -106,7 +106,7 @@ describe('parseComment (node)', function () {
             description: '',
             end: '*/',
             lineEnd: '',
-            name: 'SomeName',
+            name: '[SomeName=DefaultValue]',
             postDelimiter: ' ',
             postName: '',
             postTag: ' ',
