@@ -8,6 +8,9 @@ BREAKING CHANGES:
 - chore: add `.d.cts` file / add type dependencies (#19)
 - test(ci): drop Node 16.x and add Node 22.x
 
+Thanks:
+- [@typhonrt](https://github.com/typhonrt)
+
 ## 0.49.0
 
 - fix: avoid changing `name` for `@template`; should be able to recover
