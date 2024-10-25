@@ -59,7 +59,7 @@
   },
   "homepage": "https://github.com/es-joy/jsdoccomment",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "dependencies": {
     "@types/eslint": "^9.6.1",
