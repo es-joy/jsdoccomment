@@ -1,5 +1,13 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.50.0
+
+BREAKING CHANGES:
+- Require Node 18+
+
+- chore: add `.d.cts` file / add type dependencies (#19)
+- test(ci): drop Node 16.x and add Node 22.x
+
 ## 0.49.0
 
 - fix: avoid changing `name` for `@template`; should be able to recover

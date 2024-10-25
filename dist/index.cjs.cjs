@@ -750,8 +750,8 @@ const getTSFunctionComment = function (astNode) {
           return astNode;
         }
         return greatGreatGrandparent.parent;
+        /* v8 ignore next 2 */
       }
-      /* v8 ignore next */
       return astNode;
     case 'FunctionExpression':
       /* v8 ignore next 3 */
