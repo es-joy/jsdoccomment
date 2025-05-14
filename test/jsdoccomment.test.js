@@ -180,6 +180,25 @@ describe('`getReducedASTNode`', function () {
     expect(parsed.type).to.equal('ExportDefaultDeclaration');
   });
 
+  it('gets `ExportNamedDeclaration` from `TSFunctionType`', function () {
+    const code = `
+      /**
+       * Some test function type.
+       */
+      export type Test = (foo: number) => string;
+    `;
+    const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+    const sourceCode = new SourceCode(code, ast);
+    const parsed = getReducedASTNode(
+      /** @type {import('eslint').Rule.Node} */ (
+        /** @type {import('estree').ExportNamedDeclaration} */
+        (ast.body[0]).declaration
+      ),
+      sourceCode
+    );
+    expect(parsed.type).to.equal('ExportNamedDeclaration');
+  });
+
   it('gets `TSEnumDeclaration`', function () {
     const code = `enum testEnum {
       A, B

@@ -79,8 +79,14 @@ const getTSFunctionComment = function (astNode) {
   const greatGrandparent = grandparent.parent;
   const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
 
-  /* v8 ignore next 3 */
   if (/** @type {ESLintOrTSNode} */ (parent).type !== 'TSTypeAnnotation') {
+    if (
+      parent.type === 'TSTypeAliasDeclaration' &&
+      grandparent.type === 'ExportNamedDeclaration'
+    ) {
+      return grandparent;
+    }
+    /* v8 ignore next */
     return astNode;
   }
 

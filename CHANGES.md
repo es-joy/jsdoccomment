@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.50.1
+
+- fix: for `TSFunctionType` part of `TSTypeAliasDeclaration` and export, return export
+
 ## 0.50.0
 
 BREAKING CHANGES:
