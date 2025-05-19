@@ -1,5 +1,12 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.50.2
+
+- fix: remove `@types/eslint` (#20)
+
+Thanks:
+- [@ocavue](https://github.com/ocavue)
+
 ## 0.50.1
 
 - fix: for `TSFunctionType` part of `TSTypeAliasDeclaration` and export, return export
