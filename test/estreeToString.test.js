@@ -252,6 +252,7 @@ const blockWithTagNameYetNoType = {
 
 /** @type {import('../src/commentParserToESTree').JsdocBlock} */
 const jsdocBlockEmptyTags = {
+  // @ts-expect-error Ok
   ...structuredClone(jsdocBlockNoTags),
   tags: []
 };

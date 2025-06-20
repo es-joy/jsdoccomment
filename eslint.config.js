@@ -25,6 +25,9 @@ export default [
         // Not chai
         expect: 'readonly'
       }
+    },
+    rules: {
+      'sonarjs/no-empty-test-file': 'off'
     }
   },
   {

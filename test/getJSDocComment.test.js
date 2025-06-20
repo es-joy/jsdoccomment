@@ -5,9 +5,12 @@ import {getJSDocComment} from '../src/index.js';
  * @param {import('eslint').Rule.RuleContext} ctxt
  */
 const getSettings = (ctxt) => {
+  const jsdocSettings = /** @type {{maxLines: number, minLines: number}} */ (
+    ctxt.settings.jsdoc
+  );
   return {
-    maxLines: Number(ctxt.settings.jsdoc?.maxLines ?? 1),
-    minLines: Number(ctxt.settings.jsdoc?.minLines ?? 0)
+    maxLines: Number(jsdocSettings?.maxLines ?? 1),
+    minLines: Number(jsdocSettings?.minLines ?? 0)
   };
 };
 

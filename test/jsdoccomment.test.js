@@ -37,6 +37,7 @@ function parseAddingParents (
 ) {
   const ast = parser === 'typescript'
     ? /** @type {import('eslint').AST.Program} */ (
+      // @ts-expect-error Bug?
       typescriptEslintParser.parser.parseForESLint(code, {
         tokens: true,
         comment: true,
@@ -192,7 +193,8 @@ describe('`getReducedASTNode`', function () {
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
         /** @type {import('estree').ExportNamedDeclaration} */
-        (ast.body[0]).declaration
+        // @ts-expect-error Ok
+        (ast.body[0]).declaration?.typeAnnotation
       ),
       sourceCode
     );

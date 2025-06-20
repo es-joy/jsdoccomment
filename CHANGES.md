@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## ?
+
+- chore: update types/estree, typescript-eslint/types, devDeps.
+
 ## 0.50.2
 
 - fix: remove `@types/eslint` (#20)

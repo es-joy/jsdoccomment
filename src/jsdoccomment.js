@@ -85,8 +85,8 @@ const getTSFunctionComment = function (astNode) {
       grandparent.type === 'ExportNamedDeclaration'
     ) {
       return grandparent;
+    /* v8 ignore next 3 */
     }
-    /* v8 ignore next */
     return astNode;
   }
 
@@ -189,7 +189,6 @@ const allowableCommentNode = new Set([
  */
 const getReducedASTNode = function (node, sourceCode) {
   let {parent} = node;
-
   switch (/** @type {ESLintOrTSNode} */ (node).type) {
   case 'TSFunctionType':
     return getTSFunctionComment(node);
