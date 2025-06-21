@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.51.1
+
+- fix(`jsdoccomment`): ensure overloading check looks to identically named functions only
+
 ## 0.51.0
 
 - fix(`jsdoccomment`): find overload comment
