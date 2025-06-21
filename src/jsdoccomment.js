@@ -371,8 +371,30 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
  */
 const getJSDocComment = function (sourceCode, node, settings) {
   const reducedNode = getReducedASTNode(node, sourceCode);
+  const comment = findJSDocComment(reducedNode, sourceCode, settings);
 
-  return findJSDocComment(reducedNode, sourceCode, settings);
+  if (!comment && reducedNode.parent?.type === 'Program' && (
+    reducedNode.type === 'TSDeclareFunction' ||
+    reducedNode.type === 'FunctionDeclaration' ||
+    (reducedNode.type === 'ExportNamedDeclaration' &&
+      (reducedNode.declaration?.type === 'FunctionDeclaration' ||
+      // @ts-expect-error Should be ok
+      reducedNode.declaration?.type === 'TSDeclareFunction'))
+  )) {
+    // @ts-expect-error Should be ok
+    const idx = reducedNode.parent.body.indexOf(reducedNode);
+    const prevSibling = reducedNode.parent.body[idx - 1];
+    // @ts-expect-error Should be ok
+    if (prevSibling?.type === 'TSDeclareFunction' ||
+      (prevSibling?.type === 'ExportNamedDeclaration' &&
+        // @ts-expect-error Should be ok
+        prevSibling.declaration.type === 'TSDeclareFunction')
+    ) {
+      // @ts-expect-error Should be ok
+      return getJSDocComment(sourceCode, prevSibling, settings);
+    }
+  }
+  return comment;
 };
 
 /**

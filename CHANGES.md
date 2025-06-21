@@ -1,7 +1,8 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
-## ?
+## 0.51.0
 
+- fix(`jsdoccomment`): find overload comment
 - chore: update types/estree, typescript-eslint/types, devDeps.
 
 ## 0.50.2

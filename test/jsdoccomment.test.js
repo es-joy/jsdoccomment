@@ -6,7 +6,8 @@ import TSVisitorKeys from '@typescript-eslint/visitor-keys';
 
 import {
   getReducedASTNode,
-  // getJSDocComment, getDecorator,
+  getJSDocComment,
+  // getDecorator,
   findJSDocComment,
   getNonJsdocComment,
   getFollowingComment
@@ -1005,4 +1006,49 @@ describe('`getFollowingComment`', function () {
     expect(comment?.type).to.equal('Line');
     expect(comment?.value).to.equal(' Test');
   });
+});
+
+describe('getJSDocComment', function () {
+  it(
+    'Gets preceding siblings of FunctionDeclaration or TSDeclareFunction',
+    function () {
+      /* eslint-disable @stylistic/max-len -- Long */
+      const code = `
+        /**
+         * Array map function with overload for NonEmptyArray
+         * @example
+         * const data = [{value: 'value'}] as const;
+         * const result1: NonEmptyReadonlyArray<'value'> = arrayMap(data, (value) => value.value); // pick type from data
+         * const result2: NonEmptyReadonlyArray<'value'> = arrayMap<'value', typeof data>(data, (value) => value.value); // enforce output type
+         * @template Target - The type of the array to map to
+         * @template Source - The type of the array to map from
+         * @param {Source} data - The array to map
+         * @param {MapCallback<Target, Source>} callback - Callback function to map data from the array
+         * @returns {AnyArrayType<Target>} Mapped array
+         * @since v0.2.0
+         */
+        export function arrayMap<Target, Source extends NonEmptyArray<unknown> | NonEmptyReadonlyArray<unknown>>(
+          data: Source,
+          callback: MapCallback<Target, Source>,
+        ): NonEmptyArray<Target>;
+        export function arrayMap<Target, Source extends Array<unknown>>(data: Source, callback: MapCallback<Target, Source>): Array<Target>;
+        export function arrayMap<Target, Source extends AnyArrayType>(data: Source, callback: MapCallback<Target, Source>): AnyArrayType<Target> {
+          return data.map(callback);
+        }
+      `;
+      /* eslint-enable @stylistic/max-len -- Long */
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+
+      const sourceCode = new SourceCode(code, ast);
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (ast.body.at(-1)),
+        {
+          minLines: 0, maxLines: 1
+        }
+      );
+      expect(comment?.type).to.equal('Block');
+    }
+  );
 });
