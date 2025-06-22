@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.52.0
+
+BREAKING CHANGES:
+
+- chore: require Node >= 20.11.0
+
 ## 0.51.1
 
 - fix(`jsdoccomment`): ensure overloading check looks to identically named functions only
