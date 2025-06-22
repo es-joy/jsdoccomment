@@ -398,7 +398,7 @@ const getJSDocComment = function (sourceCode, node, settings) {
         functionName === prevSibling.id.name) ||
       (prevSibling?.type === 'ExportNamedDeclaration' &&
         // @ts-expect-error Should be ok
-        prevSibling.declaration.type === 'TSDeclareFunction' &&
+        prevSibling.declaration?.type === 'TSDeclareFunction' &&
         // @ts-expect-error Should be ok
         prevSibling.declaration?.id?.name === functionName)
     ) {
