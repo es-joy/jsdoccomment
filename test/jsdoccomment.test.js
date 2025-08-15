@@ -1047,6 +1047,9 @@ describe('getJSDocComment', function () {
         /** @type {import('eslint').Rule.Node} */ (ast.body.at(-1)),
         {
           minLines: 0, maxLines: 1
+        },
+        {
+          checkOverloads: true
         }
       );
       expect(comment?.type).to.equal('Block');
@@ -1090,9 +1093,38 @@ describe('getJSDocComment', function () {
         /** @type {import('eslint').Rule.Node} */ (ast.body.at(-1)),
         {
           minLines: 0, maxLines: 1
+        },
+        {
+          checkOverloads: true
         }
       );
       expect(comment?.type).to.equal('Block');
+    }
+  );
+
+  it(
+    'Returns `null` with `checkOverloads` and missing comment ',
+    function () {
+      /* eslint-disable @stylistic/max-len -- Long */
+      const code = `
+        const a = 5;
+      `;
+      /* eslint-enable @stylistic/max-len -- Long */
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+
+      const sourceCode = new SourceCode(code, ast);
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (ast.body.at(-1)),
+        {
+          minLines: 0, maxLines: 1
+        },
+        {
+          checkOverloads: true
+        }
+      );
+      expect(comment).to.equal(null);
     }
   );
 });

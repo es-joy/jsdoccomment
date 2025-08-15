@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.54.0
+
+- chore: make overload checks optional
+
 ## 0.53.0
 
 - chore: upgrade typescript-eslint/types, jsdoc-type-pratt-parser, devDeps

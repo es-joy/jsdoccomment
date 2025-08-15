@@ -364,16 +364,19 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
  *   the comment for.
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
  *   settings in context
+ * @param {{checkOverloads?: boolean}} [opts]
  * @returns {Token|null} The Block comment
  *   token containing the JSDoc comment for the given node or
  *   null if not found.
  * @public
  */
-const getJSDocComment = function (sourceCode, node, settings) {
+const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
   const reducedNode = getReducedASTNode(node, sourceCode);
   const comment = findJSDocComment(reducedNode, sourceCode, settings);
 
-  if (!comment && reducedNode.parent?.type === 'Program') {
+  if (!comment &&
+    opts.checkOverloads && reducedNode.parent?.type === 'Program'
+  ) {
     let functionName;
     if (reducedNode.type === 'TSDeclareFunction' ||
       reducedNode.type === 'FunctionDeclaration') {
@@ -403,7 +406,7 @@ const getJSDocComment = function (sourceCode, node, settings) {
         prevSibling.declaration?.id?.name === functionName)
     ) {
       // @ts-expect-error Should be ok
-      return getJSDocComment(sourceCode, prevSibling, settings);
+      return getJSDocComment(sourceCode, prevSibling, settings, opts);
     }
   }
   return comment;

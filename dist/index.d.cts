@@ -155,6 +155,7 @@ declare function getReducedASTNode(node: ESLintOrTSNode, sourceCode: eslint.Sour
  *   the comment for.
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
  *   settings in context
+ * @param {{checkOverloads?: boolean}} [opts]
  * @returns {Token|null} The Block comment
  *   token containing the JSDoc comment for the given node or
  *   null if not found.
@@ -167,6 +168,9 @@ declare function getJSDocComment(
     maxLines: int;
     minLines: int;
     [name: string]: any;
+  },
+  opts?: {
+    checkOverloads?: boolean;
   },
 ): Token | null;
 /**
