@@ -1,13 +1,10 @@
 {
-  "plugins": [
-    "@babel/plugin-syntax-class-properties"
-  ],
   "presets": [
     [
       "@babel/preset-env",
       {
         "targets": {
-          "node": 18
+          "node": 20
         }
       }
     ]

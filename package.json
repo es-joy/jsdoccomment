@@ -70,7 +70,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",
-    "@babel/plugin-syntax-class-properties": "^7.12.13",
     "@babel/preset-env": "^7.28.3",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/esquery": "^1.5.4",
