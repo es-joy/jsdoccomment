@@ -2,7 +2,9 @@
 
 ## 0.54.0
 
-- chore: make overload checks optional
+- feat: make overload checks optional
+- chore: switch to Node 20 as Babel target and remove unneeded plugin
+- chore: update devDeps.
 
 ## 0.53.0
 
