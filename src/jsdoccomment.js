@@ -375,7 +375,11 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
   const comment = findJSDocComment(reducedNode, sourceCode, settings);
 
   if (!comment &&
-    opts.checkOverloads && reducedNode.parent?.type === 'Program'
+    opts.checkOverloads &&
+    (
+      reducedNode.parent?.type === 'Program' ||
+      reducedNode.parent?.type === 'ExportNamedDeclaration'
+    )
   ) {
     let functionName;
     if (reducedNode.type === 'TSDeclareFunction' ||
@@ -391,9 +395,32 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
       return null;
     }
 
+    /**
+     * @type {import('estree').Program}
+     */
+    let programNode;
+
+    /**
+     * @type {ESLintOrTSNode}
+     */
+    let childNode;
+
+    if (reducedNode.parent?.type === 'Program') {
+      programNode = reducedNode.parent;
+      childNode = reducedNode;
+    } else if (reducedNode.parent?.parent.type === 'Program') {
+      programNode = reducedNode.parent.parent;
+      childNode = reducedNode.parent;
+    /* v8 ignore next 3 */
+    } else {
+      throw new Error('unexpected TS guard condition');
+    }
+
     // @ts-expect-error Should be ok
-    const idx = reducedNode.parent.body.indexOf(reducedNode);
-    const prevSibling = reducedNode.parent.body[idx - 1];
+    const idx = programNode.body.indexOf(childNode);
+    const prevSibling = /** @type {import('eslint').AST.Program} */ (
+      programNode
+    ).body[idx - 1];
     if (
       // @ts-expect-error Should be ok
       (prevSibling?.type === 'TSDeclareFunction' &&

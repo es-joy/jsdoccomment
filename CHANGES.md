@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.54.1
+
+- fix: make optional overload checks include `ExportNamedDeclaration`s.
+
 ## 0.54.0
 
 - feat: make overload checks optional

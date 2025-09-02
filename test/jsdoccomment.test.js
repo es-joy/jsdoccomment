@@ -1053,6 +1053,24 @@ describe('getJSDocComment', function () {
         }
       );
       expect(comment?.type).to.equal('Block');
+
+      const comment2 = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (
+          /**
+           * @type {import('@typescript-eslint/types').
+           *   TSESTree.ExportNamedDeclaration}
+           */
+          (ast.body.at(-2)).declaration
+        ),
+        {
+          minLines: 0, maxLines: 1
+        },
+        {
+          checkOverloads: true
+        }
+      );
+      expect(comment2?.type).to.equal('Block');
     }
   );
 
@@ -1105,11 +1123,9 @@ describe('getJSDocComment', function () {
   it(
     'Returns `null` with `checkOverloads` and missing comment ',
     function () {
-      /* eslint-disable @stylistic/max-len -- Long */
       const code = `
         const a = 5;
       `;
-      /* eslint-enable @stylistic/max-len -- Long */
       const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
 
       const sourceCode = new SourceCode(code, ast);
