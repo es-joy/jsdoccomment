@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.55.0
+
+- chore: update typescript-eslint/types, jsdoc-type-pratt-parser and devDeps.
+
 ## 0.54.1
 
 - fix: make optional overload checks include `ExportNamedDeclaration`s.

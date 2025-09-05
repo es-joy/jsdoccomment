@@ -33,7 +33,10 @@ export default [
   {
     rules: {
       // https://github.com/benmosher/eslint-plugin-import/issues/1868
-      'import/no-unresolved': 'off'
+      'import/no-unresolved': 'off',
+
+      // https://github.com/gajus/eslint-plugin-jsdoc/issues/1114
+      'jsdoc/imports-as-dependencies': 'off'
     }
   }
 ];
