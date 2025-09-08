@@ -596,7 +596,8 @@ description`
                 }
               ],
               meta: {
-                separator: 'semicolon'
+                propertyIndent: '  ',
+                separator: 'semicolon-and-linebreak'
               },
               type: 'JsdocTypeObject'
             },
