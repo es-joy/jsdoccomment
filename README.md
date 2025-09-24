@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/es-joy/jsdoccomment/workflows/CI/CD/badge.svg)](#)
 [![API Docs](https://img.shields.io/badge/API%20Documentation-476ff0)](https://es-joy.github.io/jsdoccomment/docs/)
 
-See the **[Demo](ttps://es-joy.github.io/jsdoccomment/docs/)**.
+See the **[Demo](https://es-joy.github.io/jsdoccomment/docs/)**.
 
 This project aims to preserve and expand upon the
 `SourceCode#getJSDocComment` functionality of the deprecated ESLint method.
