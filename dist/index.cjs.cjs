@@ -135,7 +135,7 @@ const inlineTagToAST = ({
  * @param {boolean} [opts.throwOnTypeParsingErrors]
  * @returns {JsdocBlock}
  */
-const commentParserToESTree = (jsdoc, mode, {
+const commentParserToESTree = (jsdoc, mode = 'typescript', {
   spacing = 'compact',
   throwOnTypeParsingErrors = false
 } = {}) => {
@@ -1327,11 +1327,11 @@ const getTokenizers = ({
  * @returns {import('.').JsdocBlockWithInline}
  */
 const parseComment = (commentOrNode, indent = '') => {
-  let block;
+  let result;
   switch (typeof commentOrNode) {
     case 'string':
       // Preserve JSDoc block start/end indentation.
-      [block] = commentParser.parse(`${indent}${commentOrNode}`, {
+      result = commentParser.parse(`${indent}${commentOrNode}`, {
         // @see https://github.com/yavorskiy/comment-parser/issues/21
         tokenizers: getTokenizers()
       });
@@ -1342,7 +1342,7 @@ const parseComment = (commentOrNode, indent = '') => {
       }
 
       // Preserve JSDoc block start/end indentation.
-      [block] = commentParser.parse(`${indent}/*${commentOrNode.value}*/`, {
+      result = commentParser.parse(`${indent}/*${commentOrNode.value}*/`, {
         // @see https://github.com/yavorskiy/comment-parser/issues/21
         tokenizers: getTokenizers()
       });
@@ -1350,6 +1350,10 @@ const parseComment = (commentOrNode, indent = '') => {
     default:
       throw new TypeError(`'commentOrNode' is not a string or object.`);
   }
+  if (!result.length) {
+    throw new Error('There were no results for comment parsing');
+  }
+  const [block] = result;
   return parseInlineTags(block);
 };
 
