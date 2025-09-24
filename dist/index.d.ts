@@ -79,7 +79,7 @@ type JsdocBlock = {
  */
 declare function commentParserToESTree(
   jsdoc: JsdocBlockWithInline,
-  mode: jsdoc_type_pratt_parser.ParseMode,
+  mode?: jsdoc_type_pratt_parser.ParseMode,
   {
     spacing,
     throwOnTypeParsingErrors,

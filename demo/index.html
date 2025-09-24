@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>@es-joy/jsdoccomment demo</title>
+    <link rel="stylesheet" href="index.css" />
+    <script type="module" src="index.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "comment-parser": "./vendor/comment-parser/es6/index.js",
+          "esquery": "./vendor/esquery/dist/esquery.esm.js",
+          "jsdoc-type-pratt-parser": "./vendor/jsdoc-type-pratt-parser/dist/esm/index.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>@es-joy/jsdoccomment demo</h1>
+
+    <section class="source">
+      <h2>Source</h2>
+      <textarea id="source">
+/**
+ * @param {SomeType} aName Here is a description.
+ */
+</textarea>
+    </section>
+
+    <section class="output">
+      <h2>Output</h2>
+      <textarea id="output"></textarea>
+    </section>
+
+    <section class="stringified">
+      <h2>Stringified</h2>
+      <textarea id="stringified"></textarea>
+    </section>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "moduleResolution": "Bundler",
     "module": "esnext",
     "target": "esnext",
@@ -11,6 +11,6 @@
     "skipLibCheck": true,
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.js", "test/**/*.js", "typings/espree.d.ts"],
+  "include": ["src/**/*.js", "test/**/*.js", "demo/**/*.js", "typings/espree.d.ts"],
   "exclude": ["node_modules"]
 }

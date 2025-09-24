@@ -32,7 +32,9 @@
     "defaults, not op_mini all"
   ],
   "scripts": {
-    "build": "rollup -c && npm run types",
+    "start": "static -p 8070",
+    "copy": "cp node_modules/esquery/dist/esquery.esm.js demo/vendor/esquery/dist/esquery.esm.js && cp -R node_modules/jsdoc-type-pratt-parser/dist/esm demo/vendor/jsdoc-type-pratt-parser/dist && cp -R node_modules/comment-parser/es6 demo/vendor/comment-parser",
+    "build": "pnpm copy && rollup -c && pnpm types",
     "docs": "typedoc-pkg --api-link es",
     "eslint": "eslint .",
     "lint": "npm run eslint --",
@@ -71,6 +73,7 @@
   "devDependencies": {
     "@babel/core": "^7.28.4",
     "@babel/preset-env": "^7.28.3",
+    "@brettz9/node-static": "^0.1.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/esquery": "^1.5.4",
     "@types/estraverse": "^5.1.7",
