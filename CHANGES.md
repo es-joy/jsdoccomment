@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.60.0
+
+- feat(`commentParserToESTree`): default to typescript mode
+- feat(`parseComment`): give more specific error when fails to parse
+- feat: add demo
+
 ## 0.59.0
 
 - chore: update @typescript-eslint/types and devDeps
