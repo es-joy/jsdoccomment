@@ -983,4 +983,10 @@ describe('parseComment (error)', function () {
       `'commentOrNode' is not a string or object.`
     );
   });
+
+  it('Throws on badly formed string', function () {
+    expect(() => parseComment('')).to.throw(
+      ``
+    );
+  });
 });

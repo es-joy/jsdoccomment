@@ -7,7 +7,8 @@ export default [
       'coverage',
       'docs',
       'dist',
-      'html'
+      'html',
+      'demo/vendor'
     ]
   },
   ...ashNazg(['sauron']),
