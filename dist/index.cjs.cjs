@@ -458,11 +458,16 @@ const jsdocVisitorKeys = {
   JsdocInlineTag: []
 };
 
+/* eslint-disable jsdoc/reject-any-type -- Arbitrary settings */
 /**
- * @param {{[name: string]: any}} settings
+ * @param {{
+ *   mode: import('jsdoc-type-pratt-parser').ParseMode,
+ *   [key: string]: any
+ * }} settings
  * @returns {import('.').CommentHandler}
  */
 const commentHandler = settings => {
+  /* eslint-enable jsdoc/reject-any-type -- Arbitrary settings */
   /**
    * @type {import('.').CommentHandler}
    */
@@ -483,8 +488,10 @@ const commentHandler = settings => {
   };
 };
 
+/* eslint-disable jsdoc/reject-function-type -- Different functions */
 /** @type {Record<string, Function>} */
 const stringifiers = {
+  /* eslint-enable jsdoc/reject-function-type -- Different functions */
   JsdocBlock,
   /**
    * @param {import('./commentParserToESTree').JsdocDescriptionLine} node
@@ -646,6 +653,7 @@ function JsdocTag(node, opts) {
   return result;
 }
 
+/* eslint-disable jsdoc/reject-any-type -- Todo */
 /**
  * Obtained originally from {@link https://github.com/eslint/eslint/blob/master/lib/util/source-code.js#L313}.
  *

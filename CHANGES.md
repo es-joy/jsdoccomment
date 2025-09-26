@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.61.0
+
+- chore: update jsdoc-type-pratt-parser and devDeps.
+
 ## 0.60.0
 
 - feat(`commentParserToESTree`): default to typescript mode

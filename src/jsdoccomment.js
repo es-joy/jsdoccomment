@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/reject-any-type -- Todo */
 /**
  * Obtained originally from {@link https://github.com/eslint/eslint/blob/master/lib/util/source-code.js#L313}.
  *

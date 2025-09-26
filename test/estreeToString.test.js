@@ -433,10 +433,12 @@ describe('`estreeToString`', function () {
 
   it('throws upon encountering an unhandled node type', function () {
     expect(() => {
+      /* eslint-disable jsdoc/reject-any-type -- Testing */
       /**
        * @typedef {any} BadArgument
        */
       estreeToString(/** @type {BadArgument} */ ({
+        /* eslint-enable jsdoc/reject-any-type -- Testing */
         type: 'UnknownType'
       }));
     }).to.throw('Unhandled node type: UnknownType');

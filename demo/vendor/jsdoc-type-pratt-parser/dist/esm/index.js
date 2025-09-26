@@ -89,6 +89,46 @@ function getQuoted(text) {
   }
   return text.slice(0, position);
 }
+function getTemplateLiteral(text) {
+  let position = 0;
+  let char = void 0;
+  const mark = text[0];
+  let escaped = false;
+  if (mark !== "`") {
+    return null;
+  }
+  while (position < text.length) {
+    position++;
+    char = text[position];
+    if (!escaped && char === mark) {
+      position++;
+      break;
+    }
+    escaped = !escaped && char === "\\";
+  }
+  if (char !== mark) {
+    throw new Error("Unterminated template literal");
+  }
+  return text.slice(0, position);
+}
+function getTemplateLiteralLiteral(text) {
+  let position = 0;
+  let char = void 0;
+  const start = text[0];
+  let escaped = false;
+  if (start === "`" || start === "$" && text[1] === "{") {
+    return null;
+  }
+  while (position < text.length) {
+    position++;
+    char = text[position];
+    if (!escaped && (char === "`" || char === "$" && text[position + 1] === "{")) {
+      break;
+    }
+    escaped = !escaped && char === "\\";
+  }
+  return text.slice(0, position);
+}
 var identifierStartRegex = new RegExp("[$_\\p{ID_Start}]|\\\\u\\p{Hex_Digit}{4}|\\\\u\\{0*(?:\\p{Hex_Digit}{1,5}|10\\p{Hex_Digit}{4})\\}", "u");
 var identifierContinueRegex = new RegExp("[$\\-\\p{ID_Continue}\\u200C\\u200D]|\\\\u\\p{Hex_Digit}{4}|\\\\u\\{0*(?:\\p{Hex_Digit}{1,5}|10\\p{Hex_Digit}{4})\\}", "u");
 function getIdentifier(text) {
@@ -143,6 +183,16 @@ var stringValueRule = (text) => {
   }
   return {
     type: "StringValue",
+    text: value
+  };
+};
+var templateLiteralRule = (text) => {
+  const value = getTemplateLiteral(text);
+  if (value == null) {
+    return null;
+  }
+  return {
+    type: "TemplateLiteral",
     text: value
   };
 };
@@ -210,7 +260,8 @@ var rules = [
   makeKeyWordRule("asserts"),
   numberRule,
   identifierRule,
-  stringValueRule
+  stringValueRule,
+  templateLiteralRule
 ];
 var breakingWhitespaceRegex = /^\s*\n\s*/;
 var Lexer = class _Lexer {
@@ -243,6 +294,9 @@ var Lexer = class _Lexer {
     }
     throw new Error("Unexpected Token " + text);
   }
+  remaining() {
+    return this.next.text + this.text;
+  }
   advance() {
     const next = _Lexer.read(this.text);
     return new _Lexer(next.text, this.current, this.next, next.token);
@@ -254,7 +308,7 @@ function assertRootResult(result) {
   if (result === void 0) {
     throw new Error("Unexpected undefined");
   }
-  if (result.type === "JsdocTypeKeyValue" || result.type === "JsdocTypeParameterList" || result.type === "JsdocTypeProperty" || result.type === "JsdocTypeReadonlyProperty" || result.type === "JsdocTypeObjectField" || result.type === "JsdocTypeJsdocObjectField" || result.type === "JsdocTypeIndexSignature" || result.type === "JsdocTypeMappedType" || result.type === "JsdocTypeTypeParameter") {
+  if (result.type === "JsdocTypeKeyValue" || result.type === "JsdocTypeParameterList" || result.type === "JsdocTypeProperty" || result.type === "JsdocTypeReadonlyProperty" || result.type === "JsdocTypeObjectField" || result.type === "JsdocTypeJsdocObjectField" || result.type === "JsdocTypeIndexSignature" || result.type === "JsdocTypeMappedType" || result.type === "JsdocTypeTypeParameter" || result.type === "JsdocTypeCallSignature" || result.type === "JsdocTypeConstructorSignature" || result.type === "JsdocTypeMethodSignature" || result.type === "JsdocTypeIndexedAccessIndex" || result.type === "JsdocTypeComputedProperty" || result.type === "JsdocTypeComputedMethod") {
     throw new UnexpectedTypeError(result);
   }
   return result;
@@ -706,8 +760,8 @@ function createNamePathParslet({ allowSquareBracketsOnAnyType, allowJsdocNamePat
       parser.consume("#");
       pathType = "instance";
     }
-    const pathParser = pathGrammar2 !== null ? new Parser(pathGrammar2, parser.lexer, parser) : parser;
-    const parsed = pathParser.parseIntermediateType(18 /* NAME_PATH */);
+    const pathParser = brackets && allowSquareBracketsOnAnyType ? parser : pathGrammar2 !== null ? new Parser(pathGrammar2, parser.lexer, parser) : parser;
+    const parsed = pathParser.parseType(18 /* NAME_PATH */);
     parser.acceptLexerState(pathParser);
     let right;
     switch (parsed.type) {
@@ -746,7 +800,13 @@ function createNamePathParslet({ allowSquareBracketsOnAnyType, allowJsdocNamePat
         }
         break;
       default:
-        throw new UnexpectedTypeError(parsed, "Expecting 'JsdocTypeName', 'JsdocTypeNumber', 'JsdocStringValue' or 'JsdocTypeSpecialNamePath'");
+        if (!brackets || !allowSquareBracketsOnAnyType) {
+          throw new UnexpectedTypeError(parsed, "Expecting 'JsdocTypeName', 'JsdocTypeNumber', 'JsdocStringValue' or 'JsdocTypeSpecialNamePath'");
+        }
+        right = {
+          type: "JsdocTypeIndexedAccessIndex",
+          right: parsed
+        };
     }
     if (brackets && !parser.consume("]")) {
       const token = parser.lexer.current;
@@ -1037,305 +1097,6 @@ var arrayBracketsParslet = composeParslet({
   }
 });
 
-// src/parslets/ObjectParslet.ts
-function createObjectParslet({ objectFieldGrammar: objectFieldGrammar3, allowKeyTypes }) {
-  return composeParslet({
-    name: "objectParslet",
-    accept: (type) => type === "{",
-    parsePrefix: (parser) => {
-      parser.consume("{");
-      const result = {
-        type: "JsdocTypeObject",
-        meta: {
-          separator: "comma"
-        },
-        elements: []
-      };
-      if (!parser.consume("}")) {
-        let separator;
-        const fieldParser = new Parser(objectFieldGrammar3, parser.lexer, parser);
-        while (true) {
-          fieldParser.acceptLexerState(parser);
-          let field = fieldParser.parseIntermediateType(2 /* OBJECT */);
-          parser.acceptLexerState(fieldParser);
-          if (field === void 0 && allowKeyTypes) {
-            field = parser.parseIntermediateType(2 /* OBJECT */);
-          }
-          let optional = false;
-          if (field.type === "JsdocTypeNullable") {
-            optional = true;
-            field = field.element;
-          }
-          if (field.type === "JsdocTypeNumber" || field.type === "JsdocTypeName" || field.type === "JsdocTypeStringValue") {
-            let quote2;
-            if (field.type === "JsdocTypeStringValue") {
-              quote2 = field.meta.quote;
-            }
-            result.elements.push({
-              type: "JsdocTypeObjectField",
-              key: field.value.toString(),
-              right: void 0,
-              optional,
-              readonly: false,
-              meta: {
-                quote: quote2
-              }
-            });
-          } else if (field.type === "JsdocTypeObjectField" || field.type === "JsdocTypeJsdocObjectField") {
-            result.elements.push(field);
-          } else {
-            throw new UnexpectedTypeError(field);
-          }
-          if (parser.lexer.current.startOfLine) {
-            separator != null ? separator : separator = "linebreak";
-            parser.consume(",") || parser.consume(";");
-          } else if (parser.consume(",")) {
-            if (parser.lexer.current.startOfLine) {
-              separator = "comma-and-linebreak";
-            } else {
-              separator = "comma";
-            }
-          } else if (parser.consume(";")) {
-            if (parser.lexer.current.startOfLine) {
-              separator = "semicolon-and-linebreak";
-            } else {
-              separator = "semicolon";
-            }
-          } else {
-            break;
-          }
-          const type = parser.lexer.current.type;
-          if (type === "}") {
-            break;
-          }
-        }
-        result.meta.separator = separator != null ? separator : "comma";
-        if ((separator != null ? separator : "").endsWith("linebreak")) {
-          result.meta.propertyIndent = "  ";
-        }
-        if (!parser.consume("}")) {
-          throw new Error("Unterminated record type. Missing '}'");
-        }
-      }
-      return result;
-    }
-  });
-}
-
-// src/parslets/ObjectFieldParslet.ts
-function createObjectFieldParslet({ allowSquaredProperties, allowKeyTypes, allowReadonly, allowOptional }) {
-  return composeParslet({
-    name: "objectFieldParslet",
-    precedence: 3 /* KEY_VALUE */,
-    accept: (type) => type === ":",
-    parseInfix: (parser, left) => {
-      var _a;
-      let optional = false;
-      let readonlyProperty = false;
-      if (allowOptional && left.type === "JsdocTypeNullable") {
-        optional = true;
-        left = left.element;
-      }
-      if (allowReadonly && left.type === "JsdocTypeReadonlyProperty") {
-        readonlyProperty = true;
-        left = left.element;
-      }
-      const parentParser = (_a = parser.baseParser) != null ? _a : parser;
-      parentParser.acceptLexerState(parser);
-      if (left.type === "JsdocTypeNumber" || left.type === "JsdocTypeName" || left.type === "JsdocTypeStringValue" || isSquaredProperty(left)) {
-        if (isSquaredProperty(left) && !allowSquaredProperties) {
-          throw new UnexpectedTypeError(left);
-        }
-        parentParser.consume(":");
-        let quote2;
-        if (left.type === "JsdocTypeStringValue") {
-          quote2 = left.meta.quote;
-        }
-        const right = parentParser.parseType(3 /* KEY_VALUE */);
-        parser.acceptLexerState(parentParser);
-        return {
-          type: "JsdocTypeObjectField",
-          key: isSquaredProperty(left) ? left : left.value.toString(),
-          right,
-          optional,
-          readonly: readonlyProperty,
-          meta: {
-            quote: quote2
-          }
-        };
-      } else {
-        if (!allowKeyTypes) {
-          throw new UnexpectedTypeError(left);
-        }
-        parentParser.consume(":");
-        const right = parentParser.parseType(3 /* KEY_VALUE */);
-        parser.acceptLexerState(parentParser);
-        return {
-          type: "JsdocTypeJsdocObjectField",
-          left: assertRootResult(left),
-          right
-        };
-      }
-    }
-  });
-}
-
-// src/parslets/KeyValueParslet.ts
-function createKeyValueParslet({ allowOptional, allowVariadic }) {
-  return composeParslet({
-    name: "keyValueParslet",
-    precedence: 3 /* KEY_VALUE */,
-    accept: (type) => type === ":",
-    parseInfix: (parser, left) => {
-      let optional = false;
-      let variadic = false;
-      if (allowOptional && left.type === "JsdocTypeNullable") {
-        optional = true;
-        left = left.element;
-      }
-      if (allowVariadic && left.type === "JsdocTypeVariadic" && left.element !== void 0) {
-        variadic = true;
-        left = left.element;
-      }
-      if (left.type !== "JsdocTypeName") {
-        throw new UnexpectedTypeError(left);
-      }
-      parser.consume(":");
-      const right = parser.parseType(3 /* KEY_VALUE */);
-      return {
-        type: "JsdocTypeKeyValue",
-        key: left.value,
-        right,
-        optional,
-        variadic
-      };
-    }
-  });
-}
-
-// src/grammars/jsdocGrammar.ts
-var jsdocBaseGrammar = [
-  ...baseGrammar,
-  createFunctionParslet({
-    allowWithoutParenthesis: true,
-    allowNamedParameters: ["this", "new"],
-    allowNoReturnType: true,
-    allowNewAsFunctionKeyword: false
-  }),
-  stringValueParslet,
-  createSpecialNamePathParslet({
-    allowedTypes: ["module", "external", "event"],
-    pathGrammar
-  }),
-  createVariadicParslet({
-    allowEnclosingBrackets: true,
-    allowPostfix: true
-  }),
-  createNameParslet({
-    allowedAdditionalTokens: ["keyof"]
-  }),
-  symbolParslet,
-  arrayBracketsParslet,
-  createNamePathParslet({
-    allowSquareBracketsOnAnyType: false,
-    allowJsdocNamePaths: true,
-    pathGrammar
-  })
-];
-var jsdocGrammar = [
-  ...jsdocBaseGrammar,
-  createObjectParslet({
-    // jsdoc syntax allows full types as keys, so we need to pull in the full grammar here
-    // we leave out the object type deliberately
-    objectFieldGrammar: [
-      createNameParslet({
-        allowedAdditionalTokens: ["typeof", "module", "in"]
-      }),
-      createObjectFieldParslet({
-        allowSquaredProperties: false,
-        allowKeyTypes: true,
-        allowOptional: false,
-        allowReadonly: false
-      }),
-      ...jsdocBaseGrammar
-    ],
-    allowKeyTypes: true
-  }),
-  createKeyValueParslet({
-    allowOptional: true,
-    allowVariadic: true
-  })
-];
-
-// src/parslets/TypeOfParslet.ts
-var typeOfParslet = composeParslet({
-  name: "typeOfParslet",
-  accept: (type) => type === "typeof",
-  parsePrefix: (parser) => {
-    parser.consume("typeof");
-    return {
-      type: "JsdocTypeTypeof",
-      element: parser.parseType(13 /* KEY_OF_TYPE_OF */)
-    };
-  }
-});
-
-// src/grammars/closureGrammar.ts
-var objectFieldGrammar = [
-  createNameParslet({
-    allowedAdditionalTokens: ["typeof", "module", "keyof", "event", "external", "in"]
-  }),
-  nullableParslet,
-  optionalParslet,
-  stringValueParslet,
-  numberParslet,
-  createObjectFieldParslet({
-    allowSquaredProperties: false,
-    allowKeyTypes: false,
-    allowOptional: false,
-    allowReadonly: false
-  })
-];
-var closureGrammar = [
-  ...baseGrammar,
-  createObjectParslet({
-    allowKeyTypes: false,
-    objectFieldGrammar
-  }),
-  createNameParslet({
-    allowedAdditionalTokens: ["event", "external", "in"]
-  }),
-  typeOfParslet,
-  createFunctionParslet({
-    allowWithoutParenthesis: false,
-    allowNamedParameters: ["this", "new"],
-    allowNoReturnType: true,
-    allowNewAsFunctionKeyword: false
-  }),
-  createVariadicParslet({
-    allowEnclosingBrackets: false,
-    allowPostfix: false
-  }),
-  // additional name parslet is needed for some special cases
-  createNameParslet({
-    allowedAdditionalTokens: ["keyof"]
-  }),
-  createSpecialNamePathParslet({
-    allowedTypes: ["module"],
-    pathGrammar
-  }),
-  createNamePathParslet({
-    allowSquareBracketsOnAnyType: false,
-    allowJsdocNamePaths: true,
-    pathGrammar
-  }),
-  createKeyValueParslet({
-    allowOptional: false,
-    allowVariadic: false
-  }),
-  symbolParslet
-];
-
 // src/parslets/assertsParslet.ts
 var assertsParslet = composeParslet({
   name: "assertsParslet",
@@ -1357,6 +1118,66 @@ var assertsParslet = composeParslet({
       left,
       right: assertRootResult(parser.parseIntermediateType(8 /* INFIX */))
     };
+  }
+});
+
+// src/parslets/FunctionPropertyParslet.ts
+var functionPropertyParslet = composeParslet({
+  name: "functionPropertyParslet",
+  accept: (type, next) => type === "new" && next === "(" || type === "Identifier" && next === "(" || type === "StringValue" && next === "(" || type === "(",
+  parsePrefix: (parser) => {
+    let result;
+    const returnType = {
+      type: "JsdocTypeName",
+      value: "void"
+    };
+    const newKeyword = parser.consume("new");
+    if (newKeyword) {
+      result = {
+        type: "JsdocTypeConstructorSignature",
+        parameters: [],
+        returnType
+      };
+    } else {
+      const text = parser.lexer.current.text;
+      const identifier = parser.consume("Identifier");
+      if (identifier) {
+        result = {
+          type: "JsdocTypeMethodSignature",
+          name: text,
+          meta: {
+            quote: void 0
+          },
+          parameters: [],
+          returnType
+        };
+      } else {
+        const text2 = parser.lexer.current.text;
+        const stringValue = parser.consume("StringValue");
+        if (stringValue) {
+          result = {
+            type: "JsdocTypeMethodSignature",
+            name: text2.slice(1, -1),
+            meta: {
+              quote: text2.startsWith('"') ? "double" : "single"
+            },
+            parameters: [],
+            returnType
+          };
+        } else {
+          result = {
+            type: "JsdocTypeCallSignature",
+            parameters: [],
+            returnType
+          };
+        }
+      }
+    }
+    const hasParenthesis = parser.lexer.current.type === "(";
+    if (!hasParenthesis) {
+      throw new Error("function property is missing parameter list");
+    }
+    return result;
   }
 });
 
@@ -1398,6 +1219,19 @@ function createTupleParslet({ allowQuestionMark }) {
     }
   });
 }
+
+// src/parslets/TypeOfParslet.ts
+var typeOfParslet = composeParslet({
+  name: "typeOfParslet",
+  accept: (type) => type === "typeof",
+  parsePrefix: (parser) => {
+    parser.consume("typeof");
+    return {
+      type: "JsdocTypeTypeof",
+      element: parser.parseType(13 /* KEY_OF_TYPE_OF */)
+    };
+  }
+});
 
 // src/parslets/KeyOfParslet.ts
 var keyOfParslet = composeParslet({
@@ -1548,6 +1382,102 @@ var predicateParslet = composeParslet({
   }
 });
 
+// src/parslets/ObjectFieldParslet.ts
+function createObjectFieldParslet({ allowSquaredProperties, allowKeyTypes, allowReadonly, allowOptional }) {
+  return composeParslet({
+    name: "objectFieldParslet",
+    precedence: 3 /* KEY_VALUE */,
+    accept: (type) => type === ":",
+    parseInfix: (parser, left) => {
+      var _a;
+      let optional = false;
+      let readonlyProperty = false;
+      if (allowOptional && left.type === "JsdocTypeNullable") {
+        optional = true;
+        left = left.element;
+      }
+      if (allowReadonly && left.type === "JsdocTypeReadonlyProperty") {
+        readonlyProperty = true;
+        left = left.element;
+      }
+      const parentParser = (_a = parser.baseParser) != null ? _a : parser;
+      parentParser.acceptLexerState(parser);
+      if (left.type === "JsdocTypeNumber" || left.type === "JsdocTypeName" || left.type === "JsdocTypeStringValue" || isSquaredProperty(left)) {
+        if (isSquaredProperty(left) && !allowSquaredProperties) {
+          throw new UnexpectedTypeError(left);
+        }
+        parentParser.consume(":");
+        let quote2;
+        if (left.type === "JsdocTypeStringValue") {
+          quote2 = left.meta.quote;
+        }
+        const right = parentParser.parseType(3 /* KEY_VALUE */);
+        parser.acceptLexerState(parentParser);
+        return {
+          type: "JsdocTypeObjectField",
+          /* c8 ignore next -- Guard; not needed anymore? */
+          key: isSquaredProperty(left) ? left : left.value.toString(),
+          right,
+          optional,
+          readonly: readonlyProperty,
+          meta: {
+            quote: quote2
+          }
+        };
+      } else {
+        if (!allowKeyTypes) {
+          throw new UnexpectedTypeError(left);
+        }
+        parentParser.consume(":");
+        const right = parentParser.parseType(3 /* KEY_VALUE */);
+        parser.acceptLexerState(parentParser);
+        return {
+          type: "JsdocTypeJsdocObjectField",
+          left: assertRootResult(left),
+          right
+        };
+      }
+    }
+  });
+}
+
+// src/parslets/KeyValueParslet.ts
+function createKeyValueParslet({ allowOptional, allowVariadic, acceptParameterList }) {
+  return composeParslet({
+    name: "keyValueParslet",
+    precedence: 3 /* KEY_VALUE */,
+    accept: (type) => type === ":",
+    parseInfix: (parser, left) => {
+      let optional = false;
+      let variadic = false;
+      if (allowOptional && left.type === "JsdocTypeNullable") {
+        optional = true;
+        left = left.element;
+      }
+      if (allowVariadic && left.type === "JsdocTypeVariadic" && left.element !== void 0) {
+        variadic = true;
+        left = left.element;
+      }
+      if (left.type !== "JsdocTypeName") {
+        if (acceptParameterList !== void 0 && left.type === "JsdocTypeParameterList") {
+          parser.consume(":");
+          return left;
+        }
+        throw new UnexpectedTypeError(left);
+      }
+      parser.consume(":");
+      const right = parser.parseType(3 /* KEY_VALUE */);
+      return {
+        type: "JsdocTypeKeyValue",
+        key: left.value,
+        right,
+        optional,
+        variadic
+      };
+    }
+  });
+}
+
 // src/parslets/ObjectSquaredPropertyParslet.ts
 var objectSquaredPropertyParslet = composeParslet({
   name: "objectSquareBracketPropertyParslet",
@@ -1557,32 +1487,137 @@ var objectSquaredPropertyParslet = composeParslet({
       throw new Error("Only allowed inside object grammar");
     }
     parser.consume("[");
-    const key = parser.lexer.current.text;
-    parser.consume("Identifier");
+    let innerBracketType;
+    try {
+      innerBracketType = parser.parseIntermediateType(2 /* OBJECT */);
+    } catch (err) {
+      throw new Error("Error parsing value inside square bracketed property.");
+    }
     let result;
-    if (parser.consume(":")) {
+    if (
+      // Looks like an object field because of `key: value`, but is
+      //  shaping to be an index signature
+      innerBracketType.type === "JsdocTypeObjectField" && typeof innerBracketType.key === "string" && !innerBracketType.optional && !innerBracketType.readonly && innerBracketType.right !== void 0
+    ) {
+      const key = innerBracketType.key;
+      if (!parser.consume("]")) {
+        throw new Error("Unterminated square brackets");
+      }
+      if (!parser.consume(":")) {
+        throw new Error("Incomplete index signature");
+      }
       const parentParser = parser.baseParser;
       parentParser.acceptLexerState(parser);
-      result = {
+      innerBracketType.key = {
         type: "JsdocTypeIndexSignature",
         key,
-        right: parentParser.parseType(4 /* INDEX_BRACKETS */)
+        right: innerBracketType.right
       };
+      innerBracketType.optional = false;
+      innerBracketType.meta.quote = void 0;
+      result = innerBracketType;
+      const right = parentParser.parseType(4 /* INDEX_BRACKETS */);
+      result.right = right;
       parser.acceptLexerState(parentParser);
-    } else if (parser.consume("in")) {
+    } else if (
+      // Looks like a name, but is shaping to be a mapped type clause
+      innerBracketType.type === "JsdocTypeName" && parser.consume("in")
+    ) {
       const parentParser = parser.baseParser;
       parentParser.acceptLexerState(parser);
-      result = {
-        type: "JsdocTypeMappedType",
-        key,
-        right: parentParser.parseType(16 /* ARRAY_BRACKETS */)
-      };
+      const mappedTypeRight = parentParser.parseType(16 /* ARRAY_BRACKETS */);
       parser.acceptLexerState(parentParser);
+      if (!parser.consume("]")) {
+        throw new Error("Unterminated square brackets");
+      }
+      const optional = parser.consume("?");
+      if (!parser.consume(":")) {
+        throw new Error("Incomplete mapped type clause: missing colon");
+      }
+      const right = parser.parseType(4 /* INDEX_BRACKETS */);
+      result = {
+        type: "JsdocTypeObjectField",
+        optional,
+        readonly: false,
+        meta: {
+          quote: void 0
+        },
+        key: {
+          type: "JsdocTypeMappedType",
+          key: innerBracketType.value,
+          right: mappedTypeRight
+        },
+        right
+      };
     } else {
-      throw new Error("Missing ':' or 'in' inside square bracketed property.");
-    }
-    if (!parser.consume("]")) {
-      throw new Error("Unterminated square brackets");
+      if (!parser.consume("]")) {
+        throw new Error("Unterminated square brackets");
+      }
+      let type;
+      let optional = parser.consume("?");
+      let key;
+      const checkMiddle = () => {
+        if (!optional) {
+          optional = parser.consume("?");
+        }
+      };
+      let right;
+      const text = parser.lexer.current.type;
+      if (text === "(") {
+        const signatureParser = new Parser(
+          [
+            createKeyValueParslet({
+              allowVariadic: true,
+              allowOptional: true,
+              acceptParameterList: true
+            }),
+            ...typescriptGrammar.flatMap((grammar) => {
+              if (grammar.name === "keyValueParslet") {
+                return [];
+              }
+              return [grammar];
+            })
+          ],
+          parser.lexer,
+          parser
+        );
+        signatureParser.acceptLexerState(parser);
+        const params = signatureParser.parseIntermediateType(2 /* OBJECT */);
+        parser.acceptLexerState(signatureParser);
+        const parameters = getParameters(params);
+        type = "JsdocTypeComputedMethod";
+        checkMiddle();
+        parser.consume(":");
+        const nextValue = parser.parseType(4 /* INDEX_BRACKETS */);
+        key = {
+          type,
+          optional,
+          value: innerBracketType,
+          parameters,
+          returnType: nextValue
+        };
+      } else {
+        type = "JsdocTypeComputedProperty";
+        checkMiddle();
+        if (!parser.consume(":")) {
+          throw new Error("Incomplete computed property: missing colon");
+        }
+        right = parser.parseType(4 /* INDEX_BRACKETS */);
+        key = {
+          type,
+          value: innerBracketType
+        };
+      }
+      result = {
+        type: "JsdocTypeObjectField",
+        optional: type === "JsdocTypeComputedMethod" ? false : optional,
+        readonly: false,
+        meta: {
+          quote: void 0
+        },
+        key,
+        right
+      };
     }
     return result;
   }
@@ -1623,8 +1658,49 @@ var conditionalParslet = composeParslet({
   }
 });
 
+// src/parslets/TemplateLiteralParslet.ts
+var templateLiteralParslet = composeParslet({
+  name: "templateLiteralParslet",
+  accept: (type) => type === "TemplateLiteral",
+  parsePrefix: (parser) => {
+    const text = parser.lexer.current.text;
+    parser.consume("TemplateLiteral");
+    const literals = [];
+    const interpolations = [];
+    let currentText = text.slice(1, -1);
+    const advanceLiteral = () => {
+      var _a;
+      const literal = (_a = getTemplateLiteralLiteral(currentText)) != null ? _a : "";
+      literals.push(literal.replace(/\\`/g, "`"));
+      currentText = currentText.slice(literal.length);
+    };
+    advanceLiteral();
+    while (true) {
+      if (currentText.startsWith("${")) {
+        currentText = currentText.slice(2);
+        const templateParser = new Parser(typescriptGrammar, currentText);
+        const interpolationType = templateParser.parseType(0 /* ALL */);
+        interpolations.push(interpolationType);
+        if (templateParser.lexer.current.text !== "}") {
+          throw new Error("unterminated interpolation");
+        }
+        currentText = templateParser.lexer.remaining();
+      } else {
+        break;
+      }
+      advanceLiteral();
+    }
+    return {
+      type: "JsdocTypeTemplateLiteral",
+      literals,
+      interpolations
+    };
+  }
+});
+
 // src/grammars/typescriptGrammar.ts
-var objectFieldGrammar2 = [
+var objectFieldGrammar = [
+  functionPropertyParslet,
   readonlyPropertyParslet,
   createNameParslet({
     allowedAdditionalTokens: ["typeof", "module", "keyof", "event", "external", "in"]
@@ -1645,7 +1721,14 @@ var typescriptGrammar = [
   ...baseGrammar,
   createObjectParslet({
     allowKeyTypes: false,
-    objectFieldGrammar: objectFieldGrammar2
+    objectFieldGrammar,
+    signatureGrammar: [
+      createKeyValueParslet({
+        allowVariadic: true,
+        allowOptional: true,
+        acceptParameterList: true
+      })
+    ]
   }),
   readonlyArrayParslet,
   typeOfParslet,
@@ -1684,10 +1767,233 @@ var typescriptGrammar = [
   }),
   intersectionParslet,
   predicateParslet,
+  templateLiteralParslet,
   createKeyValueParslet({
     allowVariadic: true,
     allowOptional: true
   })
+];
+
+// src/parslets/ObjectParslet.ts
+function createObjectParslet({ signatureGrammar, objectFieldGrammar: objectFieldGrammar3, allowKeyTypes }) {
+  return composeParslet({
+    name: "objectParslet",
+    accept: (type) => type === "{",
+    parsePrefix: (parser) => {
+      parser.consume("{");
+      const result = {
+        type: "JsdocTypeObject",
+        meta: {
+          separator: "comma"
+        },
+        elements: []
+      };
+      if (!parser.consume("}")) {
+        let separator;
+        const fieldParser = new Parser(objectFieldGrammar3, parser.lexer, parser);
+        while (true) {
+          fieldParser.acceptLexerState(parser);
+          let field = fieldParser.parseIntermediateType(2 /* OBJECT */);
+          parser.acceptLexerState(fieldParser);
+          if (field === void 0 && allowKeyTypes) {
+            field = parser.parseIntermediateType(2 /* OBJECT */);
+          }
+          let optional = false;
+          if (field.type === "JsdocTypeNullable") {
+            optional = true;
+            field = field.element;
+          }
+          if (field.type === "JsdocTypeNumber" || field.type === "JsdocTypeName" || field.type === "JsdocTypeStringValue") {
+            let quote2;
+            if (field.type === "JsdocTypeStringValue") {
+              quote2 = field.meta.quote;
+            }
+            result.elements.push({
+              type: "JsdocTypeObjectField",
+              key: field.value.toString(),
+              right: void 0,
+              optional,
+              readonly: false,
+              meta: {
+                quote: quote2
+              }
+            });
+          } else if (signatureGrammar !== void 0 && (field.type === "JsdocTypeCallSignature" || field.type === "JsdocTypeConstructorSignature" || field.type === "JsdocTypeMethodSignature")) {
+            const signatureParser = new Parser(
+              [
+                ...signatureGrammar,
+                ...typescriptGrammar.flatMap((grammar) => {
+                  if (grammar.name === "keyValueParslet") {
+                    return [];
+                  }
+                  return [grammar];
+                })
+              ],
+              parser.lexer,
+              parser
+            );
+            signatureParser.acceptLexerState(parser);
+            const params = signatureParser.parseIntermediateType(2 /* OBJECT */);
+            parser.acceptLexerState(signatureParser);
+            field.parameters = getParameters(params);
+            const returnType = parser.parseType(2 /* OBJECT */);
+            field.returnType = returnType;
+            result.elements.push(field);
+          } else if (field.type === "JsdocTypeObjectField" || field.type === "JsdocTypeJsdocObjectField") {
+            result.elements.push(field);
+          } else if (field.type === "JsdocTypeReadonlyProperty" && field.element.type === "JsdocTypeObjectField") {
+            if (typeof field.element.key === "object" && field.element.key.type === "JsdocTypeComputedMethod") {
+              throw new Error("Computed method may not be readonly");
+            }
+            field.element.readonly = true;
+            result.elements.push(field.element);
+          } else {
+            throw new UnexpectedTypeError(field);
+          }
+          if (parser.lexer.current.startOfLine) {
+            separator != null ? separator : separator = "linebreak";
+            parser.consume(",") || parser.consume(";");
+          } else if (parser.consume(",")) {
+            if (parser.lexer.current.startOfLine) {
+              separator = "comma-and-linebreak";
+            } else {
+              separator = "comma";
+            }
+          } else if (parser.consume(";")) {
+            if (parser.lexer.current.startOfLine) {
+              separator = "semicolon-and-linebreak";
+            } else {
+              separator = "semicolon";
+            }
+          } else {
+            break;
+          }
+          const type = parser.lexer.current.type;
+          if (type === "}") {
+            break;
+          }
+        }
+        result.meta.separator = separator != null ? separator : "comma";
+        if ((separator != null ? separator : "").endsWith("linebreak")) {
+          result.meta.propertyIndent = "  ";
+        }
+        if (!parser.consume("}")) {
+          throw new Error("Unterminated record type. Missing '}'");
+        }
+      }
+      return result;
+    }
+  });
+}
+
+// src/grammars/jsdocGrammar.ts
+var jsdocBaseGrammar = [
+  ...baseGrammar,
+  createFunctionParslet({
+    allowWithoutParenthesis: true,
+    allowNamedParameters: ["this", "new"],
+    allowNoReturnType: true,
+    allowNewAsFunctionKeyword: false
+  }),
+  stringValueParslet,
+  createSpecialNamePathParslet({
+    allowedTypes: ["module", "external", "event"],
+    pathGrammar
+  }),
+  createVariadicParslet({
+    allowEnclosingBrackets: true,
+    allowPostfix: true
+  }),
+  createNameParslet({
+    allowedAdditionalTokens: ["keyof"]
+  }),
+  symbolParslet,
+  arrayBracketsParslet,
+  createNamePathParslet({
+    allowSquareBracketsOnAnyType: false,
+    allowJsdocNamePaths: true,
+    pathGrammar
+  })
+];
+var jsdocGrammar = [
+  ...jsdocBaseGrammar,
+  createObjectParslet({
+    // jsdoc syntax allows full types as keys, so we need to pull in the full grammar here
+    // we leave out the object type deliberately
+    objectFieldGrammar: [
+      createNameParslet({
+        allowedAdditionalTokens: ["typeof", "module", "in"]
+      }),
+      createObjectFieldParslet({
+        allowSquaredProperties: false,
+        allowKeyTypes: true,
+        allowOptional: false,
+        allowReadonly: false
+      }),
+      ...jsdocBaseGrammar
+    ],
+    allowKeyTypes: true
+  }),
+  createKeyValueParslet({
+    allowOptional: true,
+    allowVariadic: true
+  })
+];
+
+// src/grammars/closureGrammar.ts
+var objectFieldGrammar2 = [
+  createNameParslet({
+    allowedAdditionalTokens: ["typeof", "module", "keyof", "event", "external", "in"]
+  }),
+  nullableParslet,
+  optionalParslet,
+  stringValueParslet,
+  numberParslet,
+  createObjectFieldParslet({
+    allowSquaredProperties: false,
+    allowKeyTypes: false,
+    allowOptional: false,
+    allowReadonly: false
+  })
+];
+var closureGrammar = [
+  ...baseGrammar,
+  createObjectParslet({
+    allowKeyTypes: false,
+    objectFieldGrammar: objectFieldGrammar2
+  }),
+  createNameParslet({
+    allowedAdditionalTokens: ["event", "external", "in"]
+  }),
+  typeOfParslet,
+  createFunctionParslet({
+    allowWithoutParenthesis: false,
+    allowNamedParameters: ["this", "new"],
+    allowNoReturnType: true,
+    allowNewAsFunctionKeyword: false
+  }),
+  createVariadicParslet({
+    allowEnclosingBrackets: false,
+    allowPostfix: false
+  }),
+  // additional name parslet is needed for some special cases
+  createNameParslet({
+    allowedAdditionalTokens: ["keyof"]
+  }),
+  createSpecialNamePathParslet({
+    allowedTypes: ["module"],
+    pathGrammar
+  }),
+  createNamePathParslet({
+    allowSquareBracketsOnAnyType: false,
+    allowJsdocNamePaths: true,
+    pathGrammar
+  }),
+  createKeyValueParslet({
+    allowOptional: false,
+    allowVariadic: false
+  }),
+  symbolParslet
 ];
 
 // src/parse.ts
@@ -1823,12 +2129,16 @@ function stringifyRules() {
       if (result.readonly) {
         text += "readonly ";
       }
+      let optionalBeforeParentheses = false;
       if (typeof result.key === "string") {
         text += quote(result.key, result.meta.quote);
       } else {
+        if (result.key.type === "JsdocTypeComputedMethod") {
+          optionalBeforeParentheses = true;
+        }
         text += transform2(result.key);
       }
-      if (result.optional) {
+      if (!optionalBeforeParentheses && result.optional) {
         text += "?";
       }
       if (result.right === void 0) {
@@ -1889,7 +2199,22 @@ function stringifyRules() {
     JsdocTypeReadonlyArray: (result, transform2) => `readonly ${transform2(result.element)}`,
     JsdocTypeAssertsPlain: (result, transform2) => `asserts ${transform2(result.element)}`,
     JsdocTypeConditional: (result, transform2) => `${transform2(result.checksType)} extends ${transform2(result.extendsType)} ? ${transform2(result.trueType)} : ${transform2(result.falseType)}`,
-    JsdocTypeTypeParameter: (result, transform2) => `${transform2(result.name)}${result.constraint !== void 0 ? ` extends ${transform2(result.constraint)}` : ""}${result.defaultValue !== void 0 ? ` = ${transform2(result.defaultValue)}` : ""}`
+    JsdocTypeTypeParameter: (result, transform2) => `${transform2(result.name)}${result.constraint !== void 0 ? ` extends ${transform2(result.constraint)}` : ""}${result.defaultValue !== void 0 ? ` = ${transform2(result.defaultValue)}` : ""}`,
+    JsdocTypeCallSignature: (result, transform2) => `(${result.parameters.map(transform2).join(", ")}): ${transform2(result.returnType)}`,
+    JsdocTypeConstructorSignature: (result, transform2) => `new (${result.parameters.map(transform2).join(", ")}): ${transform2(result.returnType)}`,
+    JsdocTypeMethodSignature: (result, transform2) => {
+      const quote2 = result.meta.quote === "double" ? '"' : result.meta.quote === "single" ? "'" : "";
+      return `${quote2}${result.name}${quote2}(${result.parameters.map(transform2).join(", ")}): ${transform2(result.returnType)}`;
+    },
+    JsdocTypeIndexedAccessIndex: (result, transform2) => transform2(result.right),
+    JsdocTypeTemplateLiteral: (result, transform2) => `\`${// starts with a literal (even empty string) then alternating
+    //    interpolations and literals and also ending in literal
+    //    (even empty string)
+    result.literals.slice(0, -1).map(
+      (literal, idx) => literal.replace(/`/gu, "\\`") + "${" + transform2(result.interpolations[idx]) + "}"
+    ).join("") + result.literals.slice(-1)[0].replace(/`/gu, "\\`")}\``,
+    JsdocTypeComputedProperty: (result, transform2) => `[${transform2(result.value)}]`,
+    JsdocTypeComputedMethod: (result, transform2) => `[${transform2(result.value)}]${result.optional ? "?" : ""}(${result.parameters.map(transform2).join(", ")}): ${transform2(result.returnType)}`
   };
 }
 var storedStringifyRules = stringifyRules();
@@ -2062,6 +2387,9 @@ var catharsisTransformRules = {
   JsdocTypeNamePath: (result, transform2) => {
     const leftResult = transform2(result.left);
     let rightValue;
+    if (result.right.type === "JsdocTypeIndexedAccessIndex") {
+      throw new TypeError("JsdocTypeIndexedAccessIndex is not supported in catharsis");
+    }
     if (result.right.type === "JsdocTypeSpecialNamePath") {
       rightValue = transform2(result.right).name;
     } else {
@@ -2106,7 +2434,14 @@ var catharsisTransformRules = {
   JsdocTypeReadonlyArray: notAvailableTransform,
   JsdocTypeAssertsPlain: notAvailableTransform,
   JsdocTypeConditional: notAvailableTransform,
-  JsdocTypeTypeParameter: notAvailableTransform
+  JsdocTypeTypeParameter: notAvailableTransform,
+  JsdocTypeCallSignature: notAvailableTransform,
+  JsdocTypeConstructorSignature: notAvailableTransform,
+  JsdocTypeMethodSignature: notAvailableTransform,
+  JsdocTypeIndexedAccessIndex: notAvailableTransform,
+  JsdocTypeTemplateLiteral: notAvailableTransform,
+  JsdocTypeComputedProperty: notAvailableTransform,
+  JsdocTypeComputedMethod: notAvailableTransform
 };
 function catharsisTransform(result) {
   return transform(catharsisTransformRules, result);
@@ -2357,6 +2692,9 @@ var jtpRules = {
     let hasEventPrefix = false;
     let name;
     let quoteStyle;
+    if (result.right.type === "JsdocTypeIndexedAccessIndex") {
+      throw new TypeError("JsdocTypeIndexedAccessIndex not allowed in jtp");
+    }
     if (result.right.type === "JsdocTypeSpecialNamePath" && result.right.specialType === "event") {
       hasEventPrefix = true;
       name = result.right.value;
@@ -2412,7 +2750,14 @@ var jtpRules = {
   JsdocTypeReadonlyArray: notAvailableTransform,
   JsdocTypeAssertsPlain: notAvailableTransform,
   JsdocTypeConditional: notAvailableTransform,
-  JsdocTypeTypeParameter: notAvailableTransform
+  JsdocTypeTypeParameter: notAvailableTransform,
+  JsdocTypeCallSignature: notAvailableTransform,
+  JsdocTypeConstructorSignature: notAvailableTransform,
+  JsdocTypeMethodSignature: notAvailableTransform,
+  JsdocTypeIndexedAccessIndex: notAvailableTransform,
+  JsdocTypeTemplateLiteral: notAvailableTransform,
+  JsdocTypeComputedProperty: notAvailableTransform,
+  JsdocTypeComputedMethod: notAvailableTransform
 };
 function jtpTransform(result) {
   return transform(jtpRules, result);
@@ -2586,6 +2931,43 @@ function identityTransformRules() {
       name: transform2(result.name),
       constraint: result.constraint !== void 0 ? transform2(result.constraint) : void 0,
       defaultValue: result.defaultValue !== void 0 ? transform2(result.defaultValue) : void 0
+    }),
+    JsdocTypeCallSignature: (result, transform2) => ({
+      type: "JsdocTypeCallSignature",
+      parameters: result.parameters.map(transform2),
+      returnType: transform2(result.returnType)
+    }),
+    JsdocTypeConstructorSignature: (result, transform2) => ({
+      type: "JsdocTypeConstructorSignature",
+      parameters: result.parameters.map(transform2),
+      returnType: transform2(result.returnType)
+    }),
+    JsdocTypeMethodSignature: (result, transform2) => ({
+      type: "JsdocTypeMethodSignature",
+      name: result.name,
+      parameters: result.parameters.map(transform2),
+      returnType: transform2(result.returnType),
+      meta: result.meta
+    }),
+    JsdocTypeIndexedAccessIndex: (result, transform2) => ({
+      type: "JsdocTypeIndexedAccessIndex",
+      right: transform2(result.right)
+    }),
+    JsdocTypeTemplateLiteral: (result, transform2) => ({
+      type: "JsdocTypeTemplateLiteral",
+      literals: result.literals,
+      interpolations: result.interpolations.map(transform2)
+    }),
+    JsdocTypeComputedProperty: (result, transform2) => ({
+      type: "JsdocTypeComputedProperty",
+      value: transform2(result.value)
+    }),
+    JsdocTypeComputedMethod: (result, transform2) => ({
+      type: "JsdocTypeComputedMethod",
+      value: transform2(result.value),
+      optional: result.optional,
+      parameters: result.parameters.map(transform2),
+      returnType: transform2(result.returnType)
     })
   };
 }
@@ -2627,7 +3009,14 @@ var visitorKeys = {
   JsdocTypeReadonlyArray: ["element"],
   JsdocTypeAssertsPlain: ["element"],
   JsdocTypeConditional: ["checksType", "extendsType", "trueType", "falseType"],
-  JsdocTypeTypeParameter: ["name", "constraint", "defaultValue"]
+  JsdocTypeTypeParameter: ["name", "constraint", "defaultValue"],
+  JsdocTypeCallSignature: ["parameters", "returnType"],
+  JsdocTypeConstructorSignature: ["parameters", "returnType"],
+  JsdocTypeMethodSignature: ["parameters", "returnType"],
+  JsdocTypeIndexedAccessIndex: ["right"],
+  JsdocTypeTemplateLiteral: ["interpolations"],
+  JsdocTypeComputedProperty: ["value"],
+  JsdocTypeComputedMethod: ["value", "parameters", "returnType"]
 };
 
 // src/traverse.ts

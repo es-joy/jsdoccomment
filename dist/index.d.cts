@@ -97,10 +97,16 @@ declare namespace jsdocVisitorKeys {
 }
 
 /**
- * @param {{[name: string]: any}} settings
+ * @param {{
+ *   mode: import('jsdoc-type-pratt-parser').ParseMode,
+ *   [key: string]: any
+ * }} settings
  * @returns {import('.').CommentHandler}
  */
-declare function commentHandler(settings: { [name: string]: any }): CommentHandler;
+declare function commentHandler(settings: {
+  mode: jsdoc_type_pratt_parser.ParseMode;
+  [key: string]: any;
+}): CommentHandler;
 
 /**
  * @todo convert for use by escodegen (until may be patched to support
