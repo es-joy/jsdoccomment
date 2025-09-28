@@ -68,7 +68,7 @@
     "@typescript-eslint/types": "^8.44.1",
     "comment-parser": "1.4.1",
     "esquery": "^1.6.0",
-    "jsdoc-type-pratt-parser": "~5.9.1"
+    "jsdoc-type-pratt-parser": "~5.9.2"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
