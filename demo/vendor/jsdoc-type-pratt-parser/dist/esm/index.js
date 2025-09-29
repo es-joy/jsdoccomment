@@ -57,252 +57,6 @@ var UnexpectedTypeError = class _UnexpectedTypeError extends Error {
   }
 };
 
-// src/lexer/Lexer.ts
-function makePunctuationRule(type) {
-  return (text) => {
-    if (text.startsWith(type)) {
-      return { type, text: type };
-    } else {
-      return null;
-    }
-  };
-}
-function getQuoted(text) {
-  let position = 0;
-  let char = void 0;
-  const mark = text[0];
-  let escaped = false;
-  if (mark !== "'" && mark !== '"') {
-    return null;
-  }
-  while (position < text.length) {
-    position++;
-    char = text[position];
-    if (!escaped && char === mark) {
-      position++;
-      break;
-    }
-    escaped = !escaped && char === "\\";
-  }
-  if (char !== mark) {
-    throw new Error("Unterminated String");
-  }
-  return text.slice(0, position);
-}
-function getTemplateLiteral(text) {
-  let position = 0;
-  let char = void 0;
-  const mark = text[0];
-  let escaped = false;
-  if (mark !== "`") {
-    return null;
-  }
-  while (position < text.length) {
-    position++;
-    char = text[position];
-    if (!escaped && char === mark) {
-      position++;
-      break;
-    }
-    escaped = !escaped && char === "\\";
-  }
-  if (char !== mark) {
-    throw new Error("Unterminated template literal");
-  }
-  return text.slice(0, position);
-}
-function getTemplateLiteralLiteral(text) {
-  let position = 0;
-  let char = void 0;
-  const start = text[0];
-  let escaped = false;
-  if (start === "`" || start === "$" && text[1] === "{") {
-    return null;
-  }
-  while (position < text.length) {
-    position++;
-    char = text[position];
-    if (!escaped && (char === "`" || char === "$" && text[position + 1] === "{")) {
-      break;
-    }
-    escaped = !escaped && char === "\\";
-  }
-  return text.slice(0, position);
-}
-var identifierStartRegex = new RegExp("[$_\\p{ID_Start}]|\\\\u\\p{Hex_Digit}{4}|\\\\u\\{0*(?:\\p{Hex_Digit}{1,5}|10\\p{Hex_Digit}{4})\\}", "u");
-var identifierContinueRegex = new RegExp("[$\\-\\p{ID_Continue}\\u200C\\u200D]|\\\\u\\p{Hex_Digit}{4}|\\\\u\\{0*(?:\\p{Hex_Digit}{1,5}|10\\p{Hex_Digit}{4})\\}", "u");
-function getIdentifier(text) {
-  let char = text[0];
-  if (!identifierStartRegex.test(char)) {
-    return null;
-  }
-  let position = 1;
-  do {
-    char = text[position];
-    if (!identifierContinueRegex.test(char)) {
-      break;
-    }
-    position++;
-  } while (position < text.length);
-  return text.slice(0, position);
-}
-var numberRegex = /^(NaN|-?((\d*\.\d+|\d+)([Ee][+-]?\d+)?|Infinity))/;
-function getNumber(text) {
-  var _a, _b;
-  return (_b = (_a = numberRegex.exec(text)) == null ? void 0 : _a[0]) != null ? _b : null;
-}
-var identifierRule = (text) => {
-  const value = getIdentifier(text);
-  if (value == null) {
-    return null;
-  }
-  return {
-    type: "Identifier",
-    text: value
-  };
-};
-function makeKeyWordRule(type) {
-  return (text) => {
-    if (!text.startsWith(type)) {
-      return null;
-    }
-    const prepends = text[type.length];
-    if (prepends !== void 0 && identifierContinueRegex.test(prepends)) {
-      return null;
-    }
-    return {
-      type,
-      text: type
-    };
-  };
-}
-var stringValueRule = (text) => {
-  const value = getQuoted(text);
-  if (value == null) {
-    return null;
-  }
-  return {
-    type: "StringValue",
-    text: value
-  };
-};
-var templateLiteralRule = (text) => {
-  const value = getTemplateLiteral(text);
-  if (value == null) {
-    return null;
-  }
-  return {
-    type: "TemplateLiteral",
-    text: value
-  };
-};
-var eofRule = (text) => {
-  if (text.length > 0) {
-    return null;
-  }
-  return {
-    type: "EOF",
-    text: ""
-  };
-};
-var numberRule = (text) => {
-  const value = getNumber(text);
-  if (value === null) {
-    return null;
-  }
-  return {
-    type: "Number",
-    text: value
-  };
-};
-var rules = [
-  eofRule,
-  makePunctuationRule("=>"),
-  makePunctuationRule("("),
-  makePunctuationRule(")"),
-  makePunctuationRule("{"),
-  makePunctuationRule("}"),
-  makePunctuationRule("["),
-  makePunctuationRule("]"),
-  makePunctuationRule("|"),
-  makePunctuationRule("&"),
-  makePunctuationRule("<"),
-  makePunctuationRule(">"),
-  makePunctuationRule(","),
-  makePunctuationRule(";"),
-  makePunctuationRule("*"),
-  makePunctuationRule("?"),
-  makePunctuationRule("!"),
-  makePunctuationRule("="),
-  makePunctuationRule(":"),
-  makePunctuationRule("..."),
-  makePunctuationRule("."),
-  makePunctuationRule("#"),
-  makePunctuationRule("~"),
-  makePunctuationRule("/"),
-  makePunctuationRule("@"),
-  makeKeyWordRule("undefined"),
-  makeKeyWordRule("null"),
-  makeKeyWordRule("function"),
-  makeKeyWordRule("this"),
-  makeKeyWordRule("new"),
-  makeKeyWordRule("module"),
-  makeKeyWordRule("event"),
-  makeKeyWordRule("extends"),
-  makeKeyWordRule("external"),
-  makeKeyWordRule("infer"),
-  makeKeyWordRule("typeof"),
-  makeKeyWordRule("keyof"),
-  makeKeyWordRule("readonly"),
-  makeKeyWordRule("import"),
-  makeKeyWordRule("is"),
-  makeKeyWordRule("in"),
-  makeKeyWordRule("asserts"),
-  numberRule,
-  identifierRule,
-  stringValueRule,
-  templateLiteralRule
-];
-var breakingWhitespaceRegex = /^\s*\n\s*/;
-var Lexer = class _Lexer {
-  constructor(text, previous, current, next) {
-    this.text = "";
-    this.text = text;
-    this.previous = previous;
-    this.current = current;
-    this.next = next;
-  }
-  static create(text) {
-    const current = this.read(text);
-    text = current.text;
-    const next = this.read(text);
-    text = next.text;
-    return new _Lexer(text, void 0, current.token, next.token);
-  }
-  static read(text, startOfLine = false) {
-    startOfLine || (startOfLine = breakingWhitespaceRegex.test(text));
-    text = text.trim();
-    for (const rule of rules) {
-      const partial = rule(text);
-      if (partial !== null) {
-        const token = __spreadProps(__spreadValues({}, partial), {
-          startOfLine
-        });
-        text = text.slice(token.text.length);
-        return { text, token };
-      }
-    }
-    throw new Error("Unexpected Token " + text);
-  }
-  remaining() {
-    return this.next.text + this.text;
-  }
-  advance() {
-    const next = _Lexer.read(this.text);
-    return new _Lexer(next.text, this.current, this.next, next.token);
-  }
-};
-
 // src/assertTypes.ts
 function assertRootResult(result) {
   if (result === void 0) {
@@ -359,17 +113,13 @@ function isSquaredProperty(result) {
 
 // src/Parser.ts
 var Parser = class {
-  constructor(grammar, textOrLexer, baseParser, {
-    computedPropertyParser
+  constructor(grammar, lexer, baseParser, {
+    externalParsers
   } = {}) {
     this.grammar = grammar;
-    if (typeof textOrLexer === "string") {
-      this._lexer = Lexer.create(textOrLexer);
-    } else {
-      this._lexer = textOrLexer;
-    }
+    this._lexer = lexer;
     this.baseParser = baseParser;
-    this.computedPropertyParser = computedPropertyParser;
+    this.externalParsers = externalParsers;
   }
   get lexer() {
     return this._lexer;
@@ -1483,17 +1233,66 @@ function createKeyValueParslet({ allowOptional, allowVariadic, acceptParameterLi
   });
 }
 
+// src/lexer/Lexer.ts
+var breakingWhitespaceRegex = /^\s*\n\s*/;
+var Lexer = class _Lexer {
+  constructor(lexerRules, text, previous, current, next) {
+    this.text = "";
+    this.lexerRules = lexerRules;
+    this.text = text;
+    this.previous = previous;
+    this.current = current;
+    this.next = next;
+  }
+  static create(lexerRules, text) {
+    const current = this.read(lexerRules, text);
+    text = current.text;
+    const next = this.read(lexerRules, text);
+    text = next.text;
+    return new _Lexer(lexerRules, text, void 0, current.token, next.token);
+  }
+  static read(lexerRules, text, startOfLine = false) {
+    startOfLine || (startOfLine = breakingWhitespaceRegex.test(text));
+    text = text.trim();
+    for (const rule of lexerRules) {
+      const partial = rule(text);
+      if (partial !== null) {
+        const token = __spreadProps(__spreadValues({}, partial), {
+          startOfLine
+        });
+        text = text.slice(token.text.length);
+        return { text, token };
+      }
+    }
+    throw new Error("Unexpected Token " + text);
+  }
+  remaining() {
+    return this.next.text + this.text;
+  }
+  advance() {
+    const next = _Lexer.read(this.lexerRules, this.text);
+    return new _Lexer(
+      this.lexerRules,
+      next.text,
+      this.current,
+      this.next,
+      next.token
+    );
+  }
+};
+
 // src/parslets/ObjectSquaredPropertyParslet.ts
 var objectSquaredPropertyParslet = composeParslet({
   name: "objectSquarePropertyParslet",
   accept: (type) => type === "[",
   parsePrefix: (parser) => {
+    var _a, _b;
     if (parser.baseParser === void 0) {
       throw new Error("Only allowed inside object grammar");
     }
     parser.consume("[");
     let innerBracketType;
-    if (parser.computedPropertyParser === void 0) {
+    if (((_a = parser.externalParsers) == null ? void 0 : _a.computedPropertyParser) === void 0) {
       try {
         innerBracketType = parser.parseIntermediateType(2 /* OBJECT */);
       } catch (err) {
@@ -1555,12 +1354,14 @@ var objectSquaredPropertyParslet = composeParslet({
       };
       parser.acceptLexerState(parentParser);
     } else {
-      if (parser.computedPropertyParser !== void 0) {
+      if (((_b = parser.externalParsers) == null ? void 0 : _b.computedPropertyParser) !== void 0) {
         let remaining = parser.lexer.current.text + parser.lexer.remaining();
         let checkingText = remaining;
-        while (checkingText) {
+        while (checkingText !== "") {
           try {
-            innerBracketType = parser.computedPropertyParser(checkingText);
+            innerBracketType = parser.externalParsers.computedPropertyParser(
+              checkingText
+            );
             break;
           } catch (err) {
           }
@@ -1569,10 +1370,12 @@ var objectSquaredPropertyParslet = composeParslet({
         remaining = remaining.slice(checkingText.length);
         const remainingTextParser = new Parser(
           parser.grammar,
-          remaining,
+          Lexer.create(parser.lexer.lexerRules, remaining),
           parser.baseParser,
           {
-            computedPropertyParser: parser.computedPropertyParser
+            externalParsers: {
+              computedPropertyParser: parser.externalParsers.computedPropertyParser
+            }
           }
         );
         parser.acceptLexerState(remainingTextParser);
@@ -1685,6 +1488,245 @@ var conditionalParslet = composeParslet({
   }
 });
 
+// src/lexer/LexerRules.ts
+function makePunctuationRule(type) {
+  return (text) => {
+    if (text.startsWith(type)) {
+      return { type, text: type };
+    } else {
+      return null;
+    }
+  };
+}
+function getQuoted(text) {
+  let position = 0;
+  let char = void 0;
+  const mark = text[0];
+  let escaped = false;
+  if (mark !== "'" && mark !== '"') {
+    return null;
+  }
+  while (position < text.length) {
+    position++;
+    char = text[position];
+    if (!escaped && char === mark) {
+      position++;
+      break;
+    }
+    escaped = !escaped && char === "\\";
+  }
+  if (char !== mark) {
+    throw new Error("Unterminated String");
+  }
+  return text.slice(0, position);
+}
+function getTemplateLiteral(text) {
+  let position = 0;
+  let char = void 0;
+  const mark = text[0];
+  let escaped = false;
+  if (mark !== "`") {
+    return null;
+  }
+  while (position < text.length) {
+    position++;
+    char = text[position];
+    if (!escaped && char === mark) {
+      position++;
+      break;
+    }
+    escaped = !escaped && char === "\\";
+  }
+  if (char !== mark) {
+    throw new Error("Unterminated template literal");
+  }
+  return text.slice(0, position);
+}
+function getTemplateLiteralLiteral(text) {
+  let position = 0;
+  let char = void 0;
+  const start = text[0];
+  let escaped = false;
+  if (start === "`" || start === "$" && text[1] === "{") {
+    return null;
+  }
+  while (position < text.length) {
+    position++;
+    char = text[position];
+    if (!escaped && (char === "`" || char === "$" && text[position + 1] === "{")) {
+      break;
+    }
+    escaped = !escaped && char === "\\";
+  }
+  return text.slice(0, position);
+}
+var identifierStartRegex = new RegExp("[$_\\p{ID_Start}]|\\\\u\\p{Hex_Digit}{4}|\\\\u\\{0*(?:\\p{Hex_Digit}{1,5}|10\\p{Hex_Digit}{4})\\}", "u");
+var identifierContinueRegex = new RegExp("[$\\p{ID_Continue}\\u200C\\u200D]|\\\\u\\p{Hex_Digit}{4}|\\\\u\\{0*(?:\\p{Hex_Digit}{1,5}|10\\p{Hex_Digit}{4})\\}", "u");
+var identifierContinueRegexLoose = new RegExp("[$\\-\\p{ID_Continue}\\u200C\\u200D]|\\\\u\\p{Hex_Digit}{4}|\\\\u\\{0*(?:\\p{Hex_Digit}{1,5}|10\\p{Hex_Digit}{4})\\}", "u");
+function makeGetIdentifier(identifierContinueRegex2) {
+  return function(text) {
+    let char = text[0];
+    if (!identifierStartRegex.test(char)) {
+      return null;
+    }
+    let position = 1;
+    do {
+      char = text[position];
+      if (!identifierContinueRegex2.test(char)) {
+        break;
+      }
+      position++;
+    } while (position < text.length);
+    return text.slice(0, position);
+  };
+}
+var numberRegex = /^(-?((\d*\.\d+|\d+)([Ee][+-]?\d+)?))/;
+var looseNumberRegex = /^(NaN|-?((\d*\.\d+|\d+)([Ee][+-]?\d+)?|Infinity))/;
+function getGetNumber(numberRegex2) {
+  return function getNumber(text) {
+    var _a, _b;
+    return (_b = (_a = numberRegex2.exec(text)) == null ? void 0 : _a[0]) != null ? _b : null;
+  };
+}
+var looseIdentifierRule = (text) => {
+  const value = makeGetIdentifier(identifierContinueRegexLoose)(text);
+  if (value == null) {
+    return null;
+  }
+  return {
+    type: "Identifier",
+    text: value
+  };
+};
+var identifierRule = (text) => {
+  const value = makeGetIdentifier(identifierContinueRegex)(text);
+  if (value == null) {
+    return null;
+  }
+  return {
+    type: "Identifier",
+    text: value
+  };
+};
+function makeKeyWordRule(type) {
+  return (text) => {
+    if (!text.startsWith(type)) {
+      return null;
+    }
+    const prepends = text[type.length];
+    if (prepends !== void 0 && identifierContinueRegex.test(prepends)) {
+      return null;
+    }
+    return {
+      type,
+      text: type
+    };
+  };
+}
+var stringValueRule = (text) => {
+  const value = getQuoted(text);
+  if (value == null) {
+    return null;
+  }
+  return {
+    type: "StringValue",
+    text: value
+  };
+};
+var templateLiteralRule = (text) => {
+  const value = getTemplateLiteral(text);
+  if (value == null) {
+    return null;
+  }
+  return {
+    type: "TemplateLiteral",
+    text: value
+  };
+};
+var eofRule = (text) => {
+  if (text.length > 0) {
+    return null;
+  }
+  return {
+    type: "EOF",
+    text: ""
+  };
+};
+var numberRule = (text) => {
+  const value = getGetNumber(numberRegex)(text);
+  if (value === null) {
+    return null;
+  }
+  return {
+    type: "Number",
+    text: value
+  };
+};
+var looseNumberRule = (text) => {
+  const value = getGetNumber(looseNumberRegex)(text);
+  if (value === null) {
+    return null;
+  }
+  return {
+    type: "Number",
+    text: value
+  };
+};
+var rules = [
+  eofRule,
+  makePunctuationRule("=>"),
+  makePunctuationRule("("),
+  makePunctuationRule(")"),
+  makePunctuationRule("{"),
+  makePunctuationRule("}"),
+  makePunctuationRule("["),
+  makePunctuationRule("]"),
+  makePunctuationRule("|"),
+  makePunctuationRule("&"),
+  makePunctuationRule("<"),
+  makePunctuationRule(">"),
+  makePunctuationRule(","),
+  makePunctuationRule(";"),
+  makePunctuationRule("*"),
+  makePunctuationRule("?"),
+  makePunctuationRule("!"),
+  makePunctuationRule("="),
+  makePunctuationRule(":"),
+  makePunctuationRule("..."),
+  makePunctuationRule("."),
+  makePunctuationRule("#"),
+  makePunctuationRule("~"),
+  makePunctuationRule("/"),
+  makePunctuationRule("@"),
+  makeKeyWordRule("undefined"),
+  makeKeyWordRule("null"),
+  makeKeyWordRule("function"),
+  makeKeyWordRule("this"),
+  makeKeyWordRule("new"),
+  makeKeyWordRule("module"),
+  makeKeyWordRule("event"),
+  makeKeyWordRule("extends"),
+  makeKeyWordRule("external"),
+  makeKeyWordRule("infer"),
+  makeKeyWordRule("typeof"),
+  makeKeyWordRule("keyof"),
+  makeKeyWordRule("readonly"),
+  makeKeyWordRule("import"),
+  makeKeyWordRule("is"),
+  makeKeyWordRule("in"),
+  makeKeyWordRule("asserts"),
+  numberRule,
+  identifierRule,
+  stringValueRule,
+  templateLiteralRule
+];
+var looseRules = rules.toSpliced(
+  -4,
+  2,
+  looseNumberRule,
+  looseIdentifierRule
+);
+
 // src/parslets/TemplateLiteralParslet.ts
 var templateLiteralParslet = composeParslet({
   name: "templateLiteralParslet",
@@ -1711,7 +1753,10 @@ var templateLiteralParslet = composeParslet({
         let remnant = "";
         while (true) {
           try {
-            templateParser = new Parser(typescriptGrammar, snipped);
+            templateParser = new Parser(
+              typescriptGrammar,
+              Lexer.create(parser.lexer.lexerRules, snipped)
+            );
             interpolationType = templateParser.parseType(0 /* ALL */);
             break;
           } catch (err) {
@@ -1819,6 +1864,7 @@ function createObjectParslet({ signatureGrammar, objectFieldGrammar: objectField
     name: "objectParslet",
     accept: (type) => type === "{",
     parsePrefix: (parser) => {
+      var _a;
       parser.consume("{");
       const result = {
         type: "JsdocTypeObject",
@@ -1833,7 +1879,11 @@ function createObjectParslet({ signatureGrammar, objectFieldGrammar: objectField
           objectFieldGrammar3,
           parser.lexer,
           parser,
-          parser.computedPropertyParser !== void 0 ? { computedPropertyParser: parser.computedPropertyParser } : void 0
+          ((_a = parser.externalParsers) == null ? void 0 : _a.computedPropertyParser) !== void 0 ? {
+            externalParsers: {
+              computedPropertyParser: parser.externalParsers.computedPropertyParser
+            }
+          } : void 0
         );
         while (true) {
           fieldParser.acceptLexerState(parser);
@@ -2041,14 +2091,25 @@ var closureGrammar = [
 ];
 
 // src/parse.ts
-function parse(expression, mode, options) {
+function parse(expression, mode, {
+  computedPropertyParser
+} = {}) {
   switch (mode) {
     case "closure":
-      return new Parser(closureGrammar, expression).parse();
+      return new Parser(closureGrammar, Lexer.create(looseRules, expression)).parse();
     case "jsdoc":
-      return new Parser(jsdocGrammar, expression).parse();
+      return new Parser(jsdocGrammar, Lexer.create(looseRules, expression)).parse();
     case "typescript":
-      return new Parser(typescriptGrammar, expression, void 0, options).parse();
+      return new Parser(
+        typescriptGrammar,
+        Lexer.create(rules, expression),
+        void 0,
+        computedPropertyParser === void 0 ? void 0 : {
+          externalParsers: {
+            computedPropertyParser
+          }
+        }
+      ).parse();
   }
 }
 function tryParse(expression, modes = ["typescript", "closure", "jsdoc"]) {

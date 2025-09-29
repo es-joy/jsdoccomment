@@ -301,7 +301,7 @@ declare function parseComment(
 ): JsdocBlockWithInline;
 
 /**
- * Splits the `{@prefix}` from remaining `Spec.lines[].token.description`
+ * Splits the `{@ prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
  * @param {import('comment-parser').Block} block
  * @returns {import('.').JsdocBlockWithInline}
