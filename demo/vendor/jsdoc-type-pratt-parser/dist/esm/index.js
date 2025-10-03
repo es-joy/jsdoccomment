@@ -58,6 +58,21 @@ var UnexpectedTypeError = class _UnexpectedTypeError extends Error {
 };
 
 // src/lexer/Token.ts
+var reservedWordsAsRootTSTypes = [
+  "false",
+  "null",
+  "true",
+  "void"
+];
+var reservedWordsAsTSTypes = [
+  ...reservedWordsAsRootTSTypes,
+  "extends",
+  "import",
+  "in",
+  "new",
+  "this",
+  "typeof"
+];
 var reservedWords = {
   always: [
     "break",
@@ -139,7 +154,7 @@ function assertResultIsNotReservedWord(parser, result) {
   } else {
     return result;
   }
-  if (reservedWords.always.includes(text)) {
+  if (reservedWords.always.includes(text) && !reservedWordsAsRootTSTypes.includes(text)) {
     throw new Error(`Unexpected reserved keyword "${text}"`);
   }
   if (futureReservedWords.always.includes(text)) {
