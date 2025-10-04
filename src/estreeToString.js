@@ -53,7 +53,7 @@ const stringifiers = {
  *   import('./commentParserToESTree').JsdocInlineTag|
  *   import('jsdoc-type-pratt-parser').RootResult
  * } node
- * @param {import('.').ESTreeToStringOptions} opts
+ * @param {import('.').ESTreeToStringOptions} [opts]
  * @throws {Error}
  * @returns {string}
  */

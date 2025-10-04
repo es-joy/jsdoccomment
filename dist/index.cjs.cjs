@@ -148,7 +148,7 @@ const inlineTagToAST = ({
  * Converts comment parser AST to ESTree format.
  * @param {import('.').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
- * @param {CommentParserToESTreeOptions} opts
+ * @param {CommentParserToESTreeOptions} [opts]
  * @returns {JsdocBlock}
  */
 const commentParserToESTree = (jsdoc, mode = 'typescript', {
@@ -482,7 +482,7 @@ const jsdocVisitorKeys = {
  *   [key: string]: any
  * }} settings
  * @param {import('./commentParserToESTree.js').
- *   CommentParserToESTreeOptions} commentParserToESTreeOptions
+ *   CommentParserToESTreeOptions} [commentParserToESTreeOptions]
  * @returns {import('.').CommentHandler}
  */
 const commentHandler = (settings, commentParserToESTreeOptions) => {
@@ -562,7 +562,7 @@ const stringifiers = {
  *   import('./commentParserToESTree').JsdocInlineTag|
  *   import('jsdoc-type-pratt-parser').RootResult
  * } node
- * @param {import('.').ESTreeToStringOptions} opts
+ * @param {import('.').ESTreeToStringOptions} [opts]
  * @throws {Error}
  * @returns {string}
  */

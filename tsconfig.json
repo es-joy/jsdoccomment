@@ -12,5 +12,5 @@
     "types": ["vitest/globals"]
   },
   "include": ["src/**/*.js", "test/**/*.js", "demo/**/*.js", "typings/espree.d.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "demo/vendor"]
 }

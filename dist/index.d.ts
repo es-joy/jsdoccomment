@@ -101,7 +101,7 @@ type CommentParserToESTreeOptions = {
  * Converts comment parser AST to ESTree format.
  * @param {import('.').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
- * @param {CommentParserToESTreeOptions} opts
+ * @param {CommentParserToESTreeOptions} [opts]
  * @returns {JsdocBlock}
  */
 declare function commentParserToESTree(
@@ -123,7 +123,7 @@ declare namespace jsdocVisitorKeys {
  *   [key: string]: any
  * }} settings
  * @param {import('./commentParserToESTree.js').
- *   CommentParserToESTreeOptions} commentParserToESTreeOptions
+ *   CommentParserToESTreeOptions} [commentParserToESTreeOptions]
  * @returns {import('.').CommentHandler}
  */
 declare function commentHandler(
@@ -131,7 +131,7 @@ declare function commentHandler(
     mode: jsdoc_type_pratt_parser.ParseMode;
     [key: string]: any;
   },
-  commentParserToESTreeOptions: CommentParserToESTreeOptions,
+  commentParserToESTreeOptions?: CommentParserToESTreeOptions,
 ): CommentHandler;
 
 /**
@@ -144,7 +144,7 @@ declare function commentHandler(
  *   import('./commentParserToESTree').JsdocInlineTag|
  *   import('jsdoc-type-pratt-parser').RootResult
  * } node
- * @param {import('.').ESTreeToStringOptions} opts
+ * @param {import('.').ESTreeToStringOptions} [opts]
  * @throws {Error}
  * @returns {string}
  */

@@ -15,7 +15,7 @@ import {
  *   [key: string]: any
  * }} settings
  * @param {import('./commentParserToESTree.js').
- *   CommentParserToESTreeOptions} commentParserToESTreeOptions
+ *   CommentParserToESTreeOptions} [commentParserToESTreeOptions]
  * @returns {import('.').CommentHandler}
  */
 const commentHandler = (settings, commentParserToESTreeOptions) => {
