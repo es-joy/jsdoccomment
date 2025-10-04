@@ -58,7 +58,7 @@ const stringifiers = {
  * @returns {string}
  */
 function estreeToString (node, opts = {}) {
-  if (Object.prototype.hasOwnProperty.call(stringifiers, node.type)) {
+  if (Object.hasOwn(stringifiers, node.type)) {
     return stringifiers[
       /**
        * @type {import('./commentParserToESTree').JsdocBlock|
@@ -80,7 +80,8 @@ function estreeToString (node, opts = {}) {
       : `{${prattStringify(
         /** @type {import('jsdoc-type-pratt-parser').RootResult} */ (
           node
-        )
+        ),
+        opts.jtppStringificationRules
       )}}`;
   }
 

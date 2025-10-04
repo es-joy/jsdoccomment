@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.68.0
+
+- feat: allow provision of `jsdoc-type-pratt-parser` options to `commentHandler` and `estreeToString`
+
 ## 0.67.3
 
 - chore: update jsdoc-type-pratt-parser and devDep.
