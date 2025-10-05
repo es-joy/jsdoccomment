@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.69.0
+
+- chore: update jsdoc-type-pratt-parser and devDep.
+
 ## 0.68.1
 
 - fix(typescript): ensure options arguments are optional
