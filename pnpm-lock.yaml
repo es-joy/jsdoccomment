@@ -57,6 +57,9 @@ importers:
       '@vitest/ui':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
+      '@webcoder49/code-input':
+        specifier: ^2.7.1
+        version: 2.7.1
       eslint:
         specifier: ^9.37.0
         version: 9.37.0
@@ -72,6 +75,9 @@ importers:
       estraverse:
         specifier: ^5.3.0
         version: 5.3.0
+      prismjs:
+        specifier: ^1.30.0
+        version: 1.30.0
       rollup:
         specifier: ^4.52.4
         version: 4.52.4
@@ -1377,6 +1383,9 @@ packages:
 
   '@vitest/utils@3.2.4':
     resolution: {integrity: sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==}
+
+  '@webcoder49/code-input@2.7.1':
+    resolution: {integrity: sha512-Uc+9rZkxeTyLtJAzCz0E8K7S8pWKYdO6qLHh4IBNl+SvbjE5b7yrxe1srQvJHCqu+a+SDcbqyZq/6ZCsGcfvEg==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -3106,6 +3115,10 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  prismjs@1.30.0:
+    resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==}
+    engines: {node: '>=6'}
+
   process@0.11.10:
     resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
     engines: {node: '>= 0.6.0'}
@@ -3269,11 +3282,6 @@ packages:
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
-    hasBin: true
-
-  semver@7.6.3:
-    resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
-    engines: {node: '>=10'}
     hasBin: true
 
   semver@7.7.2:
@@ -4706,7 +4714,7 @@ snapshots:
   '@eslint/eslintrc@3.3.1':
     dependencies:
       ajv: 6.12.6
-      debug: 4.4.1
+      debug: 4.4.3
       espree: 10.4.0
       globals: 14.0.0
       ignore: 5.3.2
@@ -5261,6 +5269,8 @@ snapshots:
       '@vitest/pretty-format': 3.2.4
       loupe: 3.1.4
       tinyrainbow: 2.0.0
+
+  '@webcoder49/code-input@2.7.1': {}
 
   abort-controller@3.0.0:
     dependencies:
@@ -6857,7 +6867,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.6.3
+      semver: 7.7.2
 
   markdown-it@14.1.0:
     dependencies:
@@ -7398,6 +7408,8 @@ snapshots:
 
   prettier@3.3.3: {}
 
+  prismjs@1.30.0: {}
+
   process@0.11.10: {}
 
   property-information@7.1.0: {}
@@ -7594,8 +7606,6 @@ snapshots:
       regexp-ast-analysis: 0.7.1
 
   semver@6.3.1: {}
-
-  semver@7.6.3: {}
 
   semver@7.7.2: {}
 
@@ -8009,7 +8019,7 @@ snapshots:
   vite-node@3.2.4:
     dependencies:
       cac: 6.7.14
-      debug: 4.4.1
+      debug: 4.4.3
       es-module-lexer: 1.7.0
       pathe: 2.0.3
       vite: 5.4.10

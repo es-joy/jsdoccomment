@@ -11,6 +11,6 @@
     "skipLibCheck": true,
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.js", "test/**/*.js", "demo/**/*.js", "typings/espree.d.ts"],
+  "include": ["src/**/*.js", "test/**/*.js", "demo/**/*.js", "typings/espree.d.ts", "typings/prism.d.ts", "typings/globals.d.ts"],
   "exclude": ["node_modules", "demo/vendor"]
 }

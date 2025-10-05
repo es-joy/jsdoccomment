@@ -23,3 +23,14 @@
   width: 100%;
   height: 150px;
 }
+
+/* Style the JSDoc tag name */
+.token.parameter {
+  color: green;
+}
+
+/* prism's stylesheet, by styling pre only, doesn't cover all
+  code elements (outside of scroll view) */
+code[class*=language-] {
+  background-color: #f5f2f0 !important;
+}

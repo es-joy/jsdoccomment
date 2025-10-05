@@ -9,10 +9,20 @@
         "imports": {
           "comment-parser": "./vendor/comment-parser/es6/index.js",
           "esquery": "./vendor/esquery/dist/esquery.esm.js",
-          "jsdoc-type-pratt-parser": "./vendor/jsdoc-type-pratt-parser/dist/esm/index.js"
+          "jsdoc-type-pratt-parser": "./vendor/jsdoc-type-pratt-parser/dist/esm/index.js",
+          "prismjs/themes/prism.min.css": "./vendor/prismjs/themes/prism.min.css",
+          "@webcoder49/code-input": "./vendor/@webcoder49/code-input/esm/code-input.mjs",
+          "@webcoder49/code-input/plugins/indent.mjs": "./vendor/@webcoder49/code-input/esm/plugins/indent.mjs",
+          "@webcoder49/code-input/code-input.min.css": "./vendor/@webcoder49/code-input/code-input.min.css"
         }
       }
     </script>
+
+    <!-- Toward getting ESM instead: https://github.com/PrismJS/prism/pull/3704 -->
+    <!-- Toward getting better ESM: https://github.com/WebCoder49/code-input/issues/190 -->
+    <script src="./vendor/prismjs/components/prism-core.js" data-manual></script><!--Remove data-manual if also using Prism normally-->
+    <script src="./vendor/prismjs/plugins/autoloader/prism-autoloader.min.js"></script>
+
     <script type="module" src="index.js"></script>
   </head>
   <body>
@@ -20,21 +30,28 @@
 
     <section class="source">
       <h2>Source</h2>
-      <textarea id="source">
+
+      <code-input language="jsdoc">
+        <textarea id="source" data-code-input-fallback>
 /**
  * @param {SomeType} aName Here is a description.
  */
 </textarea>
+      </code-input>
     </section>
 
     <section class="output">
       <h2>Output</h2>
-      <textarea id="output"></textarea>
+      <code-input language="json">
+        <textarea id="output" data-code-input-fallback></textarea>
+      </code-input>
     </section>
 
     <section class="stringified">
       <h2>Stringified</h2>
-      <textarea id="stringified"></textarea>
+      <code-input language="jsdoc">
+        <textarea id="stringified" data-code-input-fallback></textarea>
+      </code-input>
     </section>
   </body>
 </html>
