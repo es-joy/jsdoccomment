@@ -2381,7 +2381,8 @@ function parse(expression, mode, {
 function tryParse(expression, modes = ["typescript", "closure", "jsdoc"], {
   module = true,
   strictMode = true,
-  asyncFunctionBody = true
+  asyncFunctionBody = true,
+  classContext = false
 } = {}) {
   let error;
   for (const mode of modes) {
@@ -2389,7 +2390,8 @@ function tryParse(expression, modes = ["typescript", "closure", "jsdoc"], {
       return parse(expression, mode, {
         module,
         strictMode,
-        asyncFunctionBody
+        asyncFunctionBody,
+        classContext
       });
     } catch (e) {
       error = e;

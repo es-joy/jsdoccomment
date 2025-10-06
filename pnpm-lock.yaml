@@ -21,8 +21,8 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0
       jsdoc-type-pratt-parser:
-        specifier: 6.5.0
-        version: 6.5.0
+        specifier: ~6.5.1
+        version: 6.5.1
     devDependencies:
       '@babel/core':
         specifier: ^7.28.4
@@ -2644,8 +2644,8 @@ packages:
     resolution: {integrity: sha512-tVwTg612vD9h2w5hoRFRNOni7xITDYZigHwBDieLUf4IYPQtk6IFXe/NqJc/hGYteFAeIM+Ld6ZvmLuizKAZ7A==}
     engines: {node: '>=20.0.0'}
 
-  jsdoc-type-pratt-parser@6.5.0:
-    resolution: {integrity: sha512-l1ywmY+47hyXDhaS3RRiR/VMP7Q5iKyhLRH5LpTEOpynXk1GgTRygWiQuGKNXp3D21thYw+jVrv3RI7cFQrogg==}
+  jsdoc-type-pratt-parser@6.5.1:
+    resolution: {integrity: sha512-mCjqEvpC3SXfTtvXwbiQDIWsQHJVOnZ9Upjj4nFexVlb7B7kzOJFk+UHcFaip0mrM62+23E45Py4z4XPm6RfHw==}
     engines: {node: '>=20.0.0'}
 
   jsesc@3.0.2:
@@ -6776,7 +6776,7 @@ snapshots:
 
   jsdoc-type-pratt-parser@6.4.0: {}
 
-  jsdoc-type-pratt-parser@6.5.0: {}
+  jsdoc-type-pratt-parser@6.5.1: {}
 
   jsesc@3.0.2: {}
 

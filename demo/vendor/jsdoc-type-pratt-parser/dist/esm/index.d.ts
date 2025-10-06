@@ -383,10 +383,11 @@ declare function parse(expression: string, mode: ParseMode, { module, strictMode
  * @param expression
  * @param modes
  */
-declare function tryParse(expression: string, modes?: ParseMode[], { module, strictMode, asyncFunctionBody }?: {
+declare function tryParse(expression: string, modes?: ParseMode[], { module, strictMode, asyncFunctionBody, classContext, }?: {
     module?: boolean;
     strictMode?: boolean;
     asyncFunctionBody?: boolean;
+    classContext?: boolean;
 }): RootResult;
 /**
  * This function parses the given expression in the given mode and produces a name path.
