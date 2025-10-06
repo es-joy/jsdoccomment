@@ -71,6 +71,7 @@ type JtppOptions = {
   module?: boolean;
   strictMode?: boolean;
   asyncFunctionBody?: boolean;
+  classContext?: boolean;
   computedPropertyParser?: (text: string, options?: any) => unknown;
 };
 type CommentParserToESTreeOptions = {
@@ -87,6 +88,7 @@ type CommentParserToESTreeOptions = {
  *   module?: boolean;
  *   strictMode?: boolean;
  *   asyncFunctionBody?: boolean;
+ *   classContext?: boolean;
  *   computedPropertyParser?: (text: string, options?: any) => unknown;
  * }} JtppOptions
  */

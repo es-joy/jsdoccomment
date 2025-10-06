@@ -131,6 +131,7 @@ const inlineTagToAST = ({
  *   module?: boolean;
  *   strictMode?: boolean;
  *   asyncFunctionBody?: boolean;
+ *   classContext?: boolean;
  *   computedPropertyParser?: (text: string, options?: any) => unknown;
  * }} JtppOptions
  */

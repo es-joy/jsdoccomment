@@ -21,8 +21,8 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0
       jsdoc-type-pratt-parser:
-        specifier: 6.4.0
-        version: 6.4.0
+        specifier: 6.5.0
+        version: 6.5.0
     devDependencies:
       '@babel/core':
         specifier: ^7.28.4
@@ -67,8 +67,8 @@ importers:
         specifier: 39.5.0
         version: 39.5.0(@babel/core@7.28.4)(@typescript-eslint/parser@8.45.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)(typescript@5.9.3)
       eslint-plugin-jsdoc:
-        specifier: ^60.8.1
-        version: 60.8.1(eslint@9.37.0)
+        specifier: ^60.8.2
+        version: 60.8.2(eslint@9.37.0)
       espree:
         specifier: ^10.4.0
         version: 10.4.0
@@ -708,8 +708,8 @@ packages:
     resolution: {integrity: sha512-xjZTSFgECpb9Ohuk5yMX5RhUEbfeQcuOp8IF60e+wyzWEF0M5xeSgqsfLtvPEX8BIyOX9saZqzuGPmZ8oWc+5Q==}
     engines: {node: '>=16'}
 
-  '@es-joy/jsdoccomment@0.68.1':
-    resolution: {integrity: sha512-wJJXnfG2Pq7ZC8IeOupkkAVtEH6OYy1uVxRTeshXDQfSNsZneS7FUQlNf710osZ5Yz/b5ev9xChvybTT7CM63g==}
+  '@es-joy/jsdoccomment@0.69.0':
+    resolution: {integrity: sha512-7UgbKSStPxf2RF2fqKqJq3u1QN4kFzhE/lofHtEuptRjQPdYZOLGsqGcKzQGYWoPG5p8PyxUOoc3/Ca+UcFkdA==}
     engines: {node: '>=20.11.0'}
 
   '@esbuild/aix-ppc64@0.21.5':
@@ -2026,8 +2026,8 @@ packages:
       '@typescript-eslint/parser':
         optional: true
 
-  eslint-plugin-jsdoc@60.8.1:
-    resolution: {integrity: sha512-LDcQpH4cYzU+EEri907GSzr16U2UOBiQcm95dK8ka5SnTwIT3Y7bC0iiY/MKyOotTRXaw4MY3Ec9BgHIfDBvHQ==}
+  eslint-plugin-jsdoc@60.8.2:
+    resolution: {integrity: sha512-ebEYZiAVL/ejjNQKO7Q1+FumDjGfs0T3+arQ3U54xomFiySUjKnZOzVZQAWhu+mlZXB4oeoizI4wRH+3i+knDg==}
     engines: {node: '>=20.11.0'}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
@@ -2640,12 +2640,12 @@ packages:
     resolution: {integrity: sha512-Hicd6JK5Njt2QB6XYFS7ok9e37O8AYk3jTcppG4YVQnYjOemymvTcmc7OWsmq/Qqj5TdRFO5/x/tIPmBeRtGHg==}
     engines: {node: '>=12.0.0'}
 
-  jsdoc-type-pratt-parser@6.3.3:
-    resolution: {integrity: sha512-N1HQK15ZXdwgmXsALjUWW9Cwyg1BQS5hfP8KzDkbR4mjb+Ep8Uxcfwz+OU1tsNCRg99rk62d8GMNdG8Qz4k+Gg==}
-    engines: {node: '>=20.0.0'}
-
   jsdoc-type-pratt-parser@6.4.0:
     resolution: {integrity: sha512-tVwTg612vD9h2w5hoRFRNOni7xITDYZigHwBDieLUf4IYPQtk6IFXe/NqJc/hGYteFAeIM+Ld6ZvmLuizKAZ7A==}
+    engines: {node: '>=20.0.0'}
+
+  jsdoc-type-pratt-parser@6.5.0:
+    resolution: {integrity: sha512-l1ywmY+47hyXDhaS3RRiR/VMP7Q5iKyhLRH5LpTEOpynXk1GgTRygWiQuGKNXp3D21thYw+jVrv3RI7cFQrogg==}
     engines: {node: '>=20.0.0'}
 
   jsesc@3.0.2:
@@ -4601,13 +4601,13 @@ snapshots:
       esquery: 1.6.0
       jsdoc-type-pratt-parser: 4.1.0
 
-  '@es-joy/jsdoccomment@0.68.1':
+  '@es-joy/jsdoccomment@0.69.0':
     dependencies:
       '@types/estree': 1.0.8
       '@typescript-eslint/types': 8.45.0
       comment-parser: 1.4.1
       esquery: 1.6.0
-      jsdoc-type-pratt-parser: 6.3.3
+      jsdoc-type-pratt-parser: 6.4.0
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -5954,7 +5954,7 @@ snapshots:
       eslint-plugin-escompat: 3.11.4(eslint@9.37.0)
       eslint-plugin-html: 8.1.3
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.45.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)
-      eslint-plugin-jsdoc: 60.8.1(eslint@9.37.0)
+      eslint-plugin-jsdoc: 60.8.2(eslint@9.37.0)
       eslint-plugin-mocha: 11.1.0(eslint@9.37.0)
       eslint-plugin-mocha-cleanup: 1.11.3(eslint@9.37.0)
       eslint-plugin-n: 17.23.1(eslint@9.37.0)(typescript@5.9.3)
@@ -6101,9 +6101,9 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-jsdoc@60.8.1(eslint@9.37.0):
+  eslint-plugin-jsdoc@60.8.2(eslint@9.37.0):
     dependencies:
-      '@es-joy/jsdoccomment': 0.68.1
+      '@es-joy/jsdoccomment': 0.69.0
       are-docs-informative: 0.0.2
       comment-parser: 1.4.1
       debug: 4.4.3
@@ -6774,9 +6774,9 @@ snapshots:
 
   jsdoc-type-pratt-parser@4.1.0: {}
 
-  jsdoc-type-pratt-parser@6.3.3: {}
-
   jsdoc-type-pratt-parser@6.4.0: {}
+
+  jsdoc-type-pratt-parser@6.5.0: {}
 
   jsesc@3.0.2: {}
 

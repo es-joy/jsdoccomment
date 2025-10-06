@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.70.0
+
+- chore: update jsdoc-type-pratt-parser and devDep.
+- feat(demo): syntax highlight JSDoc and JSON
+
 ## 0.69.0
 
 - chore: update jsdoc-type-pratt-parser and devDep.
