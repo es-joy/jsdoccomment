@@ -178,7 +178,11 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
     // With even a multiline type now in full, add parsing
     let parsedType = null;
     try {
-      parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode, jsdocTypePrattParserArgs);
+      parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode, {
+        ...jsdocTypePrattParserArgs,
+        loc: true,
+        range: true
+      });
     } catch (err) {
       // Ignore
       if (lastTag.rawType && throwOnTypeParsingErrors) {

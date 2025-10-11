@@ -1,4 +1,5 @@
 import {parse as jsdocTypePrattParse} from 'jsdoc-type-pratt-parser';
+import {stringify} from 'comment-parser';
 
 /**
  * Removes initial and ending brackets from `rawType`
@@ -106,6 +107,17 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   terminal: string,
  *   preterminalLineBreak: string,
  *   type: "JsdocBlock",
+ *   range?: [number, number],
+ *   loc?: {
+ *     end: {
+ *       line: number,
+ *       column: number
+ *     }
+ *     start: {
+ *       line: number,
+ *       column: number
+ *     }
+ *   }
  * }} JsdocBlock
  */
 
@@ -143,6 +155,10 @@ const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
  *        compacted; set to 'preserve' to preserve empty comment lines.
  * @property {boolean} [throwOnTypeParsingErrors]
  * @property {JtppOptions} [jsdocTypePrattParserArgs]
+ * @property {boolean} [range]
+ * @property {boolean} [loc]
+ * @property {number} [rangeStart]
+ * @property {{column: number, line: number}} [locStart]
  */
 
 /**
@@ -155,6 +171,13 @@ const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
 const commentParserToESTree = (jsdoc, mode = 'typescript', {
   spacing = 'compact',
   throwOnTypeParsingErrors = false,
+  range,
+  rangeStart = 0,
+  loc,
+  locStart = {
+    column: 0,
+    line: 1
+  },
   jsdocTypePrattParserArgs
 } = {}) => {
   /**
@@ -182,7 +205,11 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
 
     try {
       parsedType = jsdocTypePrattParse(
-        lastTag.rawType, mode, jsdocTypePrattParserArgs
+        lastTag.rawType, mode, {
+          ...jsdocTypePrattParserArgs,
+          loc: true,
+          range: true
+        }
       );
     } catch (err) {
       // Ignore
@@ -232,6 +259,32 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
 
     type: 'JsdocBlock'
   };
+
+  let commentStr = '';
+  if (range || loc) {
+    commentStr = stringify(jsdoc);
+  }
+
+  if (range) {
+    ast.range = [rangeStart, rangeStart + commentStr.length];
+  }
+
+  if (loc) {
+    const lastLineBreakIndex = commentStr.lastIndexOf('\n');
+    const remainder = commentStr.slice(lastLineBreakIndex + 1).length;
+    ast.loc = {
+      end: {
+        line: locStart.line + source.length,
+        column: lastLineBreakIndex === -1
+          ? locStart.column + remainder
+          : remainder
+      },
+      start: {
+        line: locStart.line,
+        column: locStart.column
+      }
+    };
+  }
 
   /**
    * @type {JsdocTag[]}
