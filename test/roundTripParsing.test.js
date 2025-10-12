@@ -40,8 +40,7 @@ const descriptionLinesToString = (descriptionLines) => {
 
 describe('Round Trip Parsing', () => {
   describe('`compact` option', () => {
-    // eslint-disable-next-line unicorn/no-for-loop -- For loop used for index.
-    for (let i = 0; i < commentBlocks.length; i++) {
+    for (const i of commentBlocks.keys()) {
       it(`commentBlock[${i}]`, () => {
         const parsedComment = parseComment(commentBlocks[i]);
 
@@ -71,8 +70,7 @@ describe('Round Trip Parsing', () => {
   });
 
   describe('`preserve` option', () => {
-    // eslint-disable-next-line unicorn/no-for-loop -- For loop used for index.
-    for (let i = 0; i < commentBlocks.length; i++) {
+    for (const i of commentBlocks.keys()) {
       it(`commentBlock[${i}]`, () => {
         const parsedComment = parseComment(commentBlocks[i]);
 
