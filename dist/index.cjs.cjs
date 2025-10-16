@@ -101,6 +101,17 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  *   terminal: string,
  *   preterminalLineBreak: string,
  *   type: "JsdocBlock",
+ *   range?: [number, number],
+ *   loc?: {
+ *     end: {
+ *       line: number,
+ *       column: number
+ *     }
+ *     start: {
+ *       line: number,
+ *       column: number
+ *     }
+ *   }
  * }} JsdocBlock
  */
 
@@ -112,6 +123,8 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  * @param {string} cfg.namepathOrURL
  * @returns {JsdocInlineTag}
  */
+// inlineTagToAST will be defined later once `commentStr`/line helpers exist so
+// loc/range can be attached. See below.
 const inlineTagToAST = ({
   text,
   tag,
@@ -138,11 +151,24 @@ const inlineTagToAST = ({
 /* eslint-enable jsdoc/reject-any-type -- API */
 
 /**
+ * @typedef {{
+ *   loc?: boolean,
+ *   range?: boolean,
+ *   rangeStart?: number,
+ *   locStart?: {column:number,line:number}
+ * } & JtppOptions} ParserArgsExtended
+ */
+
+/**
  * @typedef {object} CommentParserToESTreeOptions
  * @property {'compact'|'preserve'} [spacing] By default, empty lines are
  *        compacted; set to 'preserve' to preserve empty comment lines.
  * @property {boolean} [throwOnTypeParsingErrors]
  * @property {JtppOptions} [jsdocTypePrattParserArgs]
+ * @property {boolean} [range]
+ * @property {boolean} [loc]
+ * @property {number} [rangeStart]
+ * @property {{column: number, line: number}} [locStart]
  */
 
 /**
@@ -155,6 +181,13 @@ const inlineTagToAST = ({
 const commentParserToESTree = (jsdoc, mode = 'typescript', {
   spacing = 'compact',
   throwOnTypeParsingErrors = false,
+  range,
+  rangeStart = 0,
+  loc,
+  locStart = {
+    column: 0,
+    line: 1
+  },
   jsdocTypePrattParserArgs
 } = {}) => {
   /**
@@ -178,11 +211,47 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
     // With even a multiline type now in full, add parsing
     let parsedType = null;
     try {
-      parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode, {
+      // If we can, compute precise locStart/rangeStart for the type parser
+      // using the first type line position so parsedType ranges/locs are
+      // absolute within the original comment.
+      const parserArgs = {
         ...jsdocTypePrattParserArgs,
-        loc: true,
-        range: true
-      });
+        loc: Boolean(loc),
+        range: Boolean(range)
+      };
+      if ((range || loc) && lastTag.typeLines && lastTag.typeLines.length) {
+        const firstType = lastTag.typeLines[0];
+        try {
+          // Search the whole comment string for the first occurrence of the
+          // raw type to compute the offset. This avoids relying on earlier
+          // node locs and keeps the computation robust.
+          const raw = firstType.rawType || '';
+          const fullIndex = commentStr.indexOf(raw);
+          if (typeof rangeStart === 'number' && fullIndex !== -1) {
+            /** @type {ParserArgsExtended} */parserArgs.rangeStart = rangeStart + fullIndex;
+          }
+          if (fullIndex !== -1) {
+            // compute line index from offset using lineStartOffsets
+            let lineIdx = 0;
+            for (const [i, start] of lineStartOffsets.entries()) {
+              if (start <= fullIndex) {
+                lineIdx = i;
+              } else {
+                break;
+              }
+            }
+            const columnOffset = fullIndex - lineStartOffsets[lineIdx];
+            /** @type {ParserArgsExtended} */
+            parserArgs.locStart = {
+              line: locStart.line + lineIdx,
+              column: lineIdx === 0 ? locStart.column + columnOffset : columnOffset
+            };
+          }
+        } catch (ex) {
+          // ignore and fall back to defaults in parserArgs
+        }
+      }
+      parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode, parserArgs);
     } catch (err) {
       // Ignore
       if (lastTag.rawType && throwOnTypeParsingErrors) {
@@ -225,6 +294,94 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
     lineEnd: lineEndRoot,
     type: 'JsdocBlock'
   };
+  let commentStr = '';
+  if (range || loc) {
+    commentStr = commentParser.stringify(jsdoc);
+  }
+  if (range) {
+    ast.range = [rangeStart, rangeStart + commentStr.length];
+  }
+  if (loc) {
+    const lastLineBreakIndex = commentStr.lastIndexOf('\n');
+    const remainder = commentStr.slice(lastLineBreakIndex + 1).length;
+    ast.loc = {
+      end: {
+        line: locStart.line + source.length,
+        column: lastLineBreakIndex === -1 ? locStart.column + remainder : remainder
+      },
+      start: {
+        line: locStart.line,
+        column: locStart.column
+      }
+    };
+  }
+
+  // Prepare line start offsets when range/loc requested
+  /** @type {string[]} */
+  const lines = (range || loc) && commentStr ? commentStr.split('\n') : [];
+  /** @type {number[]} */
+  const lineStartOffsets = [];
+  if (lines.length) {
+    let acc = 0;
+    for (const [i, ln] of lines.entries()) {
+      lineStartOffsets[i] = acc;
+      acc += ln.length + 1; // include '\n'
+    }
+  }
+
+  /**
+   * @param {number} lineIndex
+   * @param {number} [startCol]
+   * @param {number} [endCol]
+   * @returns {object}
+   */
+  function makePos(lineIndex, startCol, endCol) {
+    if (startCol === undefined) {
+      startCol = 0;
+    }
+    if (!lines.length) {
+      return {};
+    }
+    if (endCol === undefined) {
+      endCol = (lines[lineIndex] || '').length;
+    }
+    const startOffset = lineStartOffsets[lineIndex] + startCol;
+    const endOffset = lineStartOffsets[lineIndex] + endCol;
+    /** @type {{range?: [number, number], loc?: object}} */
+    const out = {};
+    if (range) {
+      out.range = [rangeStart + startOffset, rangeStart + endOffset];
+    }
+    if (loc) {
+      out.loc = {
+        start: {
+          line: locStart.line + lineIndex,
+          column: lineIndex === 0 ? locStart.column + startCol : startCol
+        },
+        end: {
+          line: locStart.line + lineIndex,
+          column: lineIndex === 0 ? locStart.column + endCol : endCol
+        }
+      };
+    }
+    return out;
+  }
+
+  // Attach positions to block-level inline tags (best-effort: start of block)
+  if ((range || loc) && ast.inlineTags && ast.inlineTags.length) {
+    const pos0 = /** @type {{range?: number[], loc?: object}} */makePos(0);
+    for (const it of ast.inlineTags) {
+      if (pos0.range) {
+        /** @type {{range?: number[], loc?: object}} */it.range = pos0.range;
+      }
+      if (pos0.loc) {
+        /** @type {{range?: number[], loc?: object}} */it.loc = pos0.loc;
+      }
+    }
+  }
+
+  // Track node creation lines to allow later precise parser positioning.
+  // (Map removed — we attach positions immediately.)
 
   /**
    * @type {JsdocTag[]}
@@ -356,6 +513,18 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
          * }}
          */
         jsdoc.tags[tags.length].inlineTags.map(t => inlineTagToAST(t));
+        if (range || loc) {
+          const pos = /** @type {{range?: number[], loc?: object}} */
+          makePos(idx);
+          for (const it of tagInlineTags) {
+            if (pos.range) {
+              /** @type {{range?: number[], loc?: object}} */it.range = pos.range;
+            }
+            if (pos.loc) {
+              /** @type {{range?: number[], loc?: object}} */it.loc = pos.loc;
+            }
+          }
+        }
       }
 
       /** @type {JsdocTag} */
@@ -372,6 +541,16 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
         typeLines: []
       };
       tagObj.tag = tagObj.tag.replace(/^@/u, '');
+      if (range || loc) {
+        const pos = /** @type {{range?: number[], loc?: object}} */
+        makePos(idx);
+        if (pos.range) {
+          /** @type {{range?: number[], loc?: object}} */tagObj.range = pos.range;
+        }
+        if (pos.loc) {
+          /** @type {{range?: number[], loc?: object}} */tagObj.loc = pos.loc;
+        }
+      }
       lastTag = tagObj;
       tagDescriptionSeen = false;
       tags.push(tagObj);
@@ -392,6 +571,17 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
         initial: '',
         type: 'JsdocTypeLine'
       });
+      if (range || loc) {
+        const last = /** @type {JsdocTag} */lastTag.typeLines.at(-1);
+        const pos = /** @type {{range?: number[], loc?: object}} */
+        makePos(idx);
+        if (pos.range) {
+          /** @type {{range?: number[], loc?: object}} */last.range = pos.range;
+        }
+        if (pos.loc) {
+          /** @type {{range?: number[], loc?: object}} */last.loc = pos.loc;
+        }
+      }
       /** @type {JsdocTag} */
       lastTag.rawType += /** @type {JsdocTag} */lastTag.rawType ? '\n' + rawType : rawType;
     }

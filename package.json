@@ -42,7 +42,7 @@
     "prepublishOnly": "pnpm i && npm run build",
     "test": "npm run lint && npm run build && npm run test-cov",
     "test-ui": "vitest --ui --coverage",
-    "test-cov": "vitest --coverage",
+    "test-cov": "vitest --coverage run",
     "tsc": "tsc",
     "types": "esm-d-ts gen ./src/index.js --output ./dist/index.d.ts --emitCTS"
   },

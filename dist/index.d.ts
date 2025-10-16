@@ -66,6 +66,17 @@ type JsdocBlock = {
   terminal: string;
   preterminalLineBreak: string;
   type: 'JsdocBlock';
+  range?: [number, number];
+  loc?: {
+    end: {
+      line: number;
+      column: number;
+    };
+    start: {
+      line: number;
+      column: number;
+    };
+  };
 };
 type JtppOptions = {
   module?: boolean;
@@ -74,6 +85,15 @@ type JtppOptions = {
   classContext?: boolean;
   computedPropertyParser?: (text: string, options?: any) => unknown;
 };
+type ParserArgsExtended = {
+  loc?: boolean;
+  range?: boolean;
+  rangeStart?: number;
+  locStart?: {
+    column: number;
+    line: number;
+  };
+} & JtppOptions;
 type CommentParserToESTreeOptions = {
   /**
    * By default, empty lines are
@@ -82,6 +102,13 @@ type CommentParserToESTreeOptions = {
   spacing?: 'compact' | 'preserve';
   throwOnTypeParsingErrors?: boolean;
   jsdocTypePrattParserArgs?: JtppOptions;
+  range?: boolean;
+  loc?: boolean;
+  rangeStart?: number;
+  locStart?: {
+    column: number;
+    line: number;
+  };
 };
 /**
  * @typedef {{
@@ -93,11 +120,23 @@ type CommentParserToESTreeOptions = {
  * }} JtppOptions
  */
 /**
+ * @typedef {{
+ *   loc?: boolean,
+ *   range?: boolean,
+ *   rangeStart?: number,
+ *   locStart?: {column:number,line:number}
+ * } & JtppOptions} ParserArgsExtended
+ */
+/**
  * @typedef {object} CommentParserToESTreeOptions
  * @property {'compact'|'preserve'} [spacing] By default, empty lines are
  *        compacted; set to 'preserve' to preserve empty comment lines.
  * @property {boolean} [throwOnTypeParsingErrors]
  * @property {JtppOptions} [jsdocTypePrattParserArgs]
+ * @property {boolean} [range]
+ * @property {boolean} [loc]
+ * @property {number} [rangeStart]
+ * @property {{column: number, line: number}} [locStart]
  */
 /**
  * Converts comment parser AST to ESTree format.
@@ -109,7 +148,15 @@ type CommentParserToESTreeOptions = {
 declare function commentParserToESTree(
   jsdoc: JsdocBlockWithInline,
   mode?: jsdoc_type_pratt_parser.ParseMode,
-  { spacing, throwOnTypeParsingErrors, jsdocTypePrattParserArgs }?: CommentParserToESTreeOptions,
+  {
+    spacing,
+    throwOnTypeParsingErrors,
+    range,
+    rangeStart,
+    loc,
+    locStart,
+    jsdocTypePrattParserArgs,
+  }?: CommentParserToESTreeOptions,
 ): JsdocBlock;
 declare namespace jsdocVisitorKeys {
   let JsdocBlock: string[];
@@ -381,6 +428,7 @@ export {
   type JsdocTagWithInline,
   JsdocTypeLine,
   type JtppOptions,
+  type ParserArgsExtended,
   type Token,
   commentHandler,
   commentParserToESTree,
