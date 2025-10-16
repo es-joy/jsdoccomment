@@ -248,3 +248,41 @@ properties to JSDoc AST nodes produced by `commentParserToESTree` when the
 `loc`/`range` options are enabled. The tests under `test/locRange*.test.js`
 exercise numeric assertions for these properties (start < end and valid
 line/column values).
+
+Expanded details and example
+----------------------------
+
+When calling `commentParserToESTree(parsedComment, 'jsdoc', {loc: true, range: true})`,
+several nodes produced by the converter will include `loc` and `range` fields
+matching ESLint's convention:
+
+- `range`: an array `[start, end]` of 0-based absolute character offsets
+    measured from the start of the comment block string.
+- `loc`: an object with `{start: {line, column}, end: {line, column}}` where
+    `line` is 1-based and `column` is 0-based (matching ESLint conventions).
+
+Example (shape):
+
+```
+{
+    type: 'JsdocTag',
+    tag: 'param',
+    range: [123, 150],
+    loc: { start: { line: 4, column: 3 }, end: { line: 4, column: 30 } },
+    parsedType: { /* may also include range/loc when types are parsed */ }
+}
+```
+
+Notes and testing
+-----------------
+
+- The type parser (`jsdoc-type-pratt-parser`) is invoked with offset
+    information so parsed-type nodes (e.g., unions, optionals) also receive
+    absolute `range` and `loc` values where applicable.
+- Tests that validate numeric invariants for these properties live in
+    `test/locRange*.test.js`. They assert things like `start < end`, `line` is
+    numeric, and that inline tag ranges lie within their parent block range.
+
+If you want this behavior disabled, simply omit the `loc`/`range` options
+when calling `commentParserToESTree`.
+
