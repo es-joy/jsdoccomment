@@ -3,6 +3,12 @@
 ## 0.76.0
 
 - chore: update jsdoc-type-pratt-parser, devDep.
+ - feat(`commentParserToESTree`): attach ESLint-style `loc` and `range` to
+     JSDoc AST nodes when `{loc: true, range: true}` is passed. Parsed types
+     from `jsdoc-type-pratt-parser` are invoked with offset information so
+     parsed-type nodes also receive absolute `loc`/`range` where applicable.
+     Tests added under `test/locRange*.test.js` to validate numeric invariants
+     (start < end, valid line/column values).
 
 ## 0.75.0
 
