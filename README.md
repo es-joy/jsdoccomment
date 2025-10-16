@@ -240,3 +240,11 @@ MIT License, see the included [LICENSE-MIT.txt](https://github.com/es-joy/jsdocc
 1. Fix and properly utilize `indent` argument (challenging for
     `eslint-plugin-jsdoc` but needed for `jsdoc-eslint-parser` stringifiers
     to be more faithful); should also then use the proposed `trailing` as well
+
+## Notes about loc/range
+
+This branch adds support for attaching ESLint-style `loc` and `range`
+properties to JSDoc AST nodes produced by `commentParserToESTree` when the
+`loc`/`range` options are enabled. The tests under `test/locRange*.test.js`
+exercise numeric assertions for these properties (start < end and valid
+line/column values).
