@@ -31,7 +31,7 @@ const descriptionLinesToString = (descriptionLines) => {
   let result = '';
 
   for (const descriptionLine of descriptionLines) {
-    const desc = estreeToString(descriptionLine).replace(/^\s*\**\s*/u, '');
+    const desc = estreeToString(descriptionLine).replace(/^\s*\**\s*/v, '');
     result += !result ? desc : `\n${desc}`;
   }
 

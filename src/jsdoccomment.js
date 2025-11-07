@@ -34,18 +34,23 @@ const isCommentToken = (token) => {
 };
 
 /**
- * @param {(ESLintOrTSNode|import('estree').Comment) & {
- *   declaration?: any,
- *   decorators?: any[],
- *   parent?: import('eslint').Rule.Node & {
- *     decorators?: any[]
- *   }
- * }} node
+ * @typedef {(
+ *   ESLintOrTSNode|
+ *   import('estree').Comment|
+ *   import('eslint').Rule.Node & {declaration?: any, decorators?: any[]}
+ * )} DecoratedNode
+ */
+/**
+ * @param {DecoratedNode} node
  * @returns {import('@typescript-eslint/types').TSESTree.Decorator|undefined}
  */
 const getDecorator = (node) => {
-  return node?.declaration?.decorators?.[0] || node?.decorators?.[0] ||
-      node?.parent?.decorators?.[0];
+  // @ts-expect-error -- Loose checking for decorator presence across node kinds
+  return node?.declaration?.decorators?.[0] ||
+    // @ts-expect-error -- Loose checking
+    node?.decorators?.[0] ||
+    // @ts-expect-error -- Loose checking
+    node?.parent?.decorators?.[0];
 };
 
 /**
@@ -245,7 +250,7 @@ const getReducedASTNode = function (node, sourceCode) {
           /** @type {import('eslint').Rule.Node} */
           (parent)
         ).length &&
-        !(/Function/u).test(parent.type) &&
+        !(/Function/v).test(parent.type) &&
         !allowableCommentNode.has(parent.type)
       ) {
         ({parent} = parent);
@@ -293,10 +298,7 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
   let parenthesisToken = null;
 
   while (currentNode) {
-    const decorator = getDecorator(
-      /** @type {import('eslint').Rule.Node} */
-      (currentNode)
-    );
+    const decorator = getDecorator(currentNode);
     if (decorator) {
       const dec = /** @type {unknown} */ (decorator);
       currentNode = /** @type {import('eslint').Rule.Node} */ (dec);
@@ -338,9 +340,9 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
   if (
     (
       (nonJSDoc && (tokenBefore.type !== 'Block' ||
-        !(/^\*\s/u).test(tokenBefore.value))) ||
+        !(/^\*\s/v).test(tokenBefore.value))) ||
       (!nonJSDoc && tokenBefore.type === 'Block' &&
-      (/^\*\s/u).test(tokenBefore.value))
+      (/^\*\s/v).test(tokenBefore.value))
     ) &&
     currentNode.loc.start.line - (
       /** @type {import('eslint').AST.Token} */

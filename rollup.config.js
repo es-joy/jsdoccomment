@@ -1,12 +1,6 @@
 import {babel} from '@rollup/plugin-babel';
 
 /**
- * @external RollupConfig
- * @type {object}
- * @see {@link https://rollupjs.org/guide/en#big-list-of-options}
- */
-
-/**
  * @param {object} config
  * @param {string} config.input
  * @param {string} [config.format]
@@ -23,7 +17,7 @@ function getRollupObject ({input, minifying, format = 'umd'} = {}) {
       name: 'JsdocComment',
       format,
       sourcemap: minifying,
-      file: `dist/${input.replace(/\.js$/u, `.${format}`)}${
+      file: `dist/${input.replace(/\.js$/v, `.${format}`)}${
         minifying ? '.min' : ''
       }.${format === 'cjs' || format === 'umd' ? 'c' : ''}js`
     },

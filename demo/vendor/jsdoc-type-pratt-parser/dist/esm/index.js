@@ -609,33 +609,33 @@ var genericParslet = composeParslet({
   parseInfix: (parser, left) => {
     const dot = parser.consume(".");
     parser.consume("<");
-    const objects = [];
-    let infer = false;
-    if (parser.consume("infer")) {
-      infer = true;
-      const left2 = parser.parseIntermediateType(10 /* SYMBOL */);
-      if (left2.type !== "JsdocTypeName") {
-        throw new UnexpectedTypeError(left2, "A typescript infer always has to have a name.");
+    const elements = [];
+    do {
+      if (parser.consume("infer")) {
+        const name = parser.parseIntermediateType(10 /* SYMBOL */);
+        if (name.type !== "JsdocTypeName") {
+          throw new UnexpectedTypeError(name, "A typescript infer always has to have a name.");
+        }
+        elements.push({
+          type: "JsdocTypeInfer",
+          element: name
+        });
+      } else {
+        elements.push(parser.parseType(1 /* PARAMETER_LIST */));
       }
-      objects.push(left2);
-    } else {
-      do {
-        objects.push(parser.parseType(1 /* PARAMETER_LIST */));
-      } while (parser.consume(","));
-    }
+    } while (parser.consume(","));
     if (!parser.consume(">")) {
       throw new Error("Unterminated generic parameter list");
     }
-    return __spreadProps(__spreadValues({
+    return {
       type: "JsdocTypeGeneric",
       left: assertRootResult(left),
-      elements: objects
-    }, infer ? { infer: true } : {}), {
+      elements,
       meta: {
         brackets: "angle",
         dot
       }
-    });
+    };
   }
 });
 
@@ -1833,9 +1833,11 @@ var objectSquaredPropertyParslet = composeParslet({
       }
     }
     let result;
-    if (innerBracketType !== void 0 && // Looks like an object field because of `key: value`, but is
-    //  shaping to be an index signature
-    innerBracketType.type === "JsdocTypeObjectField" && typeof innerBracketType.key === "string" && !innerBracketType.optional && !innerBracketType.readonly && innerBracketType.right !== void 0) {
+    if (
+      // Looks like an object field because of `key: value`, but is
+      //  shaping to be an index signature
+      (innerBracketType == null ? void 0 : innerBracketType.type) === "JsdocTypeObjectField" && typeof innerBracketType.key === "string" && !innerBracketType.optional && !innerBracketType.readonly && innerBracketType.right !== void 0
+    ) {
       const key = innerBracketType.key;
       if (!parser.consume("]")) {
         throw new Error("Unterminated square brackets");
@@ -1856,11 +1858,13 @@ var objectSquaredPropertyParslet = composeParslet({
       const right = parentParser.parseType(4 /* INDEX_BRACKETS */);
       result.right = right;
       parser.acceptLexerState(parentParser);
-    } else if (innerBracketType !== void 0 && // Looks like a name, but is shaping to be a mapped type clause
-    innerBracketType.type === "JsdocTypeName" && parser.consume("in")) {
+    } else if (
+      // Looks like a name, but is shaping to be a mapped type clause
+      (innerBracketType == null ? void 0 : innerBracketType.type) === "JsdocTypeName" && parser.consume("in")
+    ) {
       const parentParser = parser.baseParser;
       parentParser.acceptLexerState(parser);
-      const mappedTypeRight = parentParser.parseType(16 /* ARRAY_BRACKETS */);
+      const mappedTypeRight = parentParser.parseType(4 /* INDEX_BRACKETS */);
       if (!parentParser.consume("]")) {
         throw new Error("Unterminated square brackets");
       }
@@ -2665,6 +2669,7 @@ function stringifyRules({
       }
     },
     JsdocTypeName: (result) => result.value,
+    JsdocTypeInfer: (result, transform2) => `infer ${transform2(result.element)}`,
     JsdocTypeTuple: (result, transform2) => {
       var _a, _b;
       return `[${result.elements.map(transform2).join("," + ((_b = (_a = result.meta) == null ? void 0 : _a.elementSpacing) != null ? _b : " "))}]`;
@@ -2697,7 +2702,7 @@ function stringifyRules({
           return `${transformed}[]`;
         }
       } else {
-        return `${transform2(result.left)}${result.meta.dot ? "." : ""}<${result.infer === true ? "infer " : ""}${result.elements.map(transform2).join("," + ((_a = result.meta.elementSpacing) != null ? _a : " "))}>`;
+        return `${transform2(result.left)}${result.meta.dot ? "." : ""}<${result.elements.map(transform2).join("," + ((_a = result.meta.elementSpacing) != null ? _a : " "))}>`;
       }
     },
     JsdocTypeImport: (result, transform2) => `import(${transform2(result.element)})`,
@@ -3039,6 +3044,7 @@ var catharsisTransformRules = {
   JsdocTypeParenthesis: (result, transform2) => transform2(assertRootResult(result.element)),
   JsdocTypeMappedType: notAvailableTransform,
   JsdocTypeIndexSignature: notAvailableTransform,
+  JsdocTypeInfer: notAvailableTransform,
   JsdocTypeImport: notAvailableTransform,
   JsdocTypeKeyof: notAvailableTransform,
   JsdocTypeTuple: notAvailableTransform,
@@ -3362,6 +3368,7 @@ var jtpRules = {
   JsdocTypePredicate: notAvailableTransform,
   JsdocTypeMappedType: notAvailableTransform,
   JsdocTypeIndexSignature: notAvailableTransform,
+  JsdocTypeInfer: notAvailableTransform,
   JsdocTypeAsserts: notAvailableTransform,
   JsdocTypeReadonlyArray: notAvailableTransform,
   JsdocTypeAssertsPlain: notAvailableTransform,
@@ -3485,6 +3492,10 @@ function identityTransformRules() {
       elements: result.elements.map(transform2)
     }),
     JsdocTypeName: (result) => result,
+    JsdocTypeInfer: (result, transform2) => ({
+      type: "JsdocTypeInfer",
+      element: transform2(result.element)
+    }),
     JsdocTypeFunction: (result, transform2) => {
       const transformed = {
         type: "JsdocTypeFunction",
@@ -3621,6 +3632,7 @@ var visitorKeys = {
   JsdocTypeKeyValue: ["right"],
   JsdocTypeMappedType: ["right"],
   JsdocTypeName: [],
+  JsdocTypeInfer: ["element"],
   JsdocTypeNamePath: ["left", "right"],
   JsdocTypeNotNullable: ["element"],
   JsdocTypeNull: [],

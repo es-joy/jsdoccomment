@@ -171,6 +171,13 @@ type Token =
     };
 type ESLintOrTSNode = eslint.Rule.Node | _typescript_eslint_types.TSESTree.Node;
 type int = number;
+type DecoratedNode =
+  | ESLintOrTSNode
+  | estree.Comment
+  | (eslint.Rule.Node & {
+      declaration?: any;
+      decorators?: any[];
+    });
 /**
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
@@ -230,24 +237,17 @@ declare function getNonJsdocComment(
   },
 ): Token | null;
 /**
- * @param {(ESLintOrTSNode|import('estree').Comment) & {
- *   declaration?: any,
- *   decorators?: any[],
- *   parent?: import('eslint').Rule.Node & {
- *     decorators?: any[]
- *   }
- * }} node
+ * @typedef {(
+ *   ESLintOrTSNode|
+ *   import('estree').Comment|
+ *   import('eslint').Rule.Node & {declaration?: any, decorators?: any[]}
+ * )} DecoratedNode
+ */
+/**
+ * @param {DecoratedNode} node
  * @returns {import('@typescript-eslint/types').TSESTree.Decorator|undefined}
  */
-declare function getDecorator(
-  node: (ESLintOrTSNode | estree.Comment) & {
-    declaration?: any;
-    decorators?: any[];
-    parent?: eslint.Rule.Node & {
-      decorators?: any[];
-    };
-  },
-): _typescript_eslint_types.TSESTree.Decorator | undefined;
+declare function getDecorator(node: DecoratedNode): _typescript_eslint_types.TSESTree.Decorator | undefined;
 /**
  * Checks for the presence of a JSDoc comment for the given node and returns it.
  *
@@ -368,6 +368,7 @@ export {
   type CommentHandler,
   type CommentParserToESTreeOptions,
   type CommentParserTokenizer,
+  type DecoratedNode,
   type ESLintOrTSNode,
   type ESTreeToStringOptions,
   type InlineTag,
