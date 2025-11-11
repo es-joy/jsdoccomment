@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.79.0 (unreleased)
+
+- chore: require Node ^20.19.0 || ^22.13.0 || >=24
+
 ## 0.78.0
 
 - chore: update typescript-eslint/types, devDeps.
