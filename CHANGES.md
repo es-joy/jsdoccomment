@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.78.0
+
+- chore: update typescript-eslint/types, devDeps.
+
 ## 0.77.0
 
 - chore: update typescript-eslint/types, jsdoc-type-pratt-parser, devDeps.
