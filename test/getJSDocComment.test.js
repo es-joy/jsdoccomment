@@ -76,7 +76,7 @@ ruleTester.run('getJSDocComment', rule, {
           value: text
       });
     `,
-    errors: [{messageId: 'missingJsDoc', type: 'Property'}]
+    errors: [{messageId: 'missingJsDoc'}]
   }],
   valid: [{
     code: `
