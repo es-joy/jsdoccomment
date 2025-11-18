@@ -1,5 +1,6 @@
 ignoredBuiltDependencies:
   - rollup
+  - unrs-resolver
 
 onlyBuiltDependencies:
   - esbuild
