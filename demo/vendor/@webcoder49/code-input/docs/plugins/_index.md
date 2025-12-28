@@ -23,13 +23,13 @@ Right now, you can only add one plugin of each type (e.g. one SelectTokenCallbac
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" data-manual></script><!--Remove data-manual if also using Prism normally-->
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"></link>
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         <!--Import-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/auto-close-brackets.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/auto-close-brackets.min.js"></script>
         <!--Not necessary, but works very well with the Indent plugin-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/indent.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/indent.min.js"></script>
 
         <script>
             codeInput.registerTemplate("syntax-highlighted", new codeInput.templates.Prism(Prism, [
@@ -60,12 +60,12 @@ Right now, you can only add one plugin of each type (e.g. one SelectTokenCallbac
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" data-manual></script><!--Remove data-manual if also using Prism normally-->
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"></link>
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         <!--Import-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/autocomplete.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/autocomplete.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/autocomplete.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/autocomplete.min.css">
 
 
         <script>
@@ -124,6 +124,41 @@ Right now, you can only add one plugin of each type (e.g. one SelectTokenCallbac
 </html>
 ```
 
+#### `Autogrow`: Let code-input elements resize to fit their content (optionally between limits) {#playground-preset-prism-line-numbers}
+
+```
+<!DOCTYPE html>
+<html>
+    <body>
+        <!--For convenience, this demo uses files from JSDelivr CDN; for more privacy and security download and host them yourself.-->
+        <!--Prism+code-input-->
+        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" data-manual></script><!--Remove data-manual if also using Prism normally-->
+        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"></link>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
+
+        
+        <!--Import-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/autogrow.min.css"/>
+
+        <script>
+            codeInput.registerTemplate("syntax-highlighted", new codeInput.templates.Prism(Prism, [
+                // CSS only - don't pass here
+            ]));
+        </script>
+        <p>Enter newlines to grow vertically:</p>
+        <code-input class="code-input_autogrow_height" language="Markdown"></code-input>
+        <p>Type to grow horizontally:</p>
+        <code-input class="code-input_autogrow_width" language="Markdown"></code-input>
+        <p>Grows vertically between 100px and 200px:</p>
+        <code-input class="code-input_autogrow_height" style="--code-input_autogrow_min-height: 100px; --code-input_autogrow_max-height: 200px;" language="Markdown"></code-input>
+        <p>Grows horizontally between 100px and 200px:</p>
+        <code-input class="code-input_autogrow_width" style="--code-input_autogrow_min-width: 100px; --code-input_autogrow_max-width: 200px;" language="Markdown"></code-input>
+    </body>
+</html>
+```
+
 #### `FindAndReplace`: Add an openable dialog to find and replace matches to a search term, including highlighting the matches {#playground-preset-find-and-replace}
 
 ```
@@ -135,17 +170,17 @@ Right now, you can only add one plugin of each type (e.g. one SelectTokenCallbac
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" data-manual></script><!--Remove data-manual if also using Prism normally-->
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"></link>
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         <!--Import-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/find-and-replace.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/find-and-replace.min.css"/>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/find-and-replace.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/find-and-replace.min.css"/>
 
         <script>
             let findAndReplacePlugin = new codeInput.plugins.FindAndReplace(
-                true, // Should Ctrl+F be overriden for find-and-replace find functionality? Either way, you can also trigger it yourself using (instance of this plugin)`.showPrompt(code-input element, false)`.
-                true, // Should Ctrl+H be overriden for find-and-replace replace functionality? Either way, you can also trigger it yourself using (instance of this plugin)`.showPrompt(code-input element, true)`.
+                true, // Should Ctrl+F be overridden for find-and-replace find functionality? Either way, you can also trigger it yourself using (instance of this plugin)`.showPrompt(code-input element, false)`.
+                true, // Should Ctrl+H be overridden for find-and-replace replace functionality? Either way, you can also trigger it yourself using (instance of this plugin)`.showPrompt(code-input element, true)`.
                 {}, // Keep this as an empty object for the English UI, or add translations as in https://code-input-js.org/i18n/
                 false // Setting this to false makes the keyboard shortcuts follow the operating system while avoiding clashes (right now: Cmd+F/Ctrl+H on Apple, Ctrl+F/Ctrl+H otherwise.) and is recommended; true forces Ctrl+F/Ctrl+H and is default for backwards compatibility.
             );
@@ -168,6 +203,7 @@ The mouse ran up the clock.
 The clock struck one,
 The mouse ran down,
 Hickory dickory dock.</code-input>
+        <p><small>When setting the size of <code>code-input</code> elements with this plugin, make sure they are large enough to fit the dialog, at least 500px wide and 170px tall with the default styling. (If you are using the <code>Autogrow</code> plugin, this will be done for you as long as your <code>--code-input_autogrow_max-width</code> and <code>--code-input_autogrow_max-height</code> are large enough.) For technical reasons the dialog cannot overflow the editing area.</small></p>
     </body>
 </html>
 ```
@@ -186,18 +222,18 @@ Hickory dickory dock.</code-input>
         <!--Not necessary, but works very well with the Prism line-numbers plugin-->
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         <!--Import-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/go-to-line.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/go-to-line.min.css"/>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/go-to-line.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/go-to-line.min.css"/>
         <!--Not necessary, but works very well with the Prism line-numbers plugin-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/prism-line-numbers.min.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/prism-line-numbers.min.css"/>
 
         <script>
             let goToLinePlugin = new codeInput.plugins.GoToLine(
-                true, // Should Ctrl/Cmd+G be overriden for go-to-line functionality? Either way, you can trigger it yourself using (instance of this plugin)`.showPrompt(code-input element)`.
+                true, // Should Ctrl/Cmd+G be overridden for go-to-line functionality? Either way, you can trigger it yourself using (instance of this plugin)`.showPrompt(code-input element)`.
                 {}, // Keep this as an empty object for the English UI, or add translations as in https://code-input-js.org/i18n/
             );
             // Programatically opening the dialogs, to integrate with your user interface
@@ -216,6 +252,7 @@ The mouse ran up the clock.
 The clock struck one,
 The mouse ran down,
 Hickory dickory dock.</code-input>
+        <p><small>When setting the size of <code>code-input</code> elements with this plugin, make sure they are large enough to fit the dialog, at least 300px wide and 150px tall with the default styling. (If you are using the <code>Autogrow</code> plugin, this will be done for you as long as your <code>--code-input_autogrow_max-width</code> and <code>--code-input_autogrow_max-height</code> are large enough.) For technical reasons the dialog cannot overflow the editing area.</small></p>
     </body>
 </html>
 ```
@@ -231,11 +268,11 @@ Hickory dickory dock.</code-input>
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" data-manual></script><!--Remove data-manual if also using Prism normally-->
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"></link>
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         <!--Import-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/indent.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/indent.min.js"></script>
         
         <script>
             // Programatically opening the dialogs, to integrate with your user interface
@@ -504,11 +541,11 @@ Hickory dickory dock.</code-input>
         </script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/match-braces/prism-match-braces.min.css"/>
         
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         <!--Import-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/select-token-callbacks.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/select-token-callbacks.min.js"></script>
     </head>
     <body>
         <!--For convenience, this demo uses files from JSDelivr CDN; for more privacy and security download and host them yourself.-->
@@ -571,12 +608,12 @@ See https://github.com/WebCoder49/code-input/issues?q=is%3Aissue%20state%3Aopen%
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" data-manual></script><!--Remove data-manual if also using Prism normally-->
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"></link>
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         <!--Import-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/special-chars.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/special-chars.min.css"></script>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/special-chars.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/special-chars.min.css"></script>
         
         <script>
             codeInput.registerTemplate("syntax-highlighted", new codeInput.templates.Prism(Prism, [
@@ -616,12 +653,12 @@ See https://github.com/WebCoder49/code-input/issues?q=is%3Aissue%20state%3Aopen%
         <!--highlight.js+code-input-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         
         <!--Import-->
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/autodetect.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/autodetect.min.js"></script>
 
         <script>
             codeInput.registerTemplate("syntax-highlighted", new codeInput.templates.Hljs(hljs, [
@@ -649,14 +686,14 @@ See https://github.com/WebCoder49/code-input/issues?q=is%3Aissue%20state%3Aopen%
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" data-manual></script><!--Remove data-manual if also using Prism normally-->
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"></link>
-        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/code-input.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/code-input.min.css">
 
         
         <!--Import-->
         <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.7/plugins/prism-line-numbers.min.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.8/plugins/prism-line-numbers.min.css"/>
 
         <script>
             codeInput.registerTemplate("syntax-highlighted", new codeInput.templates.Prism(Prism, [
