@@ -1143,4 +1143,35 @@ describe('getJSDocComment', function () {
       expect(comment).to.equal(null);
     }
   );
+
+  it(
+    'Gets function expression call\'s variable comment',
+    function () {
+      const code = `
+        /**
+         *
+         */
+        const foo = autolog(function foo() {
+          log.debug('inside foo', 'this is a test helper function')
+        })
+      `;
+      const ast = parseAddingParents(code);
+
+      const sourceCode = new SourceCode(code, ast);
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (
+          /** @type {import('estree').CallExpression} */
+          (/** @type {import('estree').VariableDeclaration} */
+            (ast.body.at(-1)).declarations[0].init).arguments[0]
+        ),
+        {
+          minLines: 0, maxLines: 1,
+          skipInvokedExpressionsForCommentFinding: true
+        }
+      );
+      expect(comment?.type).to.equal('Block');
+    }
+  );
 });

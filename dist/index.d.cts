@@ -178,24 +178,42 @@ type DecoratedNode =
       declaration?: any;
       decorators?: any[];
     });
+type Settings = {
+  maxLines: int;
+  minLines: int;
+  skipInvokedExpressionsForCommentFinding?: boolean;
+  [name: string]: any;
+};
+/**
+ * @typedef {{
+ *   maxLines: int,
+ *   minLines: int,
+ *   skipInvokedExpressionsForCommentFinding?: boolean,
+ *   [name: string]: any
+ * }} Settings
+ */
 /**
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
  *
  * @param {ESLintOrTSNode} node An AST node.
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode.
+ * @param {Settings} [settings]
  * @returns {ESLintOrTSNode} The AST node that
  *   can be evaluated for appropriate JSDoc comments.
  */
-declare function getReducedASTNode(node: ESLintOrTSNode, sourceCode: eslint.SourceCode): ESLintOrTSNode;
+declare function getReducedASTNode(
+  node: ESLintOrTSNode,
+  sourceCode: eslint.SourceCode,
+  settings?: Settings,
+): ESLintOrTSNode;
 /**
  * Retrieves the JSDoc comment for a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
  * @param {import('eslint').Rule.Node} node The AST node to get
  *   the comment for.
- * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
- *   settings in context
+ * @param {Settings} settings The settings in context
  * @param {{checkOverloads?: boolean}} [opts]
  * @returns {Token|null} The Block comment
  *   token containing the JSDoc comment for the given node or
@@ -205,11 +223,7 @@ declare function getReducedASTNode(node: ESLintOrTSNode, sourceCode: eslint.Sour
 declare function getJSDocComment(
   sourceCode: eslint.SourceCode,
   node: eslint.Rule.Node,
-  settings: {
-    maxLines: int;
-    minLines: int;
-    [name: string]: any;
-  },
+  settings: Settings,
   opts?: {
     checkOverloads?: boolean;
   },
@@ -400,6 +414,7 @@ export type {
   JsdocInlineTagNoType,
   JsdocTagWithInline,
   JtppOptions,
+  Settings,
   Token,
   int,
 };

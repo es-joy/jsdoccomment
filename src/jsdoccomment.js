@@ -185,15 +185,25 @@ const allowableCommentNode = new Set([
 ]);
 
 /**
+ * @typedef {{
+ *   maxLines: int,
+ *   minLines: int,
+ *   skipInvokedExpressionsForCommentFinding?: boolean,
+ *   [name: string]: any
+ * }} Settings
+ */
+
+/**
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
  *
  * @param {ESLintOrTSNode} node An AST node.
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode.
+ * @param {Settings} [settings]
  * @returns {ESLintOrTSNode} The AST node that
  *   can be evaluated for appropriate JSDoc comments.
  */
-const getReducedASTNode = function (node, sourceCode) {
+const getReducedASTNode = function (node, sourceCode, settings) {
   let {parent} = node;
   switch (/** @type {ESLintOrTSNode} */ (node).type) {
   case 'TSFunctionType':
@@ -220,7 +230,8 @@ const getReducedASTNode = function (node, sourceCode) {
       return node;
     }
     if (
-      !invokedExpression.has(parent.type)
+      !invokedExpression.has(parent.type) ||
+      settings?.skipInvokedExpressionsForCommentFinding
     ) {
       /**
        * @type {ESLintOrTSNode|Token|null}
@@ -365,8 +376,7 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
  * @param {import('eslint').Rule.Node} node The AST node to get
  *   the comment for.
- * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
- *   settings in context
+ * @param {Settings} settings The settings in context
  * @param {{checkOverloads?: boolean}} [opts]
  * @returns {Token|null} The Block comment
  *   token containing the JSDoc comment for the given node or
@@ -374,7 +384,7 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
  * @public
  */
 const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
-  const reducedNode = getReducedASTNode(node, sourceCode);
+  const reducedNode = getReducedASTNode(node, sourceCode, settings);
   const comment = findJSDocComment(reducedNode, sourceCode, settings);
 
   if (!comment &&
@@ -390,7 +400,7 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
       functionName = reducedNode.id?.name;
     } else if (reducedNode.type === 'ExportNamedDeclaration' &&
       (reducedNode.declaration?.type === 'FunctionDeclaration' ||
-      // @ts-expect-error Should be ok
+      // @ts-ignore Should be ok
       reducedNode.declaration?.type === 'TSDeclareFunction')
     ) {
       functionName = reducedNode.declaration.id.name;
@@ -399,7 +409,9 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
     }
 
     /**
-     * @type {import('estree').Program}
+     * @type {import('estree').Program & {
+     *   parent: null
+     * }}
      */
     let programNode;
 
@@ -421,9 +433,10 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
 
     // @ts-expect-error Should be ok
     const idx = programNode.body.indexOf(childNode);
-    const prevSibling = /** @type {import('eslint').AST.Program} */ (
-      programNode
-    ).body[idx - 1];
+    const prevSibling =
+      /** @type {import('eslint').AST.Program & {parent: null}} */ (
+        programNode
+      ).body[idx - 1];
     if (
       // @ts-expect-error Should be ok
       (prevSibling?.type === 'TSDeclareFunction' &&
@@ -456,7 +469,7 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
  * @public
  */
 const getNonJsdocComment = function (sourceCode, node, settings) {
-  const reducedNode = getReducedASTNode(node, sourceCode);
+  const reducedNode = getReducedASTNode(node, sourceCode, settings);
 
   return findJSDocComment(reducedNode, sourceCode, settings, {
     nonJSDoc: true
