@@ -2,6 +2,8 @@
 
 ## 0.79.0
 
+- feat: allow `skipInvokedExpressionsForCommentFinding` setting for
+   `getReducedASTNode`, `getJSDocComment`, `getNonJsdocComment`
 - chore: require Node ^20.19.0 || ^22.13.0 || >=24
 - chore: update `@typescript-eslint/types` and devDeps.
 
