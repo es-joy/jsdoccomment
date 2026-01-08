@@ -1003,7 +1003,7 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
     if (reducedNode.type === 'TSDeclareFunction' || reducedNode.type === 'FunctionDeclaration') {
       functionName = reducedNode.id?.name;
     } else if (reducedNode.type === 'ExportNamedDeclaration' && (reducedNode.declaration?.type === 'FunctionDeclaration' ||
-    // @ts-expect-error Should be ok
+    // @ts-ignore Should be ok
     reducedNode.declaration?.type === 'TSDeclareFunction')) {
       functionName = reducedNode.declaration.id.name;
     } else {
@@ -1057,7 +1057,8 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
  * @param {ESLintOrTSNode} node The AST node to get
  *   the comment for.
- * @param {Settings} settings The settings in context
+ * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
+ *   settings in context
  * @returns {Token|null} The Block comment
  *   token containing the JSDoc comment for the given node or
  *   null if not found.
