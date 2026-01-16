@@ -38,7 +38,6 @@ function parseAddingParents (
 ) {
   const ast = parser === 'typescript'
     ? /** @type {import('eslint').AST.Program} */ (
-      // @ts-expect-error Bug?
       typescriptEslintParser.parser.parseForESLint(code, {
         tokens: true,
         comment: true,

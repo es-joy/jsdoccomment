@@ -7,9 +7,17 @@ const isQuoted = (s) => s && s.startsWith('"') && s.endsWith('"');
 export default function nameTokenizer() {
     const typeEnd = (num, { tokens }, i) => tokens.type === '' ? num : i;
     return (spec) => {
-        // look for the name in the line where {type} ends
-        const { tokens } = spec.source[spec.source.reduce(typeEnd, 0)];
-        const source = tokens.description.trimLeft();
+        // look for the name starting in the line where {type} ends
+        let finalTypeLine = spec.source.reduce(typeEnd, 0);
+        let tokens;
+        do {
+            ({ tokens } = spec.source[finalTypeLine]);
+            if (tokens.description.trim()) {
+                break;
+            }
+            finalTypeLine++;
+        } while (spec.source[finalTypeLine]);
+        const source = tokens.description.trimStart();
         const quotedGroups = source.split('"');
         // if it starts with quoted group, assume it is a literal
         if (quotedGroups.length > 1 &&

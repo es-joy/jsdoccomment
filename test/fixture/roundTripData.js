@@ -510,6 +510,34 @@ compactResultsPratt.push(compactResults.at(-1));
 preserveResults.push(commentBlocks.at(-1));
 preserveResultsPratt.push(preserveResults.at(-1));
 
+// commentBlock[30] ----
+
+commentBlocks.push(`/**
+ * @param
+ * foo
+ */`);
+
+compactResults.push(commentBlocks.at(-1));
+compactResultsPratt.push(compactResults.at(-1));
+
+preserveResults.push(commentBlocks.at(-1));
+preserveResultsPratt.push(preserveResults.at(-1));
+
+// commentBlock[31] ----
+// Edge case: name on separate line with only one
+//   description line containing content
+
+commentBlocks.push(`/**
+ * @param
+ * foo bar
+ */`);
+
+compactResults.push(commentBlocks.at(-1));
+compactResultsPratt.push(compactResults.at(-1));
+
+preserveResults.push(commentBlocks.at(-1));
+preserveResultsPratt.push(preserveResults.at(-1));
+
 export {
   commentBlocks,
   compactResults,

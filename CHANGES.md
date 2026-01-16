@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.80.0
+
+- fix: update `estreeToString` to handle name on subsequent line
+- chore: update comment-parser, typescript-eslint/types, devDeps.
+
 ## 0.79.0
 
 - feat: allow `skipInvokedExpressionsForCommentFinding` setting for
