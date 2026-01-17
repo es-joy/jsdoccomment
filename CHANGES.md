@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.81.0
+
+- chore: update comment-parser, devDeps.
+
 ## 0.80.0
 
 - fix: update `estreeToString` to handle name on subsequent line

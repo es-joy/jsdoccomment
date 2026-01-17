@@ -15,8 +15,8 @@ importers:
         specifier: ^8.53.0
         version: 8.53.0
       comment-parser:
-        specifier: 1.4.3
-        version: 1.4.3
+        specifier: 1.4.4
+        version: 1.4.4
       esquery:
         specifier: ^1.7.0
         version: 1.7.0
@@ -67,8 +67,8 @@ importers:
         specifier: 39.10.0
         version: 39.10.0(@babel/core@7.28.6)(@typescript-eslint/parser@8.53.0(eslint@9.39.2)(typescript@5.9.3))(eslint@9.39.2)(typescript@5.9.3)
       eslint-plugin-jsdoc:
-        specifier: ^62.0.0
-        version: 62.0.0(eslint@9.39.2)
+        specifier: ^62.0.1
+        version: 62.0.1(eslint@9.39.2)
       espree:
         specifier: ^11.0.0
         version: 11.0.0
@@ -1744,8 +1744,8 @@ packages:
     resolution: {integrity: sha512-buhp5kePrmda3vhc5B9t7pUQXAb2Tnd0qgpkIhPhkHXxJpiPJ11H0ZEU0oBpJ2QztSbzG/ZxMj/CHsYJqRHmyg==}
     engines: {node: '>= 12.0.0'}
 
-  comment-parser@1.4.3:
-    resolution: {integrity: sha512-qvEp8Hk/uxsIbBe2gnu87CrP2wSFLzG0fIgcxF27DiBlD12Nlyydt91T4KQNiRxfebMxU5QEoWQBNiha+A9I3A==}
+  comment-parser@1.4.4:
+    resolution: {integrity: sha512-0D6qSQ5IkeRrGJFHRClzaMOenMeT0gErz3zIw3AprKMqhRN6LNU2jQOdkPG/FZ+8bCgXE1VidrgSzlBBDZRr8A==}
     engines: {node: '>= 12.0.0'}
 
   concat-map@0.0.1:
@@ -2062,8 +2062,8 @@ packages:
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
 
-  eslint-plugin-jsdoc@62.0.0:
-    resolution: {integrity: sha512-sNdIGLAvjFK3pB0SYFW74iXODZ4ifF8Ax13Wgq8jKepKnrCFzGo7+jRZfLf70h81SD7lPYnTE7MR2nhYSvaLTA==}
+  eslint-plugin-jsdoc@62.0.1:
+    resolution: {integrity: sha512-TNeqgrE+xjDGCZVlRIiQcnUWNoMlHE5+oIyGbVFbrdIPOkz5ecWAmB26xSgqm2Mz7wny/ztyqCOUOeJhGrElpA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
@@ -5059,7 +5059,7 @@ snapshots:
       '@typhonjs-utils/logger-color': 0.1.0
       '@typhonjs-utils/object': 0.4.0
       '@typhonjs-utils/package-json': 0.7.0
-      comment-parser: 1.4.3
+      comment-parser: 1.4.4
       cytoscape: 3.33.1
       es-module-lexer: 1.7.0
       fs-extra: 11.3.3
@@ -5540,7 +5540,7 @@ snapshots:
 
   comment-parser@1.4.1: {}
 
-  comment-parser@1.4.3: {}
+  comment-parser@1.4.4: {}
 
   concat-map@0.0.1: {}
 
@@ -6013,7 +6013,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-jsdoc@62.0.0(eslint@9.39.2):
+  eslint-plugin-jsdoc@62.0.1(eslint@9.39.2):
     dependencies:
       '@es-joy/jsdoccomment': 0.79.0
       '@es-joy/resolve.exports': 1.2.0
