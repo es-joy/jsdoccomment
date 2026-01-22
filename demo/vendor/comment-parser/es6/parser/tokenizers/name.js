@@ -10,13 +10,18 @@ export default function nameTokenizer() {
         // look for the name starting in the line where {type} ends
         let finalTypeLine = spec.source.reduce(typeEnd, 0);
         let tokens;
-        do {
+        if (spec.type) {
+            do {
+                ({ tokens } = spec.source[finalTypeLine]);
+                if (tokens.description.trim()) {
+                    break;
+                }
+                finalTypeLine++;
+            } while (spec.source[finalTypeLine]);
+        }
+        else {
             ({ tokens } = spec.source[finalTypeLine]);
-            if (tokens.description.trim()) {
-                break;
-            }
-            finalTypeLine++;
-        } while (spec.source[finalTypeLine]);
+        }
         const source = tokens.description.trimStart();
         const quotedGroups = source.split('"');
         // if it starts with quoted group, assume it is a literal
