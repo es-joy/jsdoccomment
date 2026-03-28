@@ -8,7 +8,7 @@ title = 'Flexible Syntax Highlighted Editable Textareas'
 
 ## Download
 
-*`code-input.js` is free, libre, open source software under the MIT (AKA Expat) license.* You have choices! **Download it from the Git repository on [GitHub](https://github.com/WebCoder49/code-input/tree/v2.8.1) or [Codeberg](https://codeberg.org/code-input-js/code-input-js/), [in a ZIP archive](/release/code-input-js-v2.8.1.zip), [in a TAR.GZ archive](/release/code-input-js-v2.8.1.tar.gz), or from `@webcoder49/code-input` on the NPM registry ([Yarn](https://yarnpkg.com/package?name=@webcoder49/code-input), [NPM](https://npmjs.com/package/@webcoder49/code-input), etc.).**
+*`code-input.js` is free, libre, open source software under the MIT (AKA Expat) license.* You have choices! **Download it from the Git repository on [GitHub](https://github.com/WebCoder49/code-input/tree/v2.8.2) or [Codeberg](https://codeberg.org/code-input-js/code-input-js/), [in a ZIP archive](/release/code-input-js-v2.8.2.zip), [in a TAR.GZ archive](/release/code-input-js-v2.8.2.tar.gz), or from `@webcoder49/code-input` on the NPM registry ([Yarn](https://yarnpkg.com/package?name=@webcoder49/code-input), [NPM](https://npmjs.com/package/@webcoder49/code-input), etc.).**
 
 [Want to contribute to the code? You're very welcome to! See here.](#contributing)
 
@@ -317,5 +317,3 @@ something like [CodeMirror](https://codemirror.net/),
 🎉 code-input.js is collaboratively developed by many people, which is what keeps it going strong. Many have reported bugs and suggestions, and 10 people (see them on [GitHub](https://github.com/WebCoder49/code-input/graphs/contributors) or [Codeberg](https://codeberg.org/code-input-js/code-input-js/activity/contributors)) have contributed code or documentation directly. If you have found a bug, would like to help with the code or documentation, or have additional suggestions, for plugins or core functionality, please look at [GitHub](https://github.com/WebCoder49/code-input/tree/main/CONTRIBUTING.md), at [Codeberg](https://codeberg.org/code-input-js/code-input-js/src/branch/main/CONTRIBUTING.md), or [get in touch via email so I can add it for you](mailto:code-input-js@webcoder49.dev).
 
 **If you find a sensitive security vulnerability in the code-input.js library, please email the maintainer Oliver Geer at [security@webcoder49.dev](mailto:security@webcoder49.dev), optionally using [this encryption key](https://ogeer.org#pgp). GitHub security advisories (different to the more general "issues") are also accepted.**
-
-*I'm looking into mirroring code-input.js onto Codeberg as well as GitHub for more flexibility and freedom - if you have ideas for this please get in touch!*

@@ -85,8 +85,9 @@ plugins.GoToLine = class extends Plugin {
                 }
             }
         } else {
-            // No value
+            // No value, so no message or error
             dialog.guidance.textContent = "";
+            dialog.input.classList.remove('code-input_go-to-line_error');
         }
 
         if (event.key == 'Enter') {

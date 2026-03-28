@@ -127,6 +127,9 @@ plugins.FindAndReplace = class extends Plugin {
                         // No matches - error
                         dialog.findInput.classList.add('code-input_find-and-replace_error');
                     }
+                } else {
+                    // Input box is empty - no error
+                    dialog.findInput.classList.remove('code-input_find-and-replace_error');
                 }
                 this.updateMatchDescription(dialog);
             }
