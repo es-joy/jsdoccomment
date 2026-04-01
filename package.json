@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.85.0",
+  "version": "0.86.0",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment along with other jsdoc utilities",
@@ -65,10 +65,10 @@
   },
   "dependencies": {
     "@types/estree": "^1.0.8",
-    "@typescript-eslint/types": "^8.57.2",
+    "@typescript-eslint/types": "^8.58.0",
     "comment-parser": "1.4.6",
     "esquery": "^1.7.0",
-    "jsdoc-type-pratt-parser": "~7.1.1"
+    "jsdoc-type-pratt-parser": "~7.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
@@ -77,7 +77,7 @@
     "@rollup/plugin-babel": "^7.0.0",
     "@types/esquery": "^1.5.4",
     "@types/estraverse": "^5.1.7",
-    "@typescript-eslint/visitor-keys": "^8.57.2",
+    "@typescript-eslint/visitor-keys": "^8.58.0",
     "@typhonjs-build-test/esm-d-ts": "0.3.0",
     "@typhonjs-typedoc/typedoc-pkg": "^0.4.2",
     "@vitest/coverage-v8": "^4.1.2",
@@ -89,10 +89,10 @@
     "espree": "^11.2.0",
     "estraverse": "^5.3.0",
     "prismjs": "^1.30.0",
-    "rollup": "^4.60.0",
+    "rollup": "^4.60.1",
     "typedoc": "^0.28.18",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.2",
+    "typescript-eslint": "^8.58.0",
     "vitest": "^4.1.2"
   },
   "files": [
