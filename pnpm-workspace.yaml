@@ -1,6 +1,13 @@
+allowBuilds:
+  esbuild: false
+  unrs-resolver: false
+
 ignoredBuiltDependencies:
   - rollup
   - unrs-resolver
+
+minimumReleaseAgeExclude:
+  - comment-parser@1.4.7
 
 onlyBuiltDependencies:
   - esbuild
