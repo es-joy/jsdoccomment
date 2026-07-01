@@ -211,7 +211,7 @@ declare function getReducedASTNode(
  * Retrieves the JSDoc comment for a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {import('eslint').Rule.Node} node The AST node to get
+ * @param {ESLintOrTSNode} node The AST node to get
  *   the comment for.
  * @param {Settings} settings The settings in context
  * @param {{checkOverloads?: boolean}} [opts]
@@ -222,7 +222,7 @@ declare function getReducedASTNode(
  */
 declare function getJSDocComment(
   sourceCode: eslint.SourceCode,
-  node: eslint.Rule.Node,
+  node: ESLintOrTSNode,
   settings: Settings,
   opts?: {
     checkOverloads?: boolean;
