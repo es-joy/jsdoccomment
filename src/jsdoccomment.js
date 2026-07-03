@@ -370,11 +370,167 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
   return null;
 };
 
+const overloadMethodNode = new Set([
+  'MethodDefinition',
+  'TSAbstractMethodDefinition'
+]);
+
+/**
+ * @param {ESLintOrTSNode} node
+ * @returns {{
+ *   bodyless: boolean,
+ *   kind: string,
+ *   name: string,
+ *   static: boolean
+ * }|null}
+ */
+const getMethodOverloadInfo = (node) => {
+  if (!overloadMethodNode.has(node.type)) {
+    return null;
+  }
+
+  /**
+   * @type {{
+   *   computed?: boolean,
+   *   key?: {name?: string},
+   *   kind?: string,
+   *   static?: boolean,
+   *   value?: {type?: string}
+   * }}
+   */
+  // @ts-expect-error -- Loose method-shape check after node.type guard.
+  const method = node;
+  if (method.computed || method.kind !== 'method' || !method.key?.name) {
+    return null;
+  }
+
+  return {
+    bodyless: node.type === 'TSAbstractMethodDefinition' ||
+      method.value?.type === 'TSEmptyBodyFunctionExpression',
+    kind: method.kind,
+    name: method.key.name,
+    static: Boolean(method.static)
+  };
+};
+
+/**
+ * @param {ESLintOrTSNode} node
+ * @param {ESLintOrTSNode} prevSibling
+ * @returns {boolean}
+ */
+const isMatchingMethodOverloadSibling = (node, prevSibling) => {
+  const current = getMethodOverloadInfo(node);
+  const previous = getMethodOverloadInfo(prevSibling);
+
+  return Boolean(
+    current &&
+    previous?.bodyless &&
+    previous.name === current.name &&
+    previous.kind === current.kind &&
+    previous.static === current.static
+  );
+};
+
+/**
+ * @param {ESLintOrTSNode} node
+ * @returns {string|undefined}
+ */
+const getCurrentOverloadName = (node) => {
+  if (node.type === 'TSDeclareFunction' ||
+    node.type === 'FunctionDeclaration') {
+    return /** @type {{id?: {name?: string}}} */ (node).id?.name;
+  }
+
+  if (node.type === 'ExportNamedDeclaration') {
+    const {declaration} =
+      /** @type {{declaration?: {type?: string, id?: {name?: string}}}} */ (
+        node
+      );
+    if (declaration?.type === 'FunctionDeclaration' ||
+      declaration?.type === 'TSDeclareFunction') {
+      return declaration.id?.name;
+    }
+  }
+
+  if (overloadMethodNode.has(node.type)) {
+    const method =
+      /** @type {{computed?: boolean, key?: {name?: string}}} */ (node);
+    if (!method.computed) {
+      return method.key?.name;
+    }
+  }
+
+  return undefined;
+};
+
+/**
+ * @param {ESLintOrTSNode} node
+ * @returns {string|undefined}
+ */
+const getPreviousOverloadName = (node) => {
+  if (node.type === 'TSDeclareFunction') {
+    return /** @type {{id?: {name?: string}}} */ (node).id?.name;
+  }
+
+  if (node.type === 'ExportNamedDeclaration') {
+    const {declaration} =
+      /** @type {{declaration?: {type?: string, id?: {name?: string}}}} */ (
+        node
+      );
+    if (declaration?.type === 'TSDeclareFunction') {
+      return declaration.id?.name;
+    }
+  }
+
+  if (overloadMethodNode.has(node.type)) {
+    const method =
+      /** @type {{computed?: boolean, key?: {name?: string}}} */ (node);
+    if (!method.computed) {
+      return method.key?.name;
+    }
+  }
+
+  return undefined;
+};
+
+/**
+ * @param {ESLintOrTSNode} node
+ * @returns {ESLintOrTSNode|null}
+ */
+const getPreviousOverloadSibling = (node) => {
+  const {parent} = node;
+  let childNode = node;
+  /** @type {ESLintOrTSNode[]|undefined} */
+  let siblings;
+
+  if (parent?.type === 'Program') {
+    siblings = /** @type {ESLintOrTSNode[]} */ (parent.body);
+  } else if (
+    parent?.type === 'ExportNamedDeclaration' &&
+    parent.parent?.type === 'Program'
+  ) {
+    childNode = parent;
+    siblings = /** @type {ESLintOrTSNode[]} */ (parent.parent.body);
+  } else if (
+    overloadMethodNode.has(node.type) &&
+    parent?.type === 'ClassBody'
+  ) {
+    siblings = /** @type {ESLintOrTSNode[]} */ (parent.body);
+  }
+
+  if (!siblings) {
+    return null;
+  }
+
+  const idx = siblings.indexOf(childNode);
+  return idx > 0 ? siblings[idx - 1] : null;
+};
+
 /**
  * Retrieves the JSDoc comment for a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {import('eslint').Rule.Node} node The AST node to get
+ * @param {ESLintOrTSNode} node The AST node to get
  *   the comment for.
  * @param {Settings} settings The settings in context
  * @param {{checkOverloads?: boolean}} [opts]
@@ -387,68 +543,18 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
   const reducedNode = getReducedASTNode(node, sourceCode, settings);
   const comment = findJSDocComment(reducedNode, sourceCode, settings);
 
-  if (!comment &&
-    opts.checkOverloads &&
-    (
-      reducedNode.parent?.type === 'Program' ||
-      reducedNode.parent?.type === 'ExportNamedDeclaration'
-    )
-  ) {
-    let functionName;
-    if (reducedNode.type === 'TSDeclareFunction' ||
-      reducedNode.type === 'FunctionDeclaration') {
-      functionName = reducedNode.id?.name;
-    } else if (reducedNode.type === 'ExportNamedDeclaration' &&
-      (reducedNode.declaration?.type === 'FunctionDeclaration' ||
-      // @ts-ignore Should be ok
-      reducedNode.declaration?.type === 'TSDeclareFunction')
-    ) {
-      functionName = reducedNode.declaration.id.name;
-    } else {
-      return null;
-    }
-
-    /**
-     * @type {import('estree').Program & {
-     *   parent: null
-     * }}
-     */
-    let programNode;
-
-    /**
-     * @type {ESLintOrTSNode}
-     */
-    let childNode;
-
-    if (reducedNode.parent?.type === 'Program') {
-      programNode = reducedNode.parent;
-      childNode = reducedNode;
-    } else if (reducedNode.parent?.parent.type === 'Program') {
-      programNode = reducedNode.parent.parent;
-      childNode = reducedNode.parent;
-    /* v8 ignore next 3 */
-    } else {
-      throw new Error('unexpected TS guard condition');
-    }
-
-    // @ts-expect-error Should be ok
-    const idx = programNode.body.indexOf(childNode);
-    const prevSibling =
-      /** @type {import('eslint').AST.Program & {parent: null}} */ (
-        programNode
-      ).body[idx - 1];
+  if (!comment && opts.checkOverloads) {
+    const functionName = getCurrentOverloadName(reducedNode);
+    const prevSibling = getPreviousOverloadSibling(reducedNode);
     if (
-      // @ts-expect-error Should be ok
-      (prevSibling?.type === 'TSDeclareFunction' &&
-        // @ts-expect-error Should be ok
-        functionName === prevSibling.id.name) ||
-      (prevSibling?.type === 'ExportNamedDeclaration' &&
-        // @ts-expect-error Should be ok
-        prevSibling.declaration?.type === 'TSDeclareFunction' &&
-        // @ts-expect-error Should be ok
-        prevSibling.declaration?.id?.name === functionName)
+      prevSibling &&
+      functionName &&
+      getPreviousOverloadName(prevSibling) === functionName &&
+      (
+        !overloadMethodNode.has(reducedNode.type) ||
+        isMatchingMethodOverloadSibling(reducedNode, prevSibling)
+      )
     ) {
-      // @ts-expect-error Should be ok
       return getJSDocComment(sourceCode, prevSibling, settings, opts);
     }
   }

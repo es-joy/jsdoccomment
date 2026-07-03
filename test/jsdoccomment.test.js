@@ -22,6 +22,15 @@ const ESPREE_DEFAULT_CONFIG = {
 };
 
 /**
+ * @typedef {(code: string, options: Record<string, boolean>) => {
+ *   ast: import('eslint').AST.Program
+ * }} ParseTypeScriptForESLint
+ */
+const parseTypeScriptForESLint = /** @type {ParseTypeScriptForESLint} */ (
+  typescriptEslintParser.parser.parseForESLint
+);
+
+/**
  * @param {string} code
  * @param {{
  *   ecmaVersion: number,
@@ -38,7 +47,7 @@ function parseAddingParents (
 ) {
   const ast = parser === 'typescript'
     ? /** @type {import('eslint').AST.Program} */ (
-      typescriptEslintParser.parser.parseForESLint(code, {
+      parseTypeScriptForESLint(code, {
         tokens: true,
         comment: true,
         loc: true,
