@@ -377,6 +377,62 @@ const overloadMethodNode = new Set([
 
 /**
  * @param {ESLintOrTSNode} node
+ * @returns {{
+ *   bodyless: boolean,
+ *   kind: string,
+ *   name: string,
+ *   static: boolean
+ * }|null}
+ */
+const getMethodOverloadInfo = (node) => {
+  if (!overloadMethodNode.has(node.type)) {
+    return null;
+  }
+
+  /**
+   * @type {{
+   *   computed?: boolean,
+   *   key?: {name?: string},
+   *   kind?: string,
+   *   static?: boolean,
+   *   value?: {type?: string}
+   * }}
+   */
+  // @ts-expect-error -- Loose method-shape check after node.type guard.
+  const method = node;
+  if (method.computed || method.kind !== 'method' || !method.key?.name) {
+    return null;
+  }
+
+  return {
+    bodyless: node.type === 'TSAbstractMethodDefinition' ||
+      method.value?.type === 'TSEmptyBodyFunctionExpression',
+    kind: method.kind,
+    name: method.key.name,
+    static: Boolean(method.static)
+  };
+};
+
+/**
+ * @param {ESLintOrTSNode} node
+ * @param {ESLintOrTSNode} prevSibling
+ * @returns {boolean}
+ */
+const isMatchingMethodOverloadSibling = (node, prevSibling) => {
+  const current = getMethodOverloadInfo(node);
+  const previous = getMethodOverloadInfo(prevSibling);
+
+  return Boolean(
+    current &&
+    previous?.bodyless &&
+    previous.name === current.name &&
+    previous.kind === current.kind &&
+    previous.static === current.static
+  );
+};
+
+/**
+ * @param {ESLintOrTSNode} node
  * @returns {string|undefined}
  */
 const getCurrentOverloadName = (node) => {
@@ -493,7 +549,11 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
     if (
       prevSibling &&
       functionName &&
-      getPreviousOverloadName(prevSibling) === functionName
+      getPreviousOverloadName(prevSibling) === functionName &&
+      (
+        !overloadMethodNode.has(reducedNode.type) ||
+        isMatchingMethodOverloadSibling(reducedNode, prevSibling)
+      )
     ) {
       return getJSDocComment(sourceCode, prevSibling, settings, opts);
     }

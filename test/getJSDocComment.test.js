@@ -209,6 +209,60 @@ describe('`getJSDocComment` overload comments', function () {
       expect(comment).to.equal(null);
     });
 
+  it('does not use a previous class method implementation comment',
+    function () {
+      const code = `
+        class Example {
+          /** Implementation docs */
+          value() {
+            return 1;
+          }
+          value() {
+            return 2;
+          }
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const method =
+        /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[1];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (method),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment).to.equal(null);
+    });
+
+  it('does not use getter comments for setter pairs',
+    function () {
+      const code = `
+        class Example {
+          /** Getter docs */
+          get value() {
+            return 1;
+          }
+          set value(input: number) {
+            this.internalValue = input;
+          }
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const setter =
+        /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[1];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (setter),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment).to.equal(null);
+    });
+
   it('still gets a function overload comment from a previous declaration',
     function () {
       const code = `
