@@ -800,9 +800,10 @@ const getTSFunctionComment = function (astNode) {
   if (/** @type {ESLintOrTSNode} */parent.type !== 'TSTypeAnnotation') {
     if (parent.type === 'TSTypeAliasDeclaration' && grandparent.type === 'ExportNamedDeclaration') {
       return grandparent;
-      /* v8 ignore next 3 */
+      /* v8 ignore start */
     }
     return astNode;
+    /* v8 ignore stop */
   }
   switch (/** @type {ESLintOrTSNode} */grandparent.type) {
     // @ts-expect-error -- For `ClassProperty`.
@@ -826,9 +827,10 @@ const getTSFunctionComment = function (astNode) {
           return astNode;
         }
         return greatGreatGrandparent.parent;
-        /* v8 ignore next 2 */
+        /* v8 ignore start */
       }
       return astNode;
+    /* v8 ignore stop */
     case 'FunctionExpression':
       /* v8 ignore next 3 */
       if (!greatGreatGrandparent) {

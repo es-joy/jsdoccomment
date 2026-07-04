@@ -91,9 +91,10 @@ const getTSFunctionComment = function (astNode) {
       grandparent.type === 'ExportNamedDeclaration'
     ) {
       return grandparent;
-    /* v8 ignore next 3 */
+    /* v8 ignore start */
     }
     return astNode;
+    /* v8 ignore stop */
   }
 
   switch (/** @type {ESLintOrTSNode} */ (grandparent).type) {
@@ -119,9 +120,10 @@ const getTSFunctionComment = function (astNode) {
         return astNode;
       }
       return greatGreatGrandparent.parent;
-    /* v8 ignore next 2 */
+    /* v8 ignore start */
     }
     return astNode;
+    /* v8 ignore stop */
   case 'FunctionExpression':
     /* v8 ignore next 3 */
     if (!greatGreatGrandparent) {
