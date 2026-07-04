@@ -861,6 +861,7 @@ const getTSFunctionComment = function (astNode) {
     case 'FunctionDeclaration':
       return greatGrandparent;
     case 'VariableDeclarator':
+      /* v8 ignore next */
       if (greatGreatGrandparent.type === 'VariableDeclaration') {
         return greatGreatGrandparent;
       }
@@ -1027,12 +1028,12 @@ const overloadMethodNode = new Set(['MethodDefinition', 'TSAbstractMethodDefinit
 const overloadStatementListNode = new Set(['BlockStatement', 'Program', 'StaticBlock', 'TSModuleBlock']);
 
 /**
- * @param {ESLintOrTSNode|undefined} node
+ * @param {ESLintOrTSNode|null|undefined} node
  * @returns {ESLintOrTSNode[]|undefined}
  */
 const getOverloadStatementSiblings = node => {
   if (node && overloadStatementListNode.has(node.type)) {
-    return /** @type {ESLintOrTSNode[]} */node.body;
+    return /** @type {{body: ESLintOrTSNode[]}} */(/** @type {unknown} */node).body;
   }
   return undefined;
 };
@@ -1047,6 +1048,7 @@ const getOverloadStatementSiblings = node => {
  * }|null}
  */
 const getMethodOverloadInfo = node => {
+  /* v8 ignore next 3 -- Defensive */
   if (!overloadMethodNode.has(node.type)) {
     return null;
   }

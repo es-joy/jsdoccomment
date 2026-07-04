@@ -337,7 +337,9 @@ describe('`getJSDocComment` overload comments', function () {
       const declaration = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
       const {parent} = declaration;
       declaration.parent =
-        /** @type {TSFunctionDeclaration['parent']} */ (declaration.id);
+        /** @type {TSFunctionDeclaration['parent']} */ (
+          /** @type {unknown} */ (declaration.id)
+        );
 
       const comment = getJSDocComment(
         sourceCode,
@@ -394,10 +396,16 @@ describe('`getJSDocComment` overload comments', function () {
         }
       `;
       const {ast, sourceCode} = getTypeScriptSourceCode(code);
-      const namespace = /** @type {TSModuleDeclaration} */ (ast.body[0]);
+      const namespace = /** @type {TSModuleDeclaration} */ (
+        /** @type {unknown} */ (ast.body[0])
+      );
+      const namespaceBody =
+        /** @type {{body: import('eslint').Rule.Node[]}} */ (
+          /** @type {unknown} */ (namespace.body)
+        );
       const implementation =
         /** @type {{declaration: import('eslint').Rule.Node}} */ (
-          namespace.body.body[2]
+          /** @type {unknown} */ (namespaceBody.body[2])
         ).declaration;
 
       const comment = getJSDocComment(

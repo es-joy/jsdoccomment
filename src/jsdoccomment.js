@@ -391,7 +391,9 @@ const overloadStatementListNode = new Set([
  */
 const getOverloadStatementSiblings = (node) => {
   if (node && overloadStatementListNode.has(node.type)) {
-    return /** @type {ESLintOrTSNode[]} */ (node.body);
+    return /** @type {{body: ESLintOrTSNode[]}} */ (
+      /** @type {unknown} */ (node)
+    ).body;
   }
 
   return undefined;
