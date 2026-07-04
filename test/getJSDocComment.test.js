@@ -10,6 +10,21 @@ import {getJSDocComment} from '../src/index.js';
  */
 
 /**
+ * @typedef {import('@typescript-eslint/types').TSESTree.FunctionDeclaration}
+ *   TSFunctionDeclaration
+ */
+
+/**
+ * @typedef {import('@typescript-eslint/types').TSESTree.TSModuleDeclaration}
+ *   TSModuleDeclaration
+ */
+
+/**
+ * @typedef {import('@typescript-eslint/types').TSESTree.StaticBlock}
+ *   TSStaticBlock
+ */
+
+/**
  * @typedef {(code: string, options: Record<string, boolean>) => {
  *   ast: import('eslint').AST.Program
  * }} ParseTypeScriptForESLint
@@ -283,6 +298,194 @@ describe('`getJSDocComment` overload comments', function () {
       );
 
       expect(comment?.value).to.contain('Function overload docs');
+    });
+
+  it('gets a nested function overload comment from a previous overload',
+    function () {
+      const code = `
+        function outer() {
+          /** Nested function overload docs */
+          function value(input: string): string;
+          function value(input: number): number;
+          function value(input: string | number): string | number {
+            return input;
+          }
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const outer = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
+      const implementation = outer.body.body[2];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (implementation),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment?.value).to.contain('Nested function overload docs');
+    });
+
+  it('gets a static block function overload comment from a previous overload',
+    function () {
+      const code = `
+        class Example {
+          static {
+            /** Static block overload docs */
+            function value(input: string): string;
+            function value(input: number): number;
+            function value(input: string | number): string | number {
+              return input;
+            }
+          }
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const block =
+        /** @type {TSStaticBlock} */ (
+          /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[0]
+        );
+      const implementation = block.body[2];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (implementation),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment?.value).to.contain('Static block overload docs');
+    });
+
+  it('gets a namespace export overload comment from a previous overload',
+    function () {
+      const code = `
+        namespace Example {
+          /** Namespace overload docs */
+          export function value(input: string): string;
+          export function value(input: number): number;
+          export function value(input: string | number): string | number {
+            return input;
+          }
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const namespace = /** @type {TSModuleDeclaration} */ (ast.body[0]);
+      const implementation =
+        /** @type {{declaration: import('eslint').Rule.Node}} */ (
+          namespace.body.body[2]
+        ).declaration;
+
+      const comment = getJSDocComment(
+        sourceCode,
+        implementation,
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment?.value).to.contain('Namespace overload docs');
+    });
+
+  it('gets a nested class method overload comment from a previous overload',
+    function () {
+      const code = `
+        function outer() {
+          class Example {
+            /** Nested class overload docs */
+            value(input: string): string;
+            value(input: number): number;
+            value(input: string | number): string | number {
+              return input;
+            }
+          }
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const outer = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
+      const classDeclaration =
+        /** @type {TSClassDeclaration} */ (outer.body.body[0]);
+      const implementation = classDeclaration.body.body[2];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (implementation),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment?.value).to.contain('Nested class overload docs');
+    });
+
+  it('does not use a nested function overload comment for a different name',
+    function () {
+      const code = `
+        function outer() {
+          /** Nested function overload docs */
+          function value(input: string): string;
+          function other(input: number): number;
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const outer = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
+      const overload = outer.body.body[1];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (overload),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment).to.equal(null);
+    });
+
+  it('does not use a previous function implementation comment',
+    function () {
+      const code = `
+        function outer() {
+          /** Implementation docs */
+          function value(input: string): string {
+            return input;
+          }
+          function value(input: number): number;
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const outer = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
+      const overload = outer.body.body[1];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (overload),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment).to.equal(null);
+    });
+
+  it('does not use computed method overload comments',
+    function () {
+      const code = `
+        const key = 'value';
+        class Example {
+          /** Computed overload docs */
+          [key](input: string): string;
+          [key](input: number): number;
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const method =
+        /** @type {TSClassDeclaration} */ (ast.body[1]).body.body[1];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (method),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment).to.equal(null);
     });
 });
 

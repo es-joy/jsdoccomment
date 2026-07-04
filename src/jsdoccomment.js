@@ -375,6 +375,25 @@ const overloadMethodNode = new Set([
   'TSAbstractMethodDefinition'
 ]);
 
+const overloadStatementListNode = new Set([
+  'BlockStatement',
+  'Program',
+  'StaticBlock',
+  'TSModuleBlock'
+]);
+
+/**
+ * @param {ESLintOrTSNode|undefined} node
+ * @returns {ESLintOrTSNode[]|undefined}
+ */
+const getOverloadStatementSiblings = (node) => {
+  if (node && overloadStatementListNode.has(node.type)) {
+    return /** @type {ESLintOrTSNode[]} */ (node.body);
+  }
+
+  return undefined;
+};
+
 /**
  * @param {ESLintOrTSNode} node
  * @returns {{
@@ -503,19 +522,16 @@ const getPreviousOverloadSibling = (node) => {
   /** @type {ESLintOrTSNode[]|undefined} */
   let siblings;
 
-  if (parent?.type === 'Program') {
-    siblings = /** @type {ESLintOrTSNode[]} */ (parent.body);
-  } else if (
-    parent?.type === 'ExportNamedDeclaration' &&
-    parent.parent?.type === 'Program'
-  ) {
-    childNode = parent;
-    siblings = /** @type {ESLintOrTSNode[]} */ (parent.parent.body);
-  } else if (
+  if (
     overloadMethodNode.has(node.type) &&
     parent?.type === 'ClassBody'
   ) {
     siblings = /** @type {ESLintOrTSNode[]} */ (parent.body);
+  } else if (parent?.type === 'ExportNamedDeclaration') {
+    childNode = parent;
+    siblings = getOverloadStatementSiblings(parent.parent);
+  } else {
+    siblings = getOverloadStatementSiblings(parent);
   }
 
   if (!siblings) {

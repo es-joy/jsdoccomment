@@ -1022,6 +1022,18 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
   return null;
 };
 const overloadMethodNode = new Set(['MethodDefinition', 'TSAbstractMethodDefinition']);
+const overloadStatementListNode = new Set(['BlockStatement', 'Program', 'StaticBlock', 'TSModuleBlock']);
+
+/**
+ * @param {ESLintOrTSNode|undefined} node
+ * @returns {ESLintOrTSNode[]|undefined}
+ */
+const getOverloadStatementSiblings = node => {
+  if (node && overloadStatementListNode.has(node.type)) {
+    return /** @type {ESLintOrTSNode[]} */node.body;
+  }
+  return undefined;
+};
 
 /**
  * @param {ESLintOrTSNode} node
@@ -1133,13 +1145,13 @@ const getPreviousOverloadSibling = node => {
   let childNode = node;
   /** @type {ESLintOrTSNode[]|undefined} */
   let siblings;
-  if (parent?.type === 'Program') {
+  if (overloadMethodNode.has(node.type) && parent?.type === 'ClassBody') {
     siblings = /** @type {ESLintOrTSNode[]} */parent.body;
-  } else if (parent?.type === 'ExportNamedDeclaration' && parent.parent?.type === 'Program') {
+  } else if (parent?.type === 'ExportNamedDeclaration') {
     childNode = parent;
-    siblings = /** @type {ESLintOrTSNode[]} */parent.parent.body;
-  } else if (overloadMethodNode.has(node.type) && parent?.type === 'ClassBody') {
-    siblings = /** @type {ESLintOrTSNode[]} */parent.body;
+    siblings = getOverloadStatementSiblings(parent.parent);
+  } else {
+    siblings = getOverloadStatementSiblings(parent);
   }
   if (!siblings) {
     return null;
