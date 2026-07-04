@@ -386,7 +386,7 @@ const overloadStatementListNode = new Set([
 ]);
 
 /**
- * @param {ESLintOrTSNode|undefined} node
+ * @param {ESLintOrTSNode|null|undefined} node
  * @returns {ESLintOrTSNode[]|undefined}
  */
 const getOverloadStatementSiblings = (node) => {
