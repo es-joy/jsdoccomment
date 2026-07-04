@@ -326,6 +326,30 @@ describe('`getJSDocComment` overload comments', function () {
       expect(comment?.value).to.contain('Nested function overload docs');
     });
 
+  it('does not check overload siblings without a statement-list parent',
+    function () {
+      const code = `
+        function value(input: string): string {
+          return input;
+        }
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const declaration = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
+      const {parent} = declaration;
+      declaration.parent =
+        /** @type {TSFunctionDeclaration['parent']} */ (declaration.id);
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (declaration),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      declaration.parent = parent;
+      expect(comment).to.equal(null);
+    });
+
   it('gets a static block function overload comment from a previous overload',
     function () {
       const code = `
