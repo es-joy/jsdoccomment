@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.88.0
+
+- fix: detect class method overload comments (#22) (@morgan-coded)
+- fix: detect overload comments in nested scopes (#23) (@morgan-coded)
+
 ## 0.87.0
 
 - chore: update types/estree, typescript-eslint/types, comment-parser, devDeps.
