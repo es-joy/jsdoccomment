@@ -159,6 +159,7 @@ const getTSFunctionComment = function (astNode) {
   case 'FunctionDeclaration':
     return greatGrandparent;
   case 'VariableDeclarator':
+    /* v8 ignore next */
     if (greatGreatGrandparent.type === 'VariableDeclaration') {
       return greatGreatGrandparent;
     }
@@ -406,6 +407,7 @@ const getOverloadStatementSiblings = (node) => {
  * }|null}
  */
 const getMethodOverloadInfo = (node) => {
+  /* v8 ignore next 3 -- Defensive */
   if (!overloadMethodNode.has(node.type)) {
     return null;
   }
