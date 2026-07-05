@@ -15,8 +15,23 @@ import {getJSDocComment} from '../src/index.js';
  */
 
 /**
+ * @typedef {import('@typescript-eslint/types').TSESTree.Program}
+ *   TSProgram
+ */
+
+/**
+ * @typedef {import('@typescript-eslint/types').TSESTree.ExportNamedDeclaration}
+ *   TSExportNamedDeclaration
+ */
+
+/**
  * @typedef {import('@typescript-eslint/types').TSESTree.TSModuleDeclaration}
  *   TSModuleDeclaration
+ */
+
+/**
+ * @typedef {import('@typescript-eslint/types').TSESTree.TSModuleBlock}
+ *   TSModuleBlock
  */
 
 /**
@@ -337,7 +352,9 @@ describe('`getJSDocComment` overload comments', function () {
       const declaration = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
       const {parent} = declaration;
       declaration.parent =
-        /** @type {TSFunctionDeclaration['parent']} */ (declaration.id);
+        /** @type {TSFunctionDeclaration['parent']} */ (
+          /** @type {unknown} */ (declaration.id)
+        );
 
       const comment = getJSDocComment(
         sourceCode,
@@ -394,15 +411,22 @@ describe('`getJSDocComment` overload comments', function () {
         }
       `;
       const {ast, sourceCode} = getTypeScriptSourceCode(code);
-      const namespace = /** @type {TSModuleDeclaration} */ (ast.body[0]);
+      const namespaceAst = /** @type {TSProgram} */ (ast);
+      const namespace = /** @type {TSModuleDeclaration} */ (
+        namespaceAst.body[0]
+      );
+      const namespaceBody =
+        /** @type {TSModuleBlock} */ (namespace.body);
       const implementation =
-        /** @type {{declaration: import('eslint').Rule.Node}} */ (
-          namespace.body.body[2]
-        ).declaration;
+        /** @type {TSFunctionDeclaration} */ (
+          /** @type {TSExportNamedDeclaration} */ (
+            namespaceBody.body[2]
+          ).declaration
+        );
 
       const comment = getJSDocComment(
         sourceCode,
-        implementation,
+        /** @type {import('eslint').Rule.Node} */ (implementation),
         overloadSettings,
         {checkOverloads: true}
       );

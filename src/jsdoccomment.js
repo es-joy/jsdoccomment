@@ -378,19 +378,18 @@ const overloadMethodNode = new Set([
   'TSAbstractMethodDefinition'
 ]);
 
-const overloadStatementListNode = new Set([
-  'BlockStatement',
-  'Program',
-  'StaticBlock',
-  'TSModuleBlock'
-]);
-
 /**
  * @param {ESLintOrTSNode|null|undefined} node
  * @returns {ESLintOrTSNode[]|undefined}
  */
 const getOverloadStatementSiblings = (node) => {
-  if (node && overloadStatementListNode.has(node.type)) {
+  if (
+    node &&
+    (node.type === 'BlockStatement' ||
+      node.type === 'Program' ||
+      node.type === 'StaticBlock' ||
+      node.type === 'TSModuleBlock')
+  ) {
     return /** @type {ESLintOrTSNode[]} */ (node.body);
   }
 
