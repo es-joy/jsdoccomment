@@ -1,5 +1,10 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.89.0
+
+- fix: detect class constructor overload comments
+- fix: honor `\}` and `\]` escapes in inline-tag labels (#26) (@morgan-coded)
+
 ## 0.88.0
 
 - fix: detect class method overload comments (#22) (@morgan-coded)

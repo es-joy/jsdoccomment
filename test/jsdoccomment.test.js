@@ -1129,6 +1129,92 @@ describe('getJSDocComment', function () {
   );
 
   it(
+    'Gets preceding siblings of MethodDefinition',
+    function () {
+      const code = `
+        class Foo {
+          /**
+           * Description for bar
+           */
+          bar(foo: string): string
+          bar(foo: number): string
+          bar(...args: any[]) {
+            return ''
+          }
+        }
+      `;
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+
+      const sourceCode = new SourceCode(code, ast);
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (
+          /**
+           * @type {import('@typescript-eslint/types').
+           *   TSESTree.ClassDeclaration}
+           */
+          (ast.body[0]).body.body.at(-1)
+        ),
+        {
+          minLines: 0, maxLines: 1
+        },
+        {
+          checkOverloads: true
+        }
+      );
+      expect(comment?.type).to.equal('Block');
+    }
+  );
+
+  it(
+    'Gets preceding siblings of MethodDefinition constructor',
+    function () {
+      const code = `
+        /** Foo here */
+        export class Foo {
+            /** with string */
+            constructor(arg1: string);
+            /** with number */
+            constructor(arg1: number);
+
+            constructor(arg1: string | number) {
+                // implementation
+            }
+        }
+      `;
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+
+      const sourceCode = new SourceCode(code, ast);
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (
+          /**
+           * @type {import('@typescript-eslint/types').
+           *   TSESTree.ClassDeclaration}
+           */
+          (
+            /**
+             * @type {import('@typescript-eslint/types').
+             *   TSESTree.ExportNamedDeclaration}
+             */
+            (
+              ast.body[0]
+            )?.declaration)?.body.body.at(-1)
+        ),
+        {
+          minLines: 0, maxLines: 1
+        },
+        {
+          checkOverloads: true
+        }
+      );
+      expect(comment?.type).to.equal('Block');
+    }
+  );
+
+  it(
     'Returns `null` with `checkOverloads` and missing comment ',
     function () {
       const code = `
