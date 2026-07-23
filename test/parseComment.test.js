@@ -635,6 +635,169 @@ describe('parseComment (node)', function () {
     });
   });
 
+  it('Honors an escaped brace in a pipe label (#25 repro)', function () {
+    const inlineTag = String.raw`{@link https://example.com|a\}b}`;
+    const parsed = parseComment({value: `* See ${inlineTag}`}, '');
+    expect(parsed.inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'https://example.com',
+        text: 'a}b',
+        format: 'pipe',
+        start: 4,
+        end: 4 + inlineTag.length
+      }
+    ]);
+  });
+
+  it('Honors an escaped bracket in a prefix label (#25 repro)', function () {
+    const inlineTag = String.raw`[a\]b]{@link https://example.com}`;
+    const parsed = parseComment({value: `* See ${inlineTag}`}, '');
+    expect(parsed.inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'https://example.com',
+        text: 'a]b',
+        format: 'prefix',
+        start: 4,
+        end: 4 + inlineTag.length
+      }
+    ]);
+  });
+
+  it('Stops at a brace after an escaped backslash pair', function () {
+    const description = String.raw`See {@link https://example.com|a\\}b}`;
+    const matchedTag = String.raw`{@link https://example.com|a\\}`;
+    const parsed = parseComment({value: `* ${description}`}, '');
+    expect(parsed.inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'https://example.com',
+        text: 'a\\',
+        format: 'pipe',
+        start: 4,
+        end: 4 + matchedTag.length
+      }
+    ]);
+  });
+
+  it('Requires an unescaped suffixed-label terminator', function () {
+    // Back-compat delta: 0.88.0 parsed this as a truncated `text: 'a\\'`.
+    const parsed = parseComment({
+      value: String.raw`* See {@link url|a\}`
+    }, '');
+    expect(parsed.inlineTags).to.deep.equal([]);
+  });
+
+  it('Requires an unescaped prefix-label terminator', function () {
+    // Back-compat delta: 0.88.0 parsed this as a truncated `text: 'a\\'`.
+    const parsed = parseComment({
+      value: String.raw`* See [a\]{@link url}`
+    }, '');
+    expect(parsed.inlineTags).to.deep.equal([]);
+  });
+
+  it('Honors an escaped brace in a space label', function () {
+    const inlineTag = String.raw`{@link url a\}b}`;
+    const parsed = parseComment({value: `* See ${inlineTag}`}, '');
+    expect(parsed.inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'url',
+        text: 'a}b',
+        format: 'space',
+        start: 4,
+        end: 4 + inlineTag.length
+      }
+    ]);
+  });
+
+  it('Honors escaped labels in a tag description', function () {
+    const inlineTag = String.raw`{@link url|a\}b}`;
+    const parsed = parseComment({value: `* @see See ${inlineTag}`}, '');
+    expect(parsed.tags[0].inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'url',
+        text: 'a}b',
+        format: 'pipe',
+        start: 4,
+        end: 4 + inlineTag.length
+      }
+    ]);
+  });
+
+  it('Still stops at the first unescaped nested brace', function () {
+    const description = 'See {@link url|a{b}c}';
+    const matchedTag = '{@link url|a{b}';
+    const parsed = parseComment({value: `* ${description}`}, '');
+    expect(parsed.inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'url',
+        text: 'a{b',
+        format: 'pipe',
+        start: 4,
+        end: 4 + matchedTag.length
+      }
+    ]);
+  });
+
+  it('Keeps escaped-bracket lookbehind limitation', function () {
+    // Known limitation: the unchanged `(?<!\])` lookbehind rejects `\]{@`.
+    const parsed = parseComment({
+      value: String.raw`* See a\]{@link x}`
+    }, '');
+    expect(parsed.inlineTags).to.deep.equal([]);
+  });
+
+  it('Passes through backslash-pipe sequences', function () {
+    const inlineTag = String.raw`{@link a\|b\|c}`;
+    const parsed = parseComment({value: `* See ${inlineTag}`}, '');
+    expect(parsed.inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'a\\',
+        text: String.raw`b\|c`,
+        format: 'pipe',
+        start: 4,
+        end: 4 + inlineTag.length
+      }
+    ]);
+  });
+
+  it('Leaves plain inline tags untouched', function () {
+    const inlineTag = '{@link url}';
+    const parsed = parseComment({value: `* See ${inlineTag}`}, '');
+    expect(parsed.inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'url',
+        text: '',
+        format: 'plain',
+        start: 4,
+        end: 4 + inlineTag.length
+      }
+    ]);
+  });
+
+  it('Honors escapes in multiline labels', function () {
+    const parsed = parseComment({
+      value: String.raw`* See {@link url|a\}b
+* c}`
+    }, '');
+    expect(parsed.inlineTags).to.deep.equal([
+      {
+        tag: 'link',
+        namepathOrURL: 'url',
+        text: 'a}b c',
+        format: 'pipe',
+        start: 4,
+        end: parsed.description.length
+      }
+    ]);
+  });
+
   it('Handle plain inline tag in tag', function () {
     const parsed = parseComment({value: `* @see A link to {@link Something}`});
     expect(parsed).to.deep.equal({

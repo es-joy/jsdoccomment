@@ -1,3 +1,5 @@
+import {decodeInlineTagText} from './inlineTagEscapes.js';
+
 /**
  * @param {RegExpMatchArray & {
  *   indices: {
@@ -35,10 +37,10 @@ function parseDescription (description) {
   // This could have been expressed in a single pattern,
   // but having two avoids a potentially exponential time regex.
 
-  const prefixedTextPattern = /(?:\[(?<text>[^\]]+)\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\}/gvd;
+  const prefixedTextPattern = /(?:\[(?<text>(?:[^\\\]]|\\[\s\S])+)\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\}/gvd;
   // The pattern used to match for text after tag uses a negative lookbehind
   // on the ']' char to avoid matching the prefixed case too.
-  const suffixedAfterPattern = /(?<!\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\s*(?<separator>[\s\|])?\s*(?<text>[^\}]*)\}/gvd;
+  const suffixedAfterPattern = /(?<!\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\s*(?<separator>[\s\|])?\s*(?<text>(?:[^\\\}]|\\[\s\S])*)\}/gvd;
 
   const matches = [
     ...description.matchAll(prefixedTextPattern),
@@ -61,11 +63,12 @@ function parseDescription (description) {
     const {tag, namepathOrURL, text} = match.groups;
     const [start, end] = match.indices[0];
     const format = determineFormat(match);
+    const decodedText = decodeInlineTagText(text, format);
 
     result.push({
       tag,
       namepathOrURL,
-      text,
+      text: decodedText,
       format,
       start,
       end

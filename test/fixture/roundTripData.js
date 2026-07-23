@@ -538,6 +538,16 @@ compactResultsPratt.push(compactResults.at(-1));
 preserveResults.push(commentBlocks.at(-1));
 preserveResultsPratt.push(preserveResults.at(-1));
 
+// Escaped inline-tag label; block output deliberately preserves raw lines.
+
+commentBlocks.push(String.raw`/** This is {@link Something|a\}b} */`);
+
+compactResults.push(commentBlocks.at(-1));
+compactResultsPratt.push(compactResults.at(-1));
+
+preserveResults.push(commentBlocks.at(-1));
+preserveResultsPratt.push(preserveResults.at(-1));
+
 export {
   commentBlocks,
   compactResults,

@@ -44,6 +44,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  */
 
 /**
+ * An inline tag whose `text` is the unescaped label value.
  * @typedef {{
  *   format: 'pipe' | 'plain' | 'prefix' | 'space',
  *   namepathOrURL: string,
@@ -508,6 +509,72 @@ const commentHandler = (settings, commentParserToESTreeOptions) => {
   };
 };
 
+/**
+ * @typedef {'pipe' | 'plain' | 'prefix' | 'space'} InlineTagFormat
+ */
+
+/**
+ * Gets the label delimiter for an inline-tag format.
+ * @param {InlineTagFormat} format
+ * @returns {string}
+ */
+function getLabelDelimiter(format) {
+  return format === 'prefix' ? ']' : '}';
+}
+
+/**
+ * Decodes context-specific escape pairs in an inline-tag label.
+ * @param {string} text
+ * @param {InlineTagFormat} format
+ * @returns {string}
+ */
+function decodeInlineTagText(text, format) {
+  const delimiter = getLabelDelimiter(format);
+  let decoded = '';
+  let idx = 0;
+  while (idx < text.length) {
+    const character = text[idx];
+    if (character === '\\') {
+      const nextCharacter = text[idx + 1];
+      if (nextCharacter === '\\' || nextCharacter === delimiter) {
+        decoded += nextCharacter;
+        idx += 2;
+        continue;
+      }
+    }
+    decoded += character;
+    idx++;
+  }
+  return decoded;
+}
+
+/**
+ * Minimally encodes an inline-tag label for its output context.
+ * @param {string} text
+ * @param {InlineTagFormat} format
+ * @returns {string}
+ */
+function encodeInlineTagText(text, format) {
+  const delimiter = getLabelDelimiter(format);
+  let encoded = '';
+  for (let idx = 0; idx < text.length; idx++) {
+    const character = text[idx];
+    if (character === delimiter) {
+      encoded += `\\${delimiter}`;
+      continue;
+    }
+    if (character === '\\') {
+      const nextCharacter = text[idx + 1];
+      if (nextCharacter === undefined || nextCharacter === '\\' || nextCharacter === delimiter) {
+        encoded += '\\\\';
+        continue;
+      }
+    }
+    encoded += character;
+  }
+  return encoded;
+}
+
 /* eslint-disable jsdoc/reject-function-type -- Different functions */
 /** @type {Record<string, Function>} */
 const stringifiers = {
@@ -546,9 +613,10 @@ const stringifiers = {
     tag,
     text
   }) {
-    return format === 'pipe' ? `{@${tag} ${namepathOrURL}|${text}}` : format === 'plain' ? `{@${tag} ${namepathOrURL}}` : format === 'prefix' ? `[${text}]{@${tag} ${namepathOrURL}}`
+    const encodedText = encodeInlineTagText(text, format);
+    return format === 'pipe' ? `{@${tag} ${namepathOrURL}|${encodedText}}` : format === 'plain' ? `{@${tag} ${namepathOrURL}}` : format === 'prefix' ? `[${encodedText}]{@${tag} ${namepathOrURL}}`
     // "space"
-    : `{@${tag} ${namepathOrURL} ${text}}`;
+    : `{@${tag} ${namepathOrURL} ${encodedText}}`;
   },
   JsdocTag
 };
@@ -1318,10 +1386,10 @@ function parseDescription(description) {
   // This could have been expressed in a single pattern,
   // but having two avoids a potentially exponential time regex.
 
-  const prefixedTextPattern = /(?:\[(?<text>[^\]]+)\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\}/gvd;
+  const prefixedTextPattern = /(?:\[(?<text>(?:[^\\\]]|\\[\s\S])+)\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\}/gvd;
   // The pattern used to match for text after tag uses a negative lookbehind
   // on the ']' char to avoid matching the prefixed case too.
-  const suffixedAfterPattern = /(?<!\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\s*(?<separator>[\s\|])?\s*(?<text>[^\}]*)\}/gvd;
+  const suffixedAfterPattern = /(?<!\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\s*(?<separator>[\s\|])?\s*(?<text>(?:[^\\\}]|\\[\s\S])*)\}/gvd;
   const matches = [...description.matchAll(prefixedTextPattern), ...description.matchAll(suffixedAfterPattern)];
   for (const mtch of matches) {
     const match =
@@ -1343,10 +1411,11 @@ function parseDescription(description) {
     } = match.groups;
     const [start, end] = match.indices[0];
     const format = determineFormat(match);
+    const decodedText = decodeInlineTagText(text, format);
     result.push({
       tag,
       namepathOrURL,
-      text,
+      text: decodedText,
       format,
       start,
       end

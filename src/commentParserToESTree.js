@@ -49,6 +49,7 @@ const stripEncapsulatingBrackets = (container, isArr) => {
  */
 
 /**
+ * An inline tag whose `text` is the unescaped label value.
  * @typedef {{
  *   format: 'pipe' | 'plain' | 'prefix' | 'space',
  *   namepathOrURL: string,
