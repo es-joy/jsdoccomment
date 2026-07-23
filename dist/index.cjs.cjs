@@ -1131,7 +1131,7 @@ const getMethodOverloadInfo = node => {
    */
   // @ts-expect-error -- Loose method-shape check after node.type guard.
   const method = node;
-  if (method.computed || method.kind !== 'method' || !method.key?.name) {
+  if (method.computed || !method.kind || !['method', 'constructor'].includes(/** @type {string} */method.kind) || !method.key?.name) {
     return null;
   }
   return {

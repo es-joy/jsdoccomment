@@ -4,6 +4,7 @@
 
 - fix: detect class constructor overload comments
 - fix: honor `\}` and `\]` escapes in inline-tag labels (#26) (@morgan-coded)
+- chore: update `@typescript-eslint/types` and devDeps.
 
 ## 0.88.0
 
