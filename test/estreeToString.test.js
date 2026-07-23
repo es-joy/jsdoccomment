@@ -431,6 +431,151 @@ describe('`estreeToString`', function () {
     expect(str).to.equal('[something awesome!]{@link Something}');
   });
 
+  it('escapes a brace in a pipe inline-tag label', function () {
+    const str = estreeToString({
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: 'a}b',
+      format: 'pipe',
+      type: 'JsdocInlineTag'
+    });
+    expect(str).to.equal(String.raw`{@link Something|a\}b}`);
+  });
+
+  it('escapes a brace in a space inline-tag label', function () {
+    const str = estreeToString({
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: 'a}b',
+      format: 'space',
+      type: 'JsdocInlineTag'
+    });
+    expect(str).to.equal(String.raw`{@link Something a\}b}`);
+  });
+
+  it('escapes a bracket in a prefix inline-tag label', function () {
+    const str = estreeToString({
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: 'a]b',
+      format: 'prefix',
+      type: 'JsdocInlineTag'
+    });
+    expect(str).to.equal(String.raw`[a\]b]{@link Something}`);
+  });
+
+  it('escapes a trailing backslash in a pipe inline-tag label', function () {
+    const str = estreeToString({
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: 'a\\',
+      format: 'pipe',
+      type: 'JsdocInlineTag'
+    });
+    expect(str).to.equal(String.raw`{@link Something|a\\}`);
+  });
+
+  it('escapes a backslash followed by a brace in a pipe label', function () {
+    const str = estreeToString({
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: String.raw`a\}b`,
+      format: 'pipe',
+      type: 'JsdocInlineTag'
+    });
+    expect(str).to.equal(String.raw`{@link Something|a\\\}b}`);
+  });
+
+  it('does not gain an escape for an unescaped backslash', function () {
+    const str = estreeToString({
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: String.raw`a\b`,
+      format: 'pipe',
+      type: 'JsdocInlineTag'
+    });
+    expect(str).to.equal(String.raw`{@link Something|a\b}`);
+  });
+
+  it('does not escape a brace in a prefix inline-tag label', function () {
+    const str = estreeToString({
+      tag: 'link',
+      namepathOrURL: 'Something',
+      text: String.raw`a\}b`,
+      format: 'prefix',
+      type: 'JsdocInlineTag'
+    });
+    expect(str).to.equal(String.raw`[a\}b]{@link Something}`);
+  });
+
+  it('round-trips inline-tag label escapes with minimal encoding', function () {
+    const cases = [
+      {
+        source: String.raw`{@link url|a\}b}`,
+        text: 'a}b'
+      },
+      {
+        source: String.raw`[a\]b]{@link url}`,
+        text: 'a]b'
+      },
+      {
+        source: String.raw`{@link url|a\\}`,
+        text: 'a\\'
+      },
+      {
+        source: String.raw`{@link url|a\\\}b}`,
+        text: String.raw`a\}b`
+      },
+      {
+        source: String.raw`{@link url|a\\\b}`,
+        text: String.raw`a\\b`
+      },
+      {
+        source: String.raw`{@link url a\}b}`,
+        text: 'a}b'
+      },
+      {
+        source: String.raw`{@link url|a\b}`,
+        text: String.raw`a\b`
+      },
+      {
+        source: String.raw`{@link a\|b\|c}`,
+        text: String.raw`b\|c`
+      },
+      {
+        source: String.raw`[a\}b]{@link url}`,
+        text: String.raw`a\}b`
+      },
+      {
+        source: '{@link url}',
+        text: ''
+      }
+    ];
+
+    for (const {source, text} of cases) {
+      const parsed = parseComment({value: `* ${source}`});
+      const ast = commentParserToESTree(parsed, 'jsdoc');
+      const [inlineTag] = ast.inlineTags;
+      const parsedInlineTag =
+        /** @type {import('../src').InlineTag} */ (parsed.inlineTags[0]);
+      expect(inlineTag.text).to.equal(text);
+      expect(estreeToString(inlineTag)).to.equal(
+        parsed.description.slice(parsedInlineTag.start, parsedInlineTag.end)
+      );
+    }
+  });
+
+  it('documents A7 superfluous-backslash normalization', function () {
+    const source = String.raw`{@link url|a\\b}`;
+    const parsed = parseComment({value: `* ${source}`});
+    const ast = commentParserToESTree(parsed, 'jsdoc');
+    const [inlineTag] = ast.inlineTags;
+
+    // A7's one known exception: `\\` before a non-special byte normalizes.
+    expect(inlineTag.text).to.equal(String.raw`a\b`);
+    expect(estreeToString(inlineTag)).to.equal(String.raw`{@link url|a\b}`);
+  });
+
   it('throws upon encountering an unhandled node type', function () {
     expect(() => {
       /* eslint-disable jsdoc/reject-any-type -- Testing */

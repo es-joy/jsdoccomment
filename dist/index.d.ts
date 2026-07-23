@@ -20,6 +20,9 @@ type JsdocDescriptionLine = {
   initial: string;
   type: 'JsdocDescriptionLine';
 };
+/**
+ * An inline tag whose `text` is the unescaped label value.
+ */
 type JsdocInlineTagNoType = {
   format: 'pipe' | 'plain' | 'prefix' | 'space';
   namepathOrURL: string;
@@ -152,12 +155,7 @@ declare function commentHandler(
  */
 declare function estreeToString(
   node:
-    | JsdocBlock
-    | JsdocDescriptionLine
-    | JsdocTypeLine
-    | JsdocTag
-    | JsdocInlineTag
-    | jsdoc_type_pratt_parser.RootResult,
+    JsdocBlock | JsdocDescriptionLine | JsdocTypeLine | JsdocTag | JsdocInlineTag | jsdoc_type_pratt_parser.RootResult,
   opts?: ESTreeToStringOptions,
 ): string;
 
@@ -350,6 +348,9 @@ declare function parseComment(
  */
 declare function parseInlineTags(block: comment_parser.Block): JsdocBlockWithInline;
 
+/**
+ * An inline tag whose `text` is the unescaped label value.
+ */
 type InlineTag = JsdocInlineTagNoType & {
   start: number;
   end: number;

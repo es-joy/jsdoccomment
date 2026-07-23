@@ -1,5 +1,7 @@
 import {stringify as prattStringify} from 'jsdoc-type-pratt-parser';
 
+import {encodeInlineTagText} from './inlineTagEscapes.js';
+
 /* eslint-disable jsdoc/reject-function-type -- Different functions */
 /** @type {Record<string, Function>} */
 const stringifiers = {
@@ -30,14 +32,15 @@ const stringifiers = {
    * @param {import('./commentParserToESTree').JsdocInlineTag} node
    */
   JsdocInlineTag ({format, namepathOrURL, tag, text}) {
+    const encodedText = encodeInlineTagText(text, format);
     return format === 'pipe'
-      ? `{@${tag} ${namepathOrURL}|${text}}`
+      ? `{@${tag} ${namepathOrURL}|${encodedText}}`
       : format === 'plain'
         ? `{@${tag} ${namepathOrURL}}`
         : format === 'prefix'
-          ? `[${text}]{@${tag} ${namepathOrURL}}`
+          ? `[${encodedText}]{@${tag} ${namepathOrURL}}`
           // "space"
-          : `{@${tag} ${namepathOrURL} ${text}}`;
+          : `{@${tag} ${namepathOrURL} ${encodedText}}`;
   },
 
   JsdocTag

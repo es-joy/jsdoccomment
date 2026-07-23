@@ -1,4 +1,5 @@
 /**
+ * An inline tag whose `text` is the unescaped label value.
  * @typedef {import('./commentParserToESTree').JsdocInlineTagNoType & {
  *   start: number,
  *   end: number,
