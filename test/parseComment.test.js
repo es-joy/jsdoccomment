@@ -665,7 +665,7 @@ describe('parseComment (node)', function () {
     ]);
   });
 
-  it('Stops at a brace after an escaped backslash pair (A2)', function () {
+  it('Stops at a brace after an escaped backslash pair', function () {
     const description = String.raw`See {@link https://example.com|a\\}b}`;
     const matchedTag = String.raw`{@link https://example.com|a\\}`;
     const parsed = parseComment({value: `* ${description}`}, '');
@@ -681,7 +681,7 @@ describe('parseComment (node)', function () {
     ]);
   });
 
-  it('Requires an unescaped suffixed-label terminator (A3)', function () {
+  it('Requires an unescaped suffixed-label terminator', function () {
     // Back-compat delta: 0.88.0 parsed this as a truncated `text: 'a\\'`.
     const parsed = parseComment({
       value: String.raw`* See {@link url|a\}`
@@ -689,7 +689,7 @@ describe('parseComment (node)', function () {
     expect(parsed.inlineTags).to.deep.equal([]);
   });
 
-  it('Requires an unescaped prefix-label terminator (A3)', function () {
+  it('Requires an unescaped prefix-label terminator', function () {
     // Back-compat delta: 0.88.0 parsed this as a truncated `text: 'a\\'`.
     const parsed = parseComment({
       value: String.raw`* See [a\]{@link url}`
@@ -727,7 +727,7 @@ describe('parseComment (node)', function () {
     ]);
   });
 
-  it('Still stops at the first unescaped nested brace (A5)', function () {
+  it('Still stops at the first unescaped nested brace', function () {
     const description = 'See {@link url|a{b}c}';
     const matchedTag = '{@link url|a{b}';
     const parsed = parseComment({value: `* ${description}`}, '');
@@ -743,7 +743,7 @@ describe('parseComment (node)', function () {
     ]);
   });
 
-  it('Keeps escaped-bracket lookbehind limitation (A6)', function () {
+  it('Keeps escaped-bracket lookbehind limitation', function () {
     // Known limitation: the unchanged `(?<!\])` lookbehind rejects `\]{@`.
     const parsed = parseComment({
       value: String.raw`* See a\]{@link x}`
@@ -751,7 +751,7 @@ describe('parseComment (node)', function () {
     expect(parsed.inlineTags).to.deep.equal([]);
   });
 
-  it('Passes through backslash-pipe sequences (A8)', function () {
+  it('Passes through backslash-pipe sequences', function () {
     const inlineTag = String.raw`{@link a\|b\|c}`;
     const parsed = parseComment({value: `* See ${inlineTag}`}, '');
     expect(parsed.inlineTags).to.deep.equal([
@@ -766,7 +766,7 @@ describe('parseComment (node)', function () {
     ]);
   });
 
-  it('Leaves plain inline tags untouched (A9)', function () {
+  it('Leaves plain inline tags untouched', function () {
     const inlineTag = '{@link url}';
     const parsed = parseComment({value: `* See ${inlineTag}`}, '');
     expect(parsed.inlineTags).to.deep.equal([

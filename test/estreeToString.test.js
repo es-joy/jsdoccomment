@@ -565,13 +565,14 @@ describe('`estreeToString`', function () {
     }
   });
 
-  it('documents A7 superfluous-backslash normalization', function () {
+  it('documents superfluous-backslash normalization', function () {
     const source = String.raw`{@link url|a\\b}`;
     const parsed = parseComment({value: `* ${source}`});
     const ast = commentParserToESTree(parsed, 'jsdoc');
     const [inlineTag] = ast.inlineTags;
 
-    // A7's one known exception: `\\` before a non-special byte normalizes.
+    // The one non-byte-identical round-trip class: a superfluous `\\`
+    // before a non-special byte normalizes to `\`.
     expect(inlineTag.text).to.equal(String.raw`a\b`);
     expect(estreeToString(inlineTag)).to.equal(String.raw`{@link url|a\b}`);
   });
