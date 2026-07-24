@@ -8,6 +8,9 @@ ignoredBuiltDependencies:
 
 minimumReleaseAgeExclude:
   - comment-parser@1.4.7
+  - '@es-joy/jsdoccomment@0.89.0'
+  - eslint-plugin-jsdoc@63.2.1
+  - jsdoc-type-pratt-parser@7.3.0
 
 onlyBuiltDependencies:
   - esbuild

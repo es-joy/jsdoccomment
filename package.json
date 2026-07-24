@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.89.0",
+  "version": "0.90.0",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment along with other jsdoc utilities",
@@ -68,7 +68,7 @@
     "@typescript-eslint/types": "^8.65.0",
     "comment-parser": "1.4.7",
     "esquery": "^1.7.0",
-    "jsdoc-type-pratt-parser": "~7.2.0"
+    "jsdoc-type-pratt-parser": "~7.3.0"
   },
   "devDependencies": {
     "@babel/core": "^8.0.1",
@@ -85,7 +85,7 @@
     "@webcoder49/code-input": "^2.8.3",
     "eslint": "^9.39.2",
     "eslint-config-ash-nazg": "39.11.1",
-    "eslint-plugin-jsdoc": "^63.2.0",
+    "eslint-plugin-jsdoc": "^63.2.1",
     "espree": "^11.2.0",
     "estraverse": "^5.3.0",
     "prismjs": "^1.30.0",

@@ -21,8 +21,8 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0
       jsdoc-type-pratt-parser:
-        specifier: ~7.2.0
-        version: 7.2.0
+        specifier: ~7.3.0
+        version: 7.3.0
     devDependencies:
       '@babel/core':
         specifier: ^8.0.1
@@ -67,8 +67,8 @@ importers:
         specifier: 39.11.1
         version: 39.11.1(@babel/core@8.0.1)(@typescript-eslint/parser@8.65.0(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)
       eslint-plugin-jsdoc:
-        specifier: ^63.2.0
-        version: 63.2.0(eslint@9.39.4)
+        specifier: ^63.2.1
+        version: 63.2.1(eslint@9.39.4)
       espree:
         specifier: ^11.2.0
         version: 11.2.0
@@ -671,6 +671,10 @@ packages:
 
   '@es-joy/jsdoccomment@0.88.0':
     resolution: {integrity: sha512-GK/HL/claLLNo5KG705auIlZMwEtmn88ofSGuLsmVZwKBqMPJhW9DiznYNq07QEqz9BPtA3LBfYImtZmhVvRAw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
+  '@es-joy/jsdoccomment@0.89.0':
+    resolution: {integrity: sha512-ESopDL0Bvyak+X5FQHlWkesK3TO2WNZOV5d4Rh4ouaZxekla9P8e7boSZpmxeTWQ0sTwcAp9h5eAeD1kZ9ywvA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@es-joy/resolve.exports@1.2.0':
@@ -2046,8 +2050,8 @@ packages:
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
 
-  eslint-plugin-jsdoc@63.2.0:
-    resolution: {integrity: sha512-tccz9igEV5mTKVAwo/KwXqKP7ENqa3a+LpRFuEPAP3k/+SXG4T0sOvA+c2wwTD/TLNrH9MCW4LIu4xEExkJdzg==}
+  eslint-plugin-jsdoc@63.2.1:
+    resolution: {integrity: sha512-4aPJDFGAIYq81kifBPvInvSHdAwowJ+nVXvSEoBC5SKzdr5Em9NFaVkdPX7UbVUyNN2Zn8JvQB+daNf3wSQE8Q==}
     engines: {node: ^22.13.0 || >=24}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
@@ -2625,6 +2629,10 @@ packages:
 
   jsdoc-type-pratt-parser@7.2.0:
     resolution: {integrity: sha512-dh140MMgjyg3JhJZY/+iEzW+NO5xR2gpbDFKHqotCmexElVntw7GjWjt511+C/Ef02RU5TKYrJo/Xlzk+OLaTw==}
+    engines: {node: '>=20.0.0'}
+
+  jsdoc-type-pratt-parser@7.3.0:
+    resolution: {integrity: sha512-DoyJXo7x/n48M3NsGOs9QnEws0ft0tV3YsSgvWMNxz2hZtz+Q6fpqUD96lVYX4a+jcEkzHeFNDJOn68TzXfbdA==}
     engines: {node: '>=20.0.0'}
 
   jsesc@3.1.0:
@@ -3379,6 +3387,9 @@ packages:
   spdx-expression-parse@4.0.0:
     resolution: {integrity: sha512-Clya5JIij/7C6bRR22+tnGXbc4VKlibKSVj2iHvVeX5iMW7s1SIQlqu699JkODJJIhh/pUu8L0/VLh8xflD+LQ==}
 
+  spdx-expression-parse@5.0.0:
+    resolution: {integrity: sha512-vngmw3Rgn+o2arXNbnZaj5UtOEBuWBfvaI+Wc8GFfykIhA5/vdK9/Sp/XkLv63dykz2rxKDvKEHupF5P0FORcQ==}
+
   spdx-license-ids@3.0.23:
     resolution: {integrity: sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==}
 
@@ -3879,14 +3890,14 @@ snapshots:
       '@babel/helper-replace-supers': 8.0.1(@babel/core@8.0.1)
       '@babel/helper-skip-transparent-expression-wrappers': 8.0.0
       '@babel/traverse': 8.0.4
-      semver: 7.8.1
+      semver: 7.8.5
 
   '@babel/helper-create-regexp-features-plugin@8.0.1(@babel/core@8.0.1)':
     dependencies:
       '@babel/core': 8.0.1
       '@babel/helper-annotate-as-pure': 8.0.0
       regexpu-core: 6.4.0
-      semver: 7.8.1
+      semver: 7.8.5
 
   '@babel/helper-define-polyfill-provider@1.0.0(@babel/core@8.0.1)':
     dependencies:
@@ -4478,6 +4489,14 @@ snapshots:
       esquery: 1.7.0
       jsdoc-type-pratt-parser: 7.2.0
 
+  '@es-joy/jsdoccomment@0.89.0':
+    dependencies:
+      '@types/estree': 1.0.9
+      '@typescript-eslint/types': 8.65.0
+      comment-parser: 1.4.7
+      esquery: 1.7.0
+      jsdoc-type-pratt-parser: 7.2.0
+
   '@es-joy/resolve.exports@1.2.0': {}
 
   '@eslint-community/eslint-plugin-eslint-comments@4.7.1(eslint@9.39.4)':
@@ -4951,7 +4970,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.65.0
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.1
+      semver: 7.8.5
       tinyglobby: 0.2.16
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -5742,7 +5761,7 @@ snapshots:
   eslint-compat-utils@0.5.1(eslint@9.39.4):
     dependencies:
       eslint: 9.39.4
-      semver: 7.8.1
+      semver: 7.8.5
 
   eslint-config-ash-nazg@39.11.1(@babel/core@8.0.1)(@typescript-eslint/parser@8.65.0(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3):
     dependencies:
@@ -5919,9 +5938,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-jsdoc@63.2.0(eslint@9.39.4):
+  eslint-plugin-jsdoc@63.2.1(eslint@9.39.4):
     dependencies:
-      '@es-joy/jsdoccomment': 0.88.0
+      '@es-joy/jsdoccomment': 0.89.0
       '@es-joy/resolve.exports': 1.2.0
       are-docs-informative: 0.0.2
       comment-parser: 1.4.7
@@ -5934,7 +5953,7 @@ snapshots:
       object-deep-merge: 2.0.1
       parse-imports-exports: 0.2.4
       semver: 7.8.5
-      spdx-expression-parse: 4.0.0
+      spdx-expression-parse: 5.0.0
       to-valid-identifier: 1.0.0
     transitivePeerDependencies:
       - supports-color
@@ -6386,7 +6405,7 @@ snapshots:
 
   is-bun-module@2.0.0:
     dependencies:
-      semver: 7.8.1
+      semver: 7.8.5
 
   is-callable@1.2.7: {}
 
@@ -6534,6 +6553,8 @@ snapshots:
 
   jsdoc-type-pratt-parser@7.2.0: {}
 
+  jsdoc-type-pratt-parser@7.3.0: {}
+
   jsesc@3.1.0: {}
 
   json-buffer@3.0.1: {}
@@ -6658,7 +6679,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.1
+      semver: 7.8.5
 
   markdown-it@14.3.0:
     dependencies:
@@ -7120,7 +7141,7 @@ snapshots:
       ky: 1.14.3
       registry-auth-token: 5.1.1
       registry-url: 6.0.1
-      semver: 7.8.1
+      semver: 7.8.5
 
   parent-module@1.0.1:
     dependencies:
@@ -7486,6 +7507,11 @@ snapshots:
       spdx-exceptions: 2.5.0
       spdx-license-ids: 3.0.23
 
+  spdx-expression-parse@5.0.0:
+    dependencies:
+      spdx-exceptions: 2.5.0
+      spdx-license-ids: 3.0.23
+
   spdx-license-ids@3.0.23: {}
 
   stable-hash@0.0.5: {}
@@ -7783,7 +7809,7 @@ snapshots:
       is-npm: 6.1.0
       latest-version: 9.0.0
       pupa: 3.3.0
-      semver: 7.8.1
+      semver: 7.8.5
       xdg-basedir: 5.1.0
 
   uri-js@4.4.1:
