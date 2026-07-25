@@ -83,7 +83,7 @@
     "@vitest/coverage-v8": "^4.1.10",
     "@vitest/ui": "^4.1.10",
     "@webcoder49/code-input": "^2.8.3",
-    "eslint": "^9.39.2",
+    "eslint": "^9.39.5",
     "eslint-config-ash-nazg": "39.11.1",
     "eslint-plugin-jsdoc": "^63.2.2",
     "espree": "^11.2.0",
