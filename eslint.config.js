@@ -1,5 +1,5 @@
 import ashNazg from 'eslint-config-ash-nazg';
-import jsdoc from 'eslint-plugin-jsdoc';
+import jsdocDecl from 'eslint-plugin-jsdoc';
 
 export default [
   {
@@ -12,7 +12,12 @@ export default [
     ]
   },
   ...ashNazg(['sauron']),
-  ...jsdoc.configs.examples,
+  ...jsdocDecl.configs.examples,
+  {
+    rules: {
+      'unicorn/no-incorrect-template-string-interpolation': 'off'
+    }
+  },
   // {
   //   files: ['**/*.md/*.js'],
   //   rules: {

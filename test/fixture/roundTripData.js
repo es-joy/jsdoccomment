@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-top-level-side-effects -- Not tree-shaking or
+    reusing */
 // Data for round trip parsing tests w/ `spacing` option of
 // `compact or `preserve`.
 

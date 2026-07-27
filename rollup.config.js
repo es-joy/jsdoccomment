@@ -17,7 +17,11 @@ function getRollupObject ({input, minifying, format = 'umd'} = {}) {
       name: 'JsdocComment',
       format,
       sourcemap: minifying,
-      file: `dist/${input.replace(/\.js$/v, `.${format}`)}${
+      file: `dist/${input.replace(
+        /\.js$/v,
+        // eslint-disable-next-line unicorn/no-unsafe-string-replacement -- Ok
+        `.${format}`
+      )}${
         minifying ? '.min' : ''
       }.${format === 'cjs' || format === 'umd' ? 'c' : ''}js`
     },

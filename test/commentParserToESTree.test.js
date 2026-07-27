@@ -628,7 +628,7 @@ description`
                 delimiter: '',
                 postDelimiter: '',
                 rawType: 'b: number;',
-                initial: '     ',
+                initial: ' '.repeat(5),
                 type: 'JsdocTypeLine'
               },
               {

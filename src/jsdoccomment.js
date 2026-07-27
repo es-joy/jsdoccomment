@@ -29,8 +29,7 @@
  * @returns {boolean} `true` if the token is a comment token.
  */
 const isCommentToken = (token) => {
-  return token.type === 'Line' || token.type === 'Block' ||
-    token.type === 'Shebang';
+  return ['Line', 'Block', 'Shebang'].includes(token.type);
 };
 
 /**
@@ -61,10 +60,12 @@ const getDecorator = (node) => {
  * @private
  */
 const looksLikeExport = function (astNode) {
-  return astNode.type === 'ExportDefaultDeclaration' ||
-    astNode.type === 'ExportNamedDeclaration' ||
-    astNode.type === 'ExportAllDeclaration' ||
-    astNode.type === 'ExportSpecifier';
+  return [
+    'ExportDefaultDeclaration',
+    'ExportNamedDeclaration',
+    'ExportAllDeclaration',
+    'ExportSpecifier'
+  ].includes(astNode.type);
 };
 
 /**
@@ -82,8 +83,6 @@ const getTSFunctionComment = function (astNode) {
   if (!grandparent) {
     return astNode;
   }
-  const greatGrandparent = grandparent.parent;
-  const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
 
   if (/** @type {ESLintOrTSNode} */ (parent).type !== 'TSTypeAnnotation') {
     if (
@@ -96,6 +95,9 @@ const getTSFunctionComment = function (astNode) {
     return astNode;
     /* v8 ignore stop */
   }
+
+  const greatGrandparent = grandparent.parent;
+  const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
 
   switch (/** @type {ESLintOrTSNode} */ (grandparent).type) {
   // @ts-expect-error -- For `ClassProperty`.
@@ -385,6 +387,8 @@ const overloadMethodNode = new Set([
 const getOverloadStatementSiblings = (node) => {
   if (
     node &&
+    // eslint-disable-next-line @stylistic/max-len -- Long
+    // eslint-disable-next-line unicorn/prefer-includes-over-repeated-comparisons -- TS
     (node.type === 'BlockStatement' ||
       node.type === 'Program' ||
       node.type === 'StaticBlock' ||

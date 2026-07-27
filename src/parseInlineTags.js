@@ -17,9 +17,11 @@ function determineFormat (match) {
   const [tagStart] = match.indices.groups.tag;
   if (!text) {
     return 'plain';
-  } else if (separator === '|') {
+  }
+  if (separator === '|') {
     return 'pipe';
-  } else if (textEnd < tagStart) {
+  }
+  if (textEnd < tagStart) {
     return 'prefix';
   }
   return 'space';
@@ -37,9 +39,11 @@ function parseDescription (description) {
   // This could have been expressed in a single pattern,
   // but having two avoids a potentially exponential time regex.
 
+  // eslint-disable-next-line sonarjs/super-linear-regex -- Necessary
   const prefixedTextPattern = /(?:\[(?<text>(?:[^\\\]]|\\[\s\S])+)\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\}/gvd;
   // The pattern used to match for text after tag uses a negative lookbehind
   // on the ']' char to avoid matching the prefixed case too.
+  // eslint-disable-next-line sonarjs/super-linear-regex -- Necessary
   const suffixedAfterPattern = /(?<!\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\s*(?<separator>[\s\|])?\s*(?<text>(?:[^\\\}]|\\[\s\S])*)\}/gvd;
 
   const matches = [
@@ -61,6 +65,7 @@ function parseDescription (description) {
         mtch
       );
     const {tag, namepathOrURL, text} = match.groups;
+    // @ts-expect-error Ok
     const [start, end] = match.indices[0];
     const format = determineFormat(match);
     const decodedText = decodeInlineTagText(text, format);

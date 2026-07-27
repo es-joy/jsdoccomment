@@ -187,7 +187,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
       );
     } catch (err) {
       // Ignore
-      if (lastTag.rawType && throwOnTypeParsingErrors) {
+      if (throwOnTypeParsingErrors && lastTag.rawType) {
         /** @type {Error} */ (
           err
         ).message = `Tag @${lastTag.tag} with raw type ` +
@@ -336,7 +336,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
 
       if (!tokens.name) {
         let i = 1;
-        while (source[idx + i]) {
+        while (Object.hasOwn(source, idx + i)) {
           const {tokens: {
             name,
             postName,
@@ -359,21 +359,21 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
       /**
        * @type {JsdocInlineTag[]}
        */
-      let tagInlineTags = [];
-      if (tag) {
+      const tagInlineTags = tag
         // Assuming the tags from `source` are in the same order as `jsdoc.tags`
         // we can use the `tags` length as index into the parser result tags.
-        tagInlineTags =
-          /**
-           * @type {import('comment-parser').Spec & {
-           *   inlineTags: JsdocInlineTagNoType[]
-           * }}
-           */ (
-            jsdoc.tags[tags.length]
-          ).inlineTags.map(
-            (t) => inlineTagToAST(t)
-          );
-      }
+        // eslint-disable-next-line @stylistic/operator-linebreak -- Required
+        ?
+        /**
+         * @type {import('comment-parser').Spec & {
+         *   inlineTags: JsdocInlineTagNoType[]
+         * }}
+         */ (
+          jsdoc.tags[tags.length]
+        ).inlineTags.map(
+          (t) => inlineTagToAST(t)
+        )
+        : [];
 
       /** @type {JsdocTag} */
       const tagObj = {
@@ -427,7 +427,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
     //
     // In `preserve` mode process when `description` is not the `empty string
     // or the `delimiter` is not `/**` ensuring empty lines are preserved.
-    if (((spacing === 'compact' && description) || lastTag) ||
+    if ((lastTag || (spacing === 'compact' && description)) ||
         (spacing === 'preserve' && (description || delimiter !== '/**'))) {
       const holder = lastTag || ast;
 
@@ -454,9 +454,8 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
           const isFirstDescriptionLine = holder.descriptionLines.length === 0;
 
           // For `compact` spacing must allow through first description line.
-          if ((spacing === 'compact' &&
-              (description || isFirstDescriptionLine)) ||
-              spacing === 'preserve') {
+          if (spacing === 'preserve' || (spacing === 'compact' &&
+              (description || isFirstDescriptionLine))) {
             holder.descriptionLines.push({
               delimiter: isFirstDescriptionLine ? '' : delimiter,
               description,
@@ -481,7 +480,8 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
           // For `compact` spacing must filter out any empty description lines
           // after the initial `holder.description` has content.
           if (tagDescriptionSeen && !(spacing === 'compact' &&
-            holder.description && description === '')) {
+            description === '' &&
+            holder.description)) {
             holder.description += !holder.description
               ? description
               : '\n' + description;

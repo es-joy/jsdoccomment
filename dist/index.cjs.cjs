@@ -182,7 +182,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
       parsedType = jsdocTypePrattParser.parse(lastTag.rawType, mode, jsdocTypePrattParserArgs);
     } catch (err) {
       // Ignore
-      if (lastTag.rawType && throwOnTypeParsingErrors) {
+      if (throwOnTypeParsingErrors && lastTag.rawType) {
         /** @type {Error} */err.message = `Tag @${lastTag.tag} with raw type ` + `\`${lastTag.rawType}\` had parsing error: ${ /** @type {Error} */err.message}`;
         throw err;
       }
@@ -317,7 +317,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
       } = tokens;
       if (!tokens.name) {
         let i = 1;
-        while (source[idx + i]) {
+        while (Object.hasOwn(source, idx + i)) {
           const {
             tokens: {
               name,
@@ -342,18 +342,17 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
       /**
        * @type {JsdocInlineTag[]}
        */
-      let tagInlineTags = [];
-      if (tag) {
-        // Assuming the tags from `source` are in the same order as `jsdoc.tags`
-        // we can use the `tags` length as index into the parser result tags.
-        tagInlineTags =
-        /**
-         * @type {import('comment-parser').Spec & {
-         *   inlineTags: JsdocInlineTagNoType[]
-         * }}
-         */
-        jsdoc.tags[tags.length].inlineTags.map(t => inlineTagToAST(t));
-      }
+      const tagInlineTags = tag
+      // Assuming the tags from `source` are in the same order as `jsdoc.tags`
+      // we can use the `tags` length as index into the parser result tags.
+      // eslint-disable-next-line @stylistic/operator-linebreak -- Required
+      ?
+      /**
+       * @type {import('comment-parser').Spec & {
+       *   inlineTags: JsdocInlineTagNoType[]
+       * }}
+       */
+      jsdoc.tags[tags.length].inlineTags.map(t => inlineTagToAST(t)) : [];
 
       /** @type {JsdocTag} */
       const tagObj = {
@@ -398,7 +397,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
     //
     // In `preserve` mode process when `description` is not the `empty string
     // or the `delimiter` is not `/**` ensuring empty lines are preserved.
-    if (spacing === 'compact' && description || lastTag || spacing === 'preserve' && (description || delimiter !== '/**')) {
+    if (lastTag || spacing === 'compact' && description || spacing === 'preserve' && (description || delimiter !== '/**')) {
       const holder = lastTag || ast;
 
       // Check if there are any description lines and if not then this is a
@@ -421,7 +420,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
           const isFirstDescriptionLine = holder.descriptionLines.length === 0;
 
           // For `compact` spacing must allow through first description line.
-          if (spacing === 'compact' && (description || isFirstDescriptionLine) || spacing === 'preserve') {
+          if (spacing === 'preserve' || spacing === 'compact' && (description || isFirstDescriptionLine)) {
             holder.descriptionLines.push({
               delimiter: isFirstDescriptionLine ? '' : delimiter,
               description,
@@ -444,7 +443,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
         if (lastTag) {
           // For `compact` spacing must filter out any empty description lines
           // after the initial `holder.description` has content.
-          if (tagDescriptionSeen && !(spacing === 'compact' && holder.description && description === '')) {
+          if (tagDescriptionSeen && !(spacing === 'compact' && description === '' && holder.description)) {
             holder.description += !holder.description ? description : '\n' + description;
           }
         } else {
@@ -565,7 +564,7 @@ function encodeInlineTagText(text, format) {
     }
     if (character === '\\') {
       const nextCharacter = text[idx + 1];
-      if (nextCharacter === undefined || nextCharacter === '\\' || nextCharacter === delimiter) {
+      if ([undefined, '\\', delimiter].includes(nextCharacter)) {
         encoded += '\\\\';
         continue;
       }
@@ -715,7 +714,7 @@ function JsdocTag(node, opts) {
   // parsedType
   // Comment this out later in favor of `parsedType`
   // We can't use raw `typeLines` as first argument has delimiter on it
-  if (opts.preferRawType || !parsedType) {
+  if (!parsedType || opts.preferRawType) {
     if (typeLines.length) {
       result += '{';
       for (let i = 0; i < typeLines.length; i++) {
@@ -812,7 +811,7 @@ function JsdocTag(node, opts) {
  * @returns {boolean} `true` if the token is a comment token.
  */
 const isCommentToken = token => {
-  return token.type === 'Line' || token.type === 'Block' || token.type === 'Shebang';
+  return ['Line', 'Block', 'Shebang'].includes(token.type);
 };
 
 /**
@@ -843,7 +842,7 @@ const getDecorator = node => {
  * @private
  */
 const looksLikeExport = function (astNode) {
-  return astNode.type === 'ExportDefaultDeclaration' || astNode.type === 'ExportNamedDeclaration' || astNode.type === 'ExportAllDeclaration' || astNode.type === 'ExportSpecifier';
+  return ['ExportDefaultDeclaration', 'ExportNamedDeclaration', 'ExportAllDeclaration', 'ExportSpecifier'].includes(astNode.type);
 };
 
 /**
@@ -863,8 +862,6 @@ const getTSFunctionComment = function (astNode) {
   if (!grandparent) {
     return astNode;
   }
-  const greatGrandparent = grandparent.parent;
-  const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
   if (/** @type {ESLintOrTSNode} */parent.type !== 'TSTypeAnnotation') {
     if (parent.type === 'TSTypeAliasDeclaration' && grandparent.type === 'ExportNamedDeclaration') {
       return grandparent;
@@ -873,6 +870,8 @@ const getTSFunctionComment = function (astNode) {
     return astNode;
     /* v8 ignore stop */
   }
+  const greatGrandparent = grandparent.parent;
+  const greatGreatGrandparent = greatGrandparent && greatGrandparent.parent;
   switch (/** @type {ESLintOrTSNode} */grandparent.type) {
     // @ts-expect-error -- For `ClassProperty`.
     case 'PropertyDefinition':
@@ -1099,7 +1098,10 @@ const overloadMethodNode = new Set(['MethodDefinition', 'TSAbstractMethodDefinit
  * @returns {ESLintOrTSNode[]|undefined}
  */
 const getOverloadStatementSiblings = node => {
-  if (node && (node.type === 'BlockStatement' || node.type === 'Program' || node.type === 'StaticBlock' || node.type === 'TSModuleBlock')) {
+  if (node && (
+  // eslint-disable-next-line @stylistic/max-len -- Long
+  // eslint-disable-next-line unicorn/prefer-includes-over-repeated-comparisons -- TS
+  node.type === 'BlockStatement' || node.type === 'Program' || node.type === 'StaticBlock' || node.type === 'TSModuleBlock')) {
     return /** @type {ESLintOrTSNode[]} */node.body;
   }
   return undefined;
@@ -1366,9 +1368,11 @@ function determineFormat(match) {
   const [tagStart] = match.indices.groups.tag;
   if (!text) {
     return 'plain';
-  } else if (separator === '|') {
+  }
+  if (separator === '|') {
     return 'pipe';
-  } else if (textEnd < tagStart) {
+  }
+  if (textEnd < tagStart) {
     return 'prefix';
   }
   return 'space';
@@ -1386,9 +1390,11 @@ function parseDescription(description) {
   // This could have been expressed in a single pattern,
   // but having two avoids a potentially exponential time regex.
 
+  // eslint-disable-next-line sonarjs/super-linear-regex -- Necessary
   const prefixedTextPattern = /(?:\[(?<text>(?:[^\\\]]|\\[\s\S])+)\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\}/gvd;
   // The pattern used to match for text after tag uses a negative lookbehind
   // on the ']' char to avoid matching the prefixed case too.
+  // eslint-disable-next-line sonarjs/super-linear-regex -- Necessary
   const suffixedAfterPattern = /(?<!\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\s*(?<separator>[\s\|])?\s*(?<text>(?:[^\\\}]|\\[\s\S])*)\}/gvd;
   const matches = [...description.matchAll(prefixedTextPattern), ...description.matchAll(suffixedAfterPattern)];
   for (const mtch of matches) {
@@ -1409,6 +1415,7 @@ function parseDescription(description) {
       namepathOrURL,
       text
     } = match.groups;
+    // @ts-expect-error Ok
     const [start, end] = match.indices[0];
     const format = determineFormat(match);
     const decodedText = decodeInlineTagText(text, format);

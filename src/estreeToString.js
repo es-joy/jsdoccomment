@@ -145,7 +145,7 @@ function JsdocTag (node, opts) {
   // parsedType
   // Comment this out later in favor of `parsedType`
   // We can't use raw `typeLines` as first argument has delimiter on it
-  if (opts.preferRawType || !parsedType) {
+  if (!parsedType || opts.preferRawType) {
     if (typeLines.length) {
       result += '{';
 

@@ -59,9 +59,7 @@ export function encodeInlineTagText (text, format) {
     if (character === '\\') {
       const nextCharacter = text[idx + 1];
       if (
-        nextCharacter === undefined ||
-        nextCharacter === '\\' ||
-        nextCharacter === delimiter
+        [undefined, '\\', delimiter].includes(nextCharacter)
       ) {
         encoded += '\\\\';
         continue;

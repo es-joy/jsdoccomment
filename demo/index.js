@@ -1,7 +1,4 @@
 /* globals Prism -- Not available as ESM */
-import {
-  parseComment, commentParserToESTree, estreeToString
-} from '../src/index.js';
 import {registerTemplate, Template} from '@webcoder49/code-input';
 
 import Indent from '@webcoder49/code-input/plugins/indent.mjs';
@@ -10,6 +7,10 @@ import prismStyles from 'prismjs/themes/prism.min.css' with {type: 'css'};
 
 import codeInputStyles from
   '@webcoder49/code-input/code-input.min.css' with {type: 'css'};
+
+import {
+  parseComment, commentParserToESTree, estreeToString
+} from '../src/index.js';
 
 document.adoptedStyleSheets = [prismStyles, codeInputStyles];
 
