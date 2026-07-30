@@ -15,7 +15,15 @@ export default [
   ...jsdocDecl.configs.examples,
   {
     rules: {
-      'unicorn/no-incorrect-template-string-interpolation': 'off'
+      'unicorn/no-incorrect-template-string-interpolation': 'off',
+
+      // Until ash-nazg fixes
+      'import-x/namespace': 0,
+      'import-x/no-deprecated': 0,
+      'import-x/default': 0,
+      'import-x/named': 0,
+      'import-x/no-named-as-default': 0,
+      'import-x/no-named-as-default-member': 0
     }
   },
   // {

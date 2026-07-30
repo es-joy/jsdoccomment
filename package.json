@@ -1,6 +1,6 @@
 {
   "name": "@es-joy/jsdoccomment",
-  "version": "0.91.0",
+  "version": "0.92.0",
   "author": "Brett Zamir <brettz9@yahoo.com>",
   "contributors": [],
   "description": "Maintained replacement for ESLint's deprecated SourceCode#getJSDocComment along with other jsdoc utilities",
@@ -18,14 +18,8 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./src/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.js"
     }
   },
   "browserslist": [
@@ -33,8 +27,9 @@
   ],
   "scripts": {
     "start": "static -p 8070",
-    "copy": "cp -R node_modules/prismjs/ demo/vendor/prismjs/ && cp -R node_modules/@webcoder49/code-input/ demo/vendor/@webcoder49/code-input/ && cp node_modules/esquery/dist/esquery.esm.js demo/vendor/esquery/dist/esquery.esm.js && cp -R node_modules/jsdoc-type-pratt-parser/dist/esm demo/vendor/jsdoc-type-pratt-parser/dist && cp -R node_modules/comment-parser/es6 demo/vendor/comment-parser",
-    "build": "npm run copy && rollup -c && npm run types",
+    "attw": "attw --pack . --profile esm-only",
+    "copy": "cp -R node_modules/prismjs/ demo/vendor/prismjs/ && cp -R node_modules/@webcoder49/code-input/ demo/vendor/@webcoder49/code-input/ && cp node_modules/esquery/dist/esquery.esm.js demo/vendor/esquery/dist/esquery.esm.js && cp -R node_modules/jsdoc-type-pratt-parser/dist demo/vendor/jsdoc-type-pratt-parser/dist && cp -R node_modules/comment-parser/es6 demo/vendor/comment-parser",
+    "build": "npm run copy && npm run types",
     "docs": "typedoc-pkg --api-link es",
     "eslint": "eslint .",
     "lint": "npm run eslint --",
@@ -44,7 +39,7 @@
     "test-ui": "vitest --ui --coverage",
     "test-cov": "vitest --coverage",
     "tsc": "tsc",
-    "types": "esm-d-ts gen ./src/index.js --output ./dist/index.d.ts --emitCTS"
+    "types": "esm-d-ts gen ./src/index.js --output ./dist/index.d.ts"
   },
   "typedocOptions": {
     "dmtLinksService": {
@@ -61,20 +56,18 @@
   },
   "homepage": "https://github.com/es-joy/jsdoccomment",
   "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24"
+    "node": "^22.22.2 || >=24.15.0"
   },
   "dependencies": {
     "@types/estree": "^1.0.9",
     "@typescript-eslint/types": "^8.65.0",
     "comment-parser": "1.4.7",
     "esquery": "^1.7.0",
-    "jsdoc-type-pratt-parser": "~8.0.0"
+    "jsdoc-type-pratt-parser": "~9.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^8.0.1",
-    "@babel/preset-env": "^8.0.2",
+    "@arethetypeswrong/cli": "^0.18.5",
     "@brettz9/node-static": "^0.1.1",
-    "@rollup/plugin-babel": "^7.1.0",
     "@types/esquery": "^1.5.4",
     "@types/estraverse": "^5.1.7",
     "@typescript-eslint/visitor-keys": "^8.65.0",
@@ -84,12 +77,11 @@
     "@vitest/ui": "^4.1.10",
     "@webcoder49/code-input": "^2.8.3",
     "eslint": "^10.8.0",
-    "eslint-config-ash-nazg": "40.2.0",
-    "eslint-plugin-jsdoc": "^63.3.1",
+    "eslint-config-ash-nazg": "41.1.1",
+    "eslint-plugin-jsdoc": "^63.3.2",
     "espree": "^11.2.0",
     "estraverse": "^5.3.0",
     "prismjs": "^1.30.0",
-    "rollup": "^4.62.3",
     "typedoc": "^0.28.20",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.65.0",

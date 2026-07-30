@@ -379,7 +379,6 @@ describe('`estreeToString`', function () {
     }
   );
 
-  // eslint-disable-next-line sonarjs/parameterized-tests -- Ok
   it('handles pipe inline tag', function () {
     /** @type {import('../src/commentParserToESTree').JsdocInlineTag} */
     const ast = {

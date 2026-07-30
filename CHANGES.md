@@ -1,5 +1,13 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.92.0
+
+BREAKING CHANGES:
+- Drops CJS exports; should be able to use `require(esm)` with newly supported Node versions
+- Requires Node ^22.22.2 || >=24.15.0
+
+- chore: update jsdoc-type-pratt-parser, devDeps.
+
 ## 0.91.0
 
 - chore: update `jsdoc-type-pratt-parser` and devDeps

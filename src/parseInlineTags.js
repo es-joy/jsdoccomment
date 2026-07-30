@@ -39,11 +39,9 @@ function parseDescription (description) {
   // This could have been expressed in a single pattern,
   // but having two avoids a potentially exponential time regex.
 
-  // eslint-disable-next-line sonarjs/super-linear-regex -- Necessary
   const prefixedTextPattern = /(?:\[(?<text>(?:[^\\\]]|\\[\s\S])+)\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\}/gvd;
   // The pattern used to match for text after tag uses a negative lookbehind
   // on the ']' char to avoid matching the prefixed case too.
-  // eslint-disable-next-line sonarjs/super-linear-regex -- Necessary
   const suffixedAfterPattern = /(?<!\])\{@(?<tag>[^\}\s]+)\s?(?<namepathOrURL>[^\}\s\|]*)\s*(?<separator>[\s\|])?\s*(?<text>(?:[^\\\}]|\\[\s\S])*)\}/gvd;
 
   const matches = [
