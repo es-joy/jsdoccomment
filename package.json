@@ -28,7 +28,7 @@
   "scripts": {
     "start": "static -p 8070",
     "attw": "attw --pack . --profile esm-only",
-    "copy": "cp -R node_modules/prismjs/ demo/vendor/prismjs/ && cp -R node_modules/@webcoder49/code-input/ demo/vendor/@webcoder49/code-input/ && cp node_modules/esquery/dist/esquery.esm.js demo/vendor/esquery/dist/esquery.esm.js && cp -R node_modules/jsdoc-type-pratt-parser/dist demo/vendor/jsdoc-type-pratt-parser/dist && cp -R node_modules/comment-parser/es6 demo/vendor/comment-parser",
+    "copy": "cp -R node_modules/prismjs/ demo/vendor/prismjs/ && cp -R node_modules/@webcoder49/code-input/ demo/vendor/@webcoder49/code-input/ && cp node_modules/esquery/dist/esquery.esm.js demo/vendor/esquery/dist/esquery.esm.js && cp -R node_modules/jsdoc-type-pratt-parser/dist demo/vendor/jsdoc-type-pratt-parser && cp -R node_modules/comment-parser/es6 demo/vendor/comment-parser",
     "build": "npm run copy && npm run types",
     "docs": "typedoc-pkg --api-link es",
     "eslint": "eslint .",
