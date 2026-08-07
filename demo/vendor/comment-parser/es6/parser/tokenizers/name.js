@@ -83,7 +83,7 @@ export default function nameTokenizer() {
                 return spec;
             }
             // has "=" and is not a string, except for "=>"
-            if (!isQuoted(defaultValue) && /=(?!>)/.test(defaultValue)) {
+            if (!isQuoted(defaultValue) && /=(?!>)/.test(defaultValue || '')) {
                 spec.problems.push({
                     code: 'spec:name:invalid-default',
                     message: 'invalid default value syntax',

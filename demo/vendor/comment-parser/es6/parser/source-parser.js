@@ -20,7 +20,7 @@ export default function getParser({ startLine = 0, markers = Markers, } = {}) {
             num++;
             return null;
         }
-        const isClosed = rest.trimRight().endsWith(markers.end);
+        const isClosed = rest.trimEnd().endsWith(markers.end);
         if (tokens.delimiter === '' &&
             rest.startsWith(markers.delim) &&
             !rest.startsWith(markers.end)) {
@@ -29,7 +29,7 @@ export default function getParser({ startLine = 0, markers = Markers, } = {}) {
             [tokens.postDelimiter, rest] = splitSpace(rest);
         }
         if (isClosed) {
-            const trimmed = rest.trimRight();
+            const trimmed = rest.trimEnd();
             tokens.end = rest.slice(trimmed.length - markers.end.length);
             rest = trimmed.slice(0, -markers.end.length);
         }

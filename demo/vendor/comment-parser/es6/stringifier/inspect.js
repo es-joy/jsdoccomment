@@ -28,8 +28,9 @@ export default function inspect({ source }) {
         width[f] = ((_a = headers[f]) !== null && _a !== void 0 ? _a : f).length;
     for (const { number, tokens } of source) {
         width.line = Math.max(width.line, number.toString().length);
-        for (const k in tokens)
+        for (const k of Object.keys(tokens)) {
             width[k] = Math.max(width[k], repr(tokens[k]).length);
+        }
     }
     const lines = [[], []];
     for (const f of fields)
