@@ -49,21 +49,21 @@ from [`jsdoc-type-pratt-parser`](https://github.com/simonseyock/jsdoc-type-pratt
 Provides info on JSDoc tags:
 
 - `nameContents` ('namepath-referencing'|'namepath-defining'|
-    'dual-namepath-referencing'|false) - Whether and how a name is allowed
-    following any type. Tags without a proper name (value `false`) may still
-    have a description (which can appear like a name); `descriptionAllowed`
-    in such cases would be `true`.
-    The presence of a truthy `nameContents` value is therefore only intended
-    to signify whether separate parsing should occur for a name vs. a
-    description, and what its nature should be.
+  'dual-namepath-referencing'|false) - Whether and how a name is allowed
+  following any type. Tags without a proper name (value `false`) may still
+  have a description (which can appear like a name); `descriptionAllowed`
+  in such cases would be `true`.
+  The presence of a truthy `nameContents` value is therefore only intended
+  to signify whether separate parsing should occur for a name vs. a
+  description, and what its nature should be.
 - `nameRequired` (boolean) - Whether a name must be present following any type.
 - `descriptionAllowed` (boolean) - Whether a description (following any name)
-    is allowed.
+  is allowed.
 - `typeAllowed` (boolean) - Whether the tag accepts a curly bracketed portion.
-    Even without a type, a tag may still have a name and/or description.
+  Even without a type, a tag may still have a name and/or description.
 - `typeRequired` (boolean) - Whether a curly bracketed type must be present.
 - `typeOrNameRequired` (boolean) - Whether either a curly bracketed type is
-    required or a name, but not necessarily both.
+  required or a name, but not necessarily both.
 
 ### Miscellaneous
 
@@ -73,18 +73,18 @@ Also currently exports these utilities:
 - `hasSeeWithLink` - A utility to detect if a tag is `@see` and has a `@link`.
 - `commentHandler` - Used by `eslint-plugin-jsdoc`.
 - `commentParserToESTree`- Converts [comment-parser](https://github.com/syavorsky/comment-parser)
-    AST to ESTree/ESLint/Babel friendly AST.
+  AST to ESTree/ESLint/Babel friendly AST.
 - `jsdocVisitorKeys` - The [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
-    for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`.
+  for `JSDocBlock`, `JSDocDescriptionLine`, and `JSDocTag`.
 - `jsdocTypeVisitorKeys` - [VisitorKeys](https://github.com/eslint/eslint-visitor-keys)
-    for `jsdoc-type-pratt-parser`.
+  for `jsdoc-type-pratt-parser`.
 - `defaultNoTypes` = The tags which allow no types by default:
-    `default`, `defaultvalue`, `description`, `example`, `file`,
-    `fileoverview`, `license`, `overview`, `see`, `summary`
+  `default`, `defaultvalue`, `description`, `example`, `file`,
+  `fileoverview`, `license`, `overview`, `see`, `summary`
 - `defaultNoNames` - The tags which allow no names by default:
-    `access`, `author`, `default`, `defaultvalue`, `description`, `example`,
-    `exception`, `file`, `fileoverview`, `kind`, `license`, `overview`,
-    `return`, `returns`, `since`, `summary`, `throws`, `version`, `variation`
+  `access`, `author`, `default`, `defaultvalue`, `description`, `example`,
+  `exception`, `file`, `fileoverview`, `kind`, `license`, `overview`,
+  `return`, `returns`, `since`, `summary`, `throws`, `version`, `variation`
 
 ## ESLint AST produced for `comment-parser` nodes (`JsdocBlock`, `JsdocTag`, and `JsdocDescriptionLine`)
 
@@ -97,9 +97,9 @@ to determine the specific comment-block that will be attached as AST).
 Has the following visitable properties:
 
 1. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
-    descriptions).
-2. `tags` (an array of `JsdocTag`; see below)
-3. `inlineTags` (an array of `JsdocInlineTag`; see below)
+   descriptions).
+1. `tags` (an array of `JsdocTag`; see below)
+1. `inlineTags` (an array of `JsdocInlineTag`; see below)
 
 Has the following custom non-visitable property:
 
@@ -107,13 +107,13 @@ Has the following custom non-visitable property:
 2. `lastDescriptionLine` - A number
 3. `endLine` - A number representing the line number with `end`/`terminal`
 4. `descriptionStartLine` - A 0+ number indicating the line where any
-    description begins
+   description begins
 5. `descriptionEndLine` - A 0+ number indicating the line where the description
-    ends
+   ends
 6. `hasPreterminalDescription` - Set to 0 or 1. On if has a block description
-    on the same line as the terminal `*/`.
+   on the same line as the terminal `*/`.
 7. `hasPreterminalTagDescription` - Set to 0 or 1. On if has a tag description
-    on the same line as the terminal `*/`.
+   on the same line as the terminal `*/`.
 8. `preterminalLineBreak` - A string containing any line break before `terminal`.
 
 May also have the following non-visitable properties from `comment-parser`:
@@ -130,11 +130,11 @@ May also have the following non-visitable properties from `comment-parser`:
 Has the following visitable properties:
 
 1. `parsedType` (the `jsdoc-type-pratt-parser` AST representation of the tag's
-    type (see the `jsdoc-type-pratt-parser` section below)).
-2. `typeLines` (an array of `JsdocTypeLine` for multiline type strings)
-3. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
-    descriptions)
-4. `inlineTags` (an array of `JsdocInlineTag`)
+   type (see the `jsdoc-type-pratt-parser` section below)).
+1. `typeLines` (an array of `JsdocTypeLine` for multiline type strings)
+1. `descriptionLines` (an array of `JsdocDescriptionLine` for multiline
+   descriptions)
+1. `inlineTags` (an array of `JsdocInlineTag`)
 
 May also have the following non-visitable properties from `comment-parser`
 (note that all are included from `comment-parser` except `end` as that is only
@@ -143,16 +143,16 @@ for JSDoc blocks and note that `type` is renamed to `rawType` and `start` to
 
 1. `description` - Same as `descriptionLines` but as a string with newlines.
 2. `rawType` - `comment-parser` has this named as `type`, but because of a
-    conflict with ESTree using `type` for Node type, we renamed it to
-    `rawType`. It is otherwise the same as in `comment-parser`, i.e., a string
-    with newlines, though with the initial `{` and final `}` stripped out.
-    See `typeLines` for the array version of this property.
+   conflict with ESTree using `type` for Node type, we renamed it to
+   `rawType`. It is otherwise the same as in `comment-parser`, i.e., a string
+   with newlines, though with the initial `{` and final `}` stripped out.
+   See `typeLines` for the array version of this property.
 3. `initial` - Renamed from `start` to avoid potential conflicts with
-    Acorn-style parser processing tools
+   Acorn-style parser processing tools
 4. `delimiter`
 5. `postDelimiter`
 6. `tag` (this does differ from `comment-parser` now in terms of our stripping
-    the initial `@`)
+   the initial `@`)
 7. `postTag`
 8. `name`
 9. `postName`
@@ -179,7 +179,7 @@ May also have the following non-visitable properties from `comment-parser`:
 2. `postDelimiter`
 3. `initial` (from `start`)
 4. `rawType` - Renamed from `comment-parser` to avoid a conflict. See
-    explanation under `JsdocTag`
+   explanation under `JsdocTag`
 
 ### `JsdocInlineTag`
 
@@ -217,10 +217,12 @@ npm i @es-joy/jsdoccomment
 ## Changelog
 
 The changelog can be found on the [CHANGES.md](https://github.com/es-joy/jsdoccomment/blob/main/CHANGES.md).
+
 <!--## Contributing
 
 Everyone is welcome to contribute. Please take a moment to review the [contributing guidelines](CONTRIBUTING.md).
 -->
+
 ## Authors and license
 
 [Brett Zamir](http://brett-zamir.me/) and
@@ -232,11 +234,11 @@ MIT License, see the included [LICENSE-MIT.txt](https://github.com/es-joy/jsdocc
 
 1. Get complete code coverage
 1. Given that `esquery` expects a `right` property to search for `>` (the
-    child selector), we should perhaps insist, for example, that params are
-    the child property for `JsdocBlock` or such. Where `:has()` is currently
-    needed, one could thus instead just use `>`.
+   child selector), we should perhaps insist, for example, that params are
+   the child property for `JsdocBlock` or such. Where `:has()` is currently
+   needed, one could thus instead just use `>`.
 1. Might add `trailing` for `JsdocBlock` to know whether it is followed by a
-    line break or what not; `comment-parser` does not provide, however
+   line break or what not; `comment-parser` does not provide, however
 1. Fix and properly utilize `indent` argument (challenging for
-    `eslint-plugin-jsdoc` but needed for `jsdoc-eslint-parser` stringifiers
-    to be more faithful); should also then use the proposed `trailing` as well
+   `eslint-plugin-jsdoc` but needed for `jsdoc-eslint-parser` stringifiers
+   to be more faithful); should also then use the proposed `trailing` as well
