@@ -1,11 +1,15 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## ?
+
+- chore: update typescript-eslint/types, devDeps.
+
 ## 0.92.0
 
 BREAKING CHANGES:
+
 - Drops CJS exports; should be able to use `require(esm)` with newly supported Node versions
 - Requires Node ^22.22.2 || >=24.15.0
-
 - chore: update jsdoc-type-pratt-parser, devDeps.
 
 ## 0.91.0
@@ -63,7 +67,7 @@ BREAKING CHANGES:
 ## 0.79.0
 
 - feat: allow `skipInvokedExpressionsForCommentFinding` setting for
-   `getReducedASTNode`, `getJSDocComment`, `getNonJsdocComment`
+  `getReducedASTNode`, `getJSDocComment`, `getNonJsdocComment`
 - chore: require Node ^20.19.0 || ^22.13.0 || >=24
 - chore: update `@typescript-eslint/types` and devDeps.
 
@@ -228,6 +232,7 @@ BREAKING CHANGES:
 - fix: remove `@types/eslint` (#20)
 
 Thanks:
+
 - [@ocavue](https://github.com/ocavue)
 
 ## 0.50.1
@@ -237,18 +242,19 @@ Thanks:
 ## 0.50.0
 
 BREAKING CHANGES:
-- Require Node 18+
 
+- Require Node 18+
 - chore: add `.d.cts` file / add type dependencies (#19)
 - test(ci): drop Node 16.x and add Node 22.x
 
 Thanks:
+
 - [@typhonrt](https://github.com/typhonrt)
 
 ## 0.49.0
 
 - fix: avoid changing `name` for `@template`; should be able to recover
-    optional brackets and defaults in AST
+  optional brackets and defaults in AST
 
 ## 0.48.0
 
@@ -257,7 +263,7 @@ Thanks:
 ## 0.47.0
 
 - fix(`parseComment`): assume closing bracket of name is final instead of
-    first one
+  first one
 - chore: flat config/ESLint 9; change browser targets; lint; update devDeps.
 
 ## 0.46.0
@@ -282,16 +288,19 @@ This release brings surgical round trip parsing to generated AST and reconstruct
 `commentParserToESTree` -> `estreeToString`.
 
 - feat: new option `spacing` for `commentParserToESTree`; the default is `compact` removing empty description lines.
+
 Set to `preserve` to retain empty description lines.
+
 - feat: new properties in the `JsdocBlock` generated AST `delimiterLineBreak` and `preterminalLineBreak` that encode
+
 any line break after the opening `delimiter` and before the closing `terminal` string. Values are either `\n` or an
 empty string.
 
 - chore: update devDeps / switch to Vitest.
-
 - New [API documentation](https://es-joy.github.io/jsdoccomment/).
 
 Thanks:
+
 - [@typhonrt](https://github.com/typhonrt)
 
 ## 0.42.0
@@ -347,6 +356,7 @@ Thanks:
 - chore: update esquery, devDeps.
 
 ## 0.37.0
+
 ## 0.37.0-pre.0
 
 - fix: update `jsdoc-type-pratt-parser` (supports bracket indexes)
@@ -354,7 +364,7 @@ Thanks:
 ## 0.36.1
 
 - fix(`getReducedASTNode`): stop checking for comment blocks at return
-    statement
+  statement
 
 ## 0.36.0
 
@@ -380,7 +390,7 @@ Thanks:
 ## 0.33.3
 
 - fix: ensure multi-line `description` includes newline except for
-    initial line descriptions
+  initial line descriptions
 
 ## 0.33.2
 
@@ -389,8 +399,8 @@ Thanks:
 ## 0.33.1
 
 - fix: add to default no types: `description`, `example`, `file`,
-    `fileoverview`, `license`, `overview`, `see`, `summary`
-- fix: add to no names: `file`, `fileoverview, `overview`
+  `fileoverview`, `license`, `overview`, `see`, `summary`
+- fix: add to no names: `file`, `fileoverview,`overview`
 
 ## 0.33.0
 
@@ -400,13 +410,13 @@ Thanks:
 ## 0.32.0
 
 - feat: have comment checking stop at assignment patterns (comments for
-    defaults should not rise to function itself)
+  defaults should not rise to function itself)
 - chore: bump devDeps.
 
 ## 0.31.0
 
 - feat: support default values with `@template` per
-    <https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#template>
+  <https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#template>
 
 ## 0.30.0
 
@@ -437,27 +447,27 @@ Thanks:
 ## 0.26.0
 
 - feat(`getJSDocComment`): allow function to detect comments just preceding a
-    parenthesized expression (these have no special AST but their tokens
-    have to be overpassed)
+  parenthesized expression (these have no special AST but their tokens
+  have to be overpassed)
 
 ## 0.25.0
 
 - feat(`parseComment`): properly support whitespace
 - fix(`estreeToString`): carriage return placement for ending of JSDoc block
 - fix(`commentParserToESTree`): avoid adding initial space before a tag if on
-    a single line
+  a single line
 - test: make tests more accurate to jsdoc semantically
 
 ## 0.24.0
 
 - feat(`estreeToString`): support stringification of `parsedType` but with
-    a new `preferRawType` option allowing the old behavior of using `rawType`
+  a new `preferRawType` option allowing the old behavior of using `rawType`
 
 ## 0.23.6
 
 - fix(`commentParserToESTree`): ensure `postType` added after multi-line type
 - fix(`estreeToString`): ensure `JsdocTypeLine` stringified with `initial` and
-    that they are joined together with newlines
+  that they are joined together with newlines
 
 ## 0.23.5
 
@@ -466,14 +476,14 @@ Thanks:
 ## 0.23.4
 
 - fix(`estreeToString`): add `delimiter`, etc. if adding `JsdocDescriptionLine`
-    for `JsdocBlock`
+  for `JsdocBlock`
 - fix(`estreeToString`): add line break when tags are present (unless already
-    ending in newline)
+  ending in newline)
 
 ## 0.23.3
 
 - fix(`estreeToString`): handle multi-line block descriptions followed by
-    tags with line break
+  tags with line break
 
 ## 0.23.2
 
@@ -486,7 +496,7 @@ Thanks:
 ## 0.23.0
 
 - BREAKING CHANGE(`commentParserToESTree`): rename `start` and `end` to
-    `initial` and `terminal` to avoid any conflicts with Acorn-style parsers
+  `initial` and `terminal` to avoid any conflicts with Acorn-style parsers
 - feat: add `initial` and `terminal` on `JsdocBlock`
 
 ## 0.22.2
@@ -497,7 +507,7 @@ Thanks:
 ## 0.22.1
 
 - fix: ensure `getJSDocComment` does not treat block comments as JSDoc unless
-    their first asterisk is followed by whitespace
+  their first asterisk is followed by whitespace
 
 ## 0.22.0
 
@@ -515,13 +525,13 @@ Thanks:
 ## 0.21.0
 
 - feat: add `throwOnTypeParsingErrors` to receive run-time type parsing errors
-    for `parsedType`
+  for `parsedType`
 - chore: update jsdoc-type-pratt-parser and devDeps.; also lints
 
 ## 0.20.1
 
 - fix: resume catching bad parsed type (at least until
-    `jsdoc-type-pratt-parser` may support all expected types)
+  `jsdoc-type-pratt-parser` may support all expected types)
 
 ## 0.20.0
 
@@ -553,11 +563,11 @@ Thanks:
 ### User-impacting
 
 - feat: add non-visitable `endLine` property (so can detect line number
-    when no description present)
+  when no description present)
 - feat: supply `indent` default for `parseComment`
 - fix: ensure `postName` gets a space for `@template` with a description
 - fix: converting JSDoc comment with tag on same line as end (e.g., single
-    line) to AST
+  line) to AST
 - chore: update `jsdoc-type-pratt-parser`
 
 ### Dev-impacting
@@ -676,8 +686,8 @@ Thanks:
 ## 0.10.4
 
 - Fix: Bundle `comment-parser` nested imports so that IDEs (like Atom)
-    bundling older Node versions can still work. Still mirroring the
-    stricter `comment-parser` `engines` for now, however.
+  bundling older Node versions can still work. Still mirroring the
+  stricter `comment-parser` `engines` for now, however.
 
 ## 0.10.3
 
@@ -764,7 +774,7 @@ Thanks:
 - Breaking change: Change `JSDoc` prefixes of all node types to `Jsdoc`
 - Breaking change: Drop `jsdoctypeparserToESTree`
 - Breaking enhancement: Switch to `jsdoc-type-pratt-parser` (toward greater
-    TypeScript expressivity and compatibility/support with catharsis)
+  TypeScript expressivity and compatibility/support with catharsis)
 - Enhancement: Export `jsdocTypeVisitorKeys` (from `jsdoc-type-pratt-parser`)
 
 ## 0.7.2
@@ -778,9 +788,9 @@ Thanks:
 ## 0.7.0
 
 - Enhancement: Allow specifying `noNames` and `noTypes` on `parseComment`
-    to override (or add to) tags which should have no names or types.
+  to override (or add to) tags which should have no names or types.
 - Enhancement: Export `hasSeeWithLink` utility and `defaultNoTypes` and
-    `defaultNoNames`.
+  `defaultNoNames`.
 
 ## 0.6.0
 
@@ -789,7 +799,7 @@ Thanks:
 ## 0.5.1
 
 - Fix: Avoid setting `variation` name (just the description) (including in
-    dist)
+  dist)
 - npm: Add `prepublishOnly` script
 
 ## 0.5.0
@@ -807,17 +817,17 @@ Thanks:
 ## 0.4.2
 
 - Fix: Ensure replacement of camel-casing (used in `jsdoctypeparser` nodes and
-    visitor keys is global. The practical effect is that
-    `JSDocTypeNamed_parameter` -> `JSDocTypeNamedParameter`,
-    `JSDocTypeRecord_entry` -> `JSDocTypeRecordEntry`
-    `JSDocTypeNot_nullable` -> `JSDocTypeNotNullable`
-    `JSDocTypeInner_member` -> `JSDocTypeInnerMember`
-    `JSDocTypeInstance_member` -> `JSDocTypeInstanceMember`
-    `JSDocTypeString_value` -> `JSDocTypeStringValue`
-    `JSDocTypeNumber_value` -> `JSDocTypeNumberValue`
-    `JSDocTypeFile_path` -> `JSDocTypeFilePath`
-    `JSDocTypeType_query` -> `JSDocTypeTypeQuery`
-    `JSDocTypeKey_query` -> `JSDocTypeKeyQuery`
+  visitor keys is global. The practical effect is that
+  `JSDocTypeNamed_parameter` -> `JSDocTypeNamedParameter`,
+  `JSDocTypeRecord_entry` -> `JSDocTypeRecordEntry`
+  `JSDocTypeNot_nullable` -> `JSDocTypeNotNullable`
+  `JSDocTypeInner_member` -> `JSDocTypeInnerMember`
+  `JSDocTypeInstance_member` -> `JSDocTypeInstanceMember`
+  `JSDocTypeString_value` -> `JSDocTypeStringValue`
+  `JSDocTypeNumber_value` -> `JSDocTypeNumberValue`
+  `JSDocTypeFile_path` -> `JSDocTypeFilePath`
+  `JSDocTypeType_query` -> `JSDocTypeTypeQuery`
+  `JSDocTypeKey_query` -> `JSDocTypeKeyQuery`
 - Fix: Add missing `JSDocTypeLine` to visitor keys
 - Docs: Explain AST structure/differences
 
@@ -832,13 +842,13 @@ Thanks:
 ## 0.3.0
 
 - Enhancement: Expose `toCamelCase` as new method rather than within a
-    utility file.
+  utility file.
 
 ## 0.2.0
 
 - Enhancement: Exposes new methods: `commentHandler`,
-    `commentParserToESTree`, `jsdocVisitorKeys`, `jsdoctypeparserToESTree`,
-    `jsdocTypeVisitorKeys`,
+  `commentParserToESTree`, `jsdocVisitorKeys`, `jsdoctypeparserToESTree`,
+  `jsdocTypeVisitorKeys`,
 
 ## 0.1.1
 

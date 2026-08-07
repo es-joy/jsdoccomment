@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-barrel-files -- Reexports with typedefs */
 /**
  * An inline tag whose `text` is the unescaped label value.
  * @typedef {import('./commentParserToESTree').JsdocInlineTagNoType & {
