@@ -187,7 +187,7 @@ No visitable properties.
 
 Has the following non-visitable properties:
 
-1. `format`: 'pipe' | 'plain' | 'prefix' | 'space'. These follow the styles of [link](https://jsdoc.app/tags-inline-link.html) or [tutorial](https://jsdoc.app/tags-inline-tutorial.html).
+1. `format`: 'pipe' | 'plain' | 'prefix' | 'space'. These follow the styles of [`@link`](https://jsdoc.app/tags-inline-link.html) or [`@tutorial`](https://jsdoc.app/tags-inline-tutorial.html).
     1. `pipe`: `{@link namepathOrURL|link text}`
     2. `plain`: `{@link namepathOrURL}`
     3. `prefix`: `[link text]{@link namepathOrURL}`
