@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.93.1
+
+- docs: fix link
+
 ## 0.93.0
 
 - chore: update comment-parser, typescript-eslint/types, devDeps.
