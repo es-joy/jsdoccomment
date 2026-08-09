@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.93.2
+
+- fix: update jsdoc-type-pratt-parser
+
 ## 0.93.1
 
 - docs: fix link
