@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.94.0
+
+- chore: update jtpp, devDeps.
+
 ## 0.93.2
 
 - fix: update jsdoc-type-pratt-parser
