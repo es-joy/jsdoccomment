@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-barrel-files -- Reexports with typedefs */
 /**
  * An inline tag whose `text` is the unescaped label value.
- * @typedef {import('./commentParserToESTree').JsdocInlineTagNoType & {
+ * @typedef {import('./commentParserToESTree.js').JsdocInlineTagNoType & {
  *   start: number,
  *   end: number,
  * }} InlineTag
@@ -9,9 +9,9 @@
 
 /**
  * @typedef {import('comment-parser').Spec & {
- *   line?: import('./commentParserToESTree').Integer,
- *   inlineTags: (import('./commentParserToESTree').JsdocInlineTagNoType & {
- *     line?: import('./commentParserToESTree').Integer
+ *   line?: import('./commentParserToESTree.js').Integer,
+ *   inlineTags: (import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+ *     line?: import('./commentParserToESTree.js').Integer
  *   })[]
  * }} JsdocTagWithInline
  */
@@ -23,8 +23,8 @@
  *   source: import('comment-parser').Line[],
  *   problems: import('comment-parser').Problem[],
  *   tags: JsdocTagWithInline[],
- *   inlineTags: (import('./commentParserToESTree').JsdocInlineTagNoType & {
- *     line?: import('./commentParserToESTree').Integer
+ *   inlineTags: (import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+ *     line?: import('./commentParserToESTree.js').Integer
  *   })[]
  * }} JsdocBlockWithInline
  */
@@ -43,7 +43,7 @@
 /**
  * @callback CommentHandler
  * @param {string} commentSelector
- * @param {import('.').JsdocBlockWithInline} jsdoc
+ * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @returns {boolean}
  */
 

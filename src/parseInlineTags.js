@@ -30,10 +30,11 @@ function determineFormat (match) {
 /**
  * Extracts inline tags from a description.
  * @param {string} description
- * @returns {import('.').InlineTag[]} Array of inline tags from the description.
+ * @returns {import('./index.js').InlineTag[]} Array of inline tags from
+ *   the description.
  */
 function parseDescription (description) {
-  /** @type {import('.').InlineTag[]} */
+  /** @type {import('./index.js').InlineTag[]} */
   const result = [];
 
   // This could have been expressed in a single pattern,
@@ -63,7 +64,6 @@ function parseDescription (description) {
         mtch
       );
     const {tag, namepathOrURL, text} = match.groups;
-    // @ts-expect-error Ok
     const [start, end] = match.indices[0];
     const format = determineFormat(match);
     const decodedText = decodeInlineTagText(text, format);
@@ -85,30 +85,30 @@ function parseDescription (description) {
  * Splits the `{@ prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
  * @param {import('comment-parser').Block} block
- * @returns {import('.').JsdocBlockWithInline}
+ * @returns {import('./index.js').JsdocBlockWithInline}
  */
 export function parseInlineTags (block) {
   const inlineTags =
     /**
-     * @type {(import('./commentParserToESTree').JsdocInlineTagNoType & {
-     *   line?: import('./commentParserToESTree').Integer
+     * @type {(import('./commentParserToESTree.js').JsdocInlineTagNoType & {
+     *   line?: import('./commentParserToESTree.js').Integer
      * })[]}
      */ (
       parseDescription(block.description)
     );
 
-  /** @type {import('.').JsdocBlockWithInline} */ (
+  /** @type {import('./index.js').JsdocBlockWithInline} */ (
     block
   ).inlineTags = inlineTags;
 
   for (const tag of block.tags) {
     /**
-     * @type {import('.').JsdocTagWithInline}
+     * @type {import('./index.js').JsdocTagWithInline}
      */ (tag).inlineTags = parseDescription(tag.description);
   }
   return (
     /**
-     * @type {import('.').JsdocBlockWithInline}
+     * @type {import('./index.js').JsdocBlockWithInline}
      */ (block)
   );
 }

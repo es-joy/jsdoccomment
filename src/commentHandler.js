@@ -16,12 +16,12 @@ import {
  * }} settings
  * @param {import('./commentParserToESTree.js').
  *   CommentParserToESTreeOptions} [commentParserToESTreeOptions]
- * @returns {import('.').CommentHandler}
+ * @returns {import('./index.js').CommentHandler}
  */
 const commentHandler = (settings, commentParserToESTreeOptions) => {
   /* eslint-enable jsdoc/reject-any-type -- Arbitrary settings */
   /**
-   * @type {import('.').CommentHandler}
+   * @type {import('./index.js').CommentHandler}
    */
   return (commentSelector, jsdoc) => {
     const {mode} = settings;

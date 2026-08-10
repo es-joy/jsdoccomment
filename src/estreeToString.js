@@ -9,7 +9,7 @@ const stringifiers = {
   JsdocBlock,
 
   /**
-   * @param {import('./commentParserToESTree').JsdocDescriptionLine} node
+   * @param {import('./commentParserToESTree.js').JsdocDescriptionLine} node
    * @returns {string}
    */
   JsdocDescriptionLine ({
@@ -19,7 +19,7 @@ const stringifiers = {
   },
 
   /**
-   * @param {import('./commentParserToESTree').JsdocTypeLine} node
+   * @param {import('./commentParserToESTree.js').JsdocTypeLine} node
    * @returns {string}
    */
   JsdocTypeLine ({
@@ -29,7 +29,7 @@ const stringifiers = {
   },
 
   /**
-   * @param {import('./commentParserToESTree').JsdocInlineTag} node
+   * @param {import('./commentParserToESTree.js').JsdocInlineTag} node
    */
   JsdocInlineTag ({format, namepathOrURL, tag, text}) {
     const encodedText = encodeInlineTagText(text, format);
@@ -49,14 +49,14 @@ const stringifiers = {
 /**
  * @todo convert for use by escodegen (until may be patched to support
  *   custom entries?).
- * @param {import('./commentParserToESTree').JsdocBlock|
- *   import('./commentParserToESTree').JsdocDescriptionLine|
- *   import('./commentParserToESTree').JsdocTypeLine|
- *   import('./commentParserToESTree').JsdocTag|
- *   import('./commentParserToESTree').JsdocInlineTag|
+ * @param {import('./commentParserToESTree.js').JsdocBlock|
+ *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+ *   import('./commentParserToESTree.js').JsdocTypeLine|
+ *   import('./commentParserToESTree.js').JsdocTag|
+ *   import('./commentParserToESTree.js').JsdocInlineTag|
  *   import('jsdoc-type-pratt-parser').RootResult
  * } node
- * @param {import('.').ESTreeToStringOptions} [opts]
+ * @param {import('./index.js').ESTreeToStringOptions} [opts]
  * @throws {Error}
  * @returns {string}
  */
@@ -64,10 +64,10 @@ function estreeToString (node, opts = {}) {
   if (Object.hasOwn(stringifiers, node.type)) {
     return stringifiers[
       /**
-       * @type {import('./commentParserToESTree').JsdocBlock|
-       *   import('./commentParserToESTree').JsdocDescriptionLine|
-       *   import('./commentParserToESTree').JsdocTypeLine|
-       *   import('./commentParserToESTree').JsdocTag}
+       * @type {import('./commentParserToESTree.js').JsdocBlock|
+       *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+       *   import('./commentParserToESTree.js').JsdocTypeLine|
+       *   import('./commentParserToESTree.js').JsdocTag}
        */
       (node).type
     ](
@@ -92,8 +92,8 @@ function estreeToString (node, opts = {}) {
 }
 
 /**
- * @param {import('./commentParserToESTree').JsdocBlock} node
- * @param {import('.').ESTreeToStringOptions} opts
+ * @param {import('./commentParserToESTree.js').JsdocBlock} node
+ * @param {import('./index.js').ESTreeToStringOptions} opts
  * @returns {string}
  */
 function JsdocBlock (node, opts) {
@@ -128,8 +128,8 @@ function JsdocBlock (node, opts) {
 }
 
 /**
- * @param {import('./commentParserToESTree').JsdocTag} node
- * @param {import('.').ESTreeToStringOptions} opts
+ * @param {import('./commentParserToESTree.js').JsdocTag} node
+ * @param {import('./index.js').ESTreeToStringOptions} opts
  * @returns {string}
  */
 function JsdocTag (node, opts) {

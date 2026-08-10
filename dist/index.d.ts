@@ -104,7 +104,7 @@ type CommentParserToESTreeOptions = {
  */
 /**
  * Converts comment parser AST to ESTree format.
- * @param {import('.').JsdocBlockWithInline} jsdoc
+ * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {CommentParserToESTreeOptions} [opts]
  * @returns {JsdocBlock}
@@ -129,7 +129,7 @@ declare namespace jsdocVisitorKeys {
  * }} settings
  * @param {import('./commentParserToESTree.js').
  *   CommentParserToESTreeOptions} [commentParserToESTreeOptions]
- * @returns {import('.').CommentHandler}
+ * @returns {import('./index.js').CommentHandler}
  */
 declare function commentHandler(
   settings: {
@@ -142,14 +142,14 @@ declare function commentHandler(
 /**
  * @todo convert for use by escodegen (until may be patched to support
  *   custom entries?).
- * @param {import('./commentParserToESTree').JsdocBlock|
- *   import('./commentParserToESTree').JsdocDescriptionLine|
- *   import('./commentParserToESTree').JsdocTypeLine|
- *   import('./commentParserToESTree').JsdocTag|
- *   import('./commentParserToESTree').JsdocInlineTag|
+ * @param {import('./commentParserToESTree.js').JsdocBlock|
+ *   import('./commentParserToESTree.js').JsdocDescriptionLine|
+ *   import('./commentParserToESTree.js').JsdocTypeLine|
+ *   import('./commentParserToESTree.js').JsdocTag|
+ *   import('./commentParserToESTree.js').JsdocInlineTag|
  *   import('jsdoc-type-pratt-parser').RootResult
  * } node
- * @param {import('.').ESTreeToStringOptions} [opts]
+ * @param {import('./index.js').ESTreeToStringOptions} [opts]
  * @throws {Error}
  * @returns {string}
  */
@@ -329,7 +329,7 @@ declare function getTokenizers({
  * `comment-parser` AST.
  * @param {string | {value: string}} commentOrNode
  * @param {string} [indent] Whitespace
- * @returns {import('.').JsdocBlockWithInline}
+ * @returns {import('./index.js').JsdocBlockWithInline}
  */
 declare function parseComment(
   commentOrNode:
@@ -344,7 +344,7 @@ declare function parseComment(
  * Splits the `{@ prefix}` from remaining `Spec.lines[].token.description`
  * into the `inlineTags` tokens, and populates `spec.inlineTags`
  * @param {import('comment-parser').Block} block
- * @returns {import('.').JsdocBlockWithInline}
+ * @returns {import('./index.js').JsdocBlockWithInline}
  */
 declare function parseInlineTags(block: comment_parser.Block): JsdocBlockWithInline;
 

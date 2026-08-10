@@ -148,7 +148,7 @@ const inlineTagToAST = ({text, tag, format, namepathOrURL}) => ({
 
 /**
  * Converts comment parser AST to ESTree format.
- * @param {import('.').JsdocBlockWithInline} jsdoc
+ * @param {import('./index.js').JsdocBlockWithInline} jsdoc
  * @param {import('jsdoc-type-pratt-parser').ParseMode} mode
  * @param {CommentParserToESTreeOptions} [opts]
  * @returns {JsdocBlock}

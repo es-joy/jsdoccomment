@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.95.0
+
+- chore: update typescript-eslint/types, jtpp, devDeps.; switch to nodenext modules in ts
+
 ## 0.94.0
 
 - chore: update jtpp, devDeps.
