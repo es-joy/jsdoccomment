@@ -52,15 +52,15 @@ function parseDescription (description) {
 
   for (const mtch of matches) {
     const match = /**
-      * @type {RegExpMatchArray & {
-      *   indices: {
-      *     groups: {
-      *       [key: string]: [number, number]
-      *     }
-      *   }
-      *   groups: {[key: string]: string}
-      * }}
-      */ (
+                   * @type {RegExpMatchArray & {
+                   *   indices: {
+                   *     groups: {
+                   *       [key: string]: [number, number]
+                   *     }
+                   *   }
+                   *   groups: {[key: string]: string}
+                   * }}
+                   */ (
         mtch
       );
     const {tag, namepathOrURL, text} = match.groups;

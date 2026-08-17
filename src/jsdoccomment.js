@@ -610,13 +610,13 @@ const getNonJsdocComment = function (sourceCode, node, settings) {
 };
 
 /**
-  * @param {ESLintOrTSNode|import('eslint').AST.Token|
-  *   import('estree').Comment
-  * } nodeA The AST node or token to compare
-  * @param {ESLintOrTSNode|import('eslint').AST.Token|
-  *   import('estree').Comment} nodeB The
-  *   AST node or token to compare
-  */
+ * @param {ESLintOrTSNode|import('eslint').AST.Token|
+ *   import('estree').Comment
+ * } nodeA The AST node or token to compare
+ * @param {ESLintOrTSNode|import('eslint').AST.Token|
+ *   import('estree').Comment} nodeB The
+ *   AST node or token to compare
+ */
 const compareLocEndToStart = (nodeA, nodeB) => {
   /* v8 ignore next */
   return (nodeA.loc?.end.line ?? 0) === (nodeB.loc?.start.line ?? 0);

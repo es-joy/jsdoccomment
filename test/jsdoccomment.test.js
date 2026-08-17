@@ -422,10 +422,10 @@ describe('`getReducedASTNode`', function () {
          * }
          */
         (/**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   MethodDefinition
-         * }
-         */ (
+          * @type {import('@typescript-eslint/types').TSESTree.
+          *   MethodDefinition
+          * }
+          */ (
           /**
            * @type {import('@typescript-eslint/types').TSESTree.
            *   ClassDeclaration
@@ -491,10 +491,10 @@ describe('`getReducedASTNode`', function () {
          * }
          */
         (/**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSPropertySignature
-         * }
-         */
+          * @type {import('@typescript-eslint/types').TSESTree.
+          *   TSPropertySignature
+          * }
+          */
           (
             /**
              * @type {import('@typescript-eslint/types').TSESTree.
@@ -595,9 +595,9 @@ describe('`getReducedASTNode`', function () {
          * }
          */
         (/**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   PropertyDefinition}
-         */ (
+          * @type {import('@typescript-eslint/types').TSESTree.
+          *   PropertyDefinition}
+          */ (
           /**
            * @type {import('@typescript-eslint/types').TSESTree.
            *   ClassDeclaration}
@@ -954,15 +954,15 @@ describe('`getFollowingComment`', function () {
       /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
-        *   TSTypeAnnotation
-        * }
-        */
+         *   TSTypeAnnotation
+         * }
+         */
         (
         /**
-        * @type {import('@typescript-eslint/types').TSESTree.
-        *   TSPropertySignature
-        * }
-        */
+         * @type {import('@typescript-eslint/types').TSESTree.
+         *   TSPropertySignature
+         * }
+         */
           (
             /**
              * @type {import('@typescript-eslint/types').TSESTree.
