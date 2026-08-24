@@ -10,7 +10,7 @@ minimumReleaseAgeExclude:
   - comment-parser@1.4.7 || 1.4.8
   - '@es-joy/jsdoccomment@0.89.0 || 0.90.0 || 0.93.2'
   - eslint-plugin-jsdoc@63.2.1 || 63.2.2 || 63.3.1 || 64.0.2
-  - jsdoc-type-pratt-parser@7.3.0 || 8.0.0 || 9.0.0 || 9.0.1 || 9.1.0 || 9.1.1 || 9.1.2
+  - jsdoc-type-pratt-parser@7.3.0 || 8.0.0 || 9.0.0 || 9.0.1 || 9.1.0 || 9.1.1 || 9.1.2 || 9.2.0
   - eslint-config-ash-nazg@40.2.0 || 41.1.0 || 41.1.1 || 42.1.1 || 42.2.0
   - eslint-plugin-mocha@12.0.0
   - eslint@10.8.1
