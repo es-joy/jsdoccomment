@@ -11,7 +11,14 @@ export default defineConfig({
       include: ['src/**'],
       exclude: ['test/**'],
       provider: 'v8',
-      reporter: ['text', 'json', 'html']
+      reporter: ['text', 'json', 'html'],
+      thresholds: {
+        lines: 100,
+        statements: 100,
+        functions: 100,
+        branches: 100,
+        perFile: true
+      }
     },
     reporters: ['default', 'html'],
     globals: true

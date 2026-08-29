@@ -359,11 +359,9 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
       /**
        * @type {JsdocInlineTag[]}
        */
-      const tagInlineTags = tag
-        // Assuming the tags from `source` are in the same order as `jsdoc.tags`
-        // we can use the `tags` length as index into the parser result tags.
-        // eslint-disable-next-line @stylistic/operator-linebreak -- Required
-        ?
+      const tagInlineTags =
+      // Assuming the tags from `source` are in the same order as `jsdoc.tags`
+      // we can use the `tags` length as index into the parser result tags.
         /**
          * @type {import('comment-parser').Spec & {
          *   inlineTags: JsdocInlineTagNoType[]
@@ -372,8 +370,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
           jsdoc.tags[tags.length]
         ).inlineTags.map(
           (t) => inlineTagToAST(t)
-        )
-        : [];
+        );
 
       /** @type {JsdocTag} */
       const tagObj = {

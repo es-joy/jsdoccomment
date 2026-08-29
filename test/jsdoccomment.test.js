@@ -80,7 +80,9 @@ describe('`getReducedASTNode`', function () {
 
     // console.log('ast', Object.keys(ast));
 
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (ast.body[0]), sourceCode
@@ -94,7 +96,9 @@ describe('`getReducedASTNode`', function () {
 
     // console.log('ast', Object.keys(ast));
 
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (ast.body[0]), sourceCode
@@ -108,7 +112,9 @@ describe('`getReducedASTNode`', function () {
 
     // console.log('ast', Object.keys(ast));
 
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
@@ -127,7 +133,9 @@ describe('`getReducedASTNode`', function () {
     )`;
     const ast = parseAddingParents(code);
 
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
@@ -144,7 +152,9 @@ describe('`getReducedASTNode`', function () {
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
 
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
@@ -160,7 +170,9 @@ describe('`getReducedASTNode`', function () {
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
 
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
         /** @type {import('estree').VariableDeclaration} */ (
@@ -179,7 +191,9 @@ describe('`getReducedASTNode`', function () {
       export default function abc () {};
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
         /** @type {import('estree').ExportDefaultDeclaration} */
@@ -198,7 +212,9 @@ describe('`getReducedASTNode`', function () {
       export type Test = (foo: number) => string;
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
         /** @type {import('estree').ExportNamedDeclaration} */
@@ -215,7 +231,9 @@ describe('`getReducedASTNode`', function () {
       A, B
     }`;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
         ast.body[0]
@@ -228,7 +246,9 @@ describe('`getReducedASTNode`', function () {
   it('gets `TSTypeAliasDeclaration`', function () {
     const code = `type testType = string | number;`;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
         ast.body[0]
@@ -246,7 +266,9 @@ describe('`getReducedASTNode`', function () {
       }
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
       /** @type {import('eslint').Rule.Node} */ (
         ast.body[0]
@@ -261,23 +283,23 @@ describe('`getReducedASTNode`', function () {
       let TestFunction: (id) => void;
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.
+       *   TSTypeAnnotation
+       * }
+       */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
+         *   VariableDeclaration
          * }
          */ (
-          /**
-           * @type {import('@typescript-eslint/types').TSESTree.
-           *   VariableDeclaration
-           * }
-           */ (
-            ast.body[0]
-          ).declarations[0].id.typeAnnotation
-        ).typeAnnotation
-      ),
+          ast.body[0]
+        ).declarations[0].id.typeAnnotation
+      ).typeAnnotation,
       sourceCode
     );
     expect(parsed.type).to.equal('VariableDeclaration');
@@ -292,26 +314,26 @@ describe('`getReducedASTNode`', function () {
       }
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.
+       *   TSTypeAnnotation
+       * }
+       */ (
         /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
+         * @type {import('@typescript-eslint/types').TSESTree.Identifier}
          */ (
           /**
-           * @type {import('@typescript-eslint/types').TSESTree.Identifier}
-           */ (
-            /**
-             * @type {import('@typescript-eslint/types').TSESTree.
-             *   FunctionDeclaration
-             * }
-             */
-            (ast.body[0]).params[0]
-          ).typeAnnotation
+           * @type {import('@typescript-eslint/types').TSESTree.
+           *   FunctionDeclaration
+           * }
+           */
+          (ast.body[0]).params[0]
         ).typeAnnotation
-      ),
+      ).typeAnnotation,
       sourceCode
     );
     expect(parsed.type).to.equal('FunctionDeclaration');
@@ -328,38 +350,38 @@ describe('`getReducedASTNode`', function () {
         }
       `;
       const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
       const parsed = getReducedASTNode(
-        /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+        /**
+         * @type {import('@typescript-eslint/types').TSESTree.
+         *   TSTypeAnnotation
+         * }
+         */
+        (/** @type {any} */
+          (
           /**
            * @type {import('@typescript-eslint/types').TSESTree.
-           *   TSTypeAnnotation
+           *   ArrowFunctionExpression
            * }
-           */
-          (/** @type {import('@typescript-eslint/types').TSESTree.Identifier} */
-            (
+           */ (
             /**
              * @type {import('@typescript-eslint/types').TSESTree.
-             *   ArrowFunctionExpression
+             *   VariableDeclarator
              * }
              */ (
               /**
                * @type {import('@typescript-eslint/types').TSESTree.
-               *   VariableDeclarator
+               *   VariableDeclaration
                * }
                */ (
-                /**
-                 * @type {import('@typescript-eslint/types').TSESTree.
-                 *   VariableDeclaration
-                 * }
-                 */ (
-                    ast.body[0]
-                  ).declarations[0]
-                ).init
-              ).params[0]
-            ).typeAnnotation
+                  ast.body[0]
+                ).declarations[0]
+              ).init
+            ).params[0]
           ).typeAnnotation
-        ),
+        ).typeAnnotation,
         sourceCode
       );
       expect(parsed.type).to.equal('VariableDeclaration');
@@ -375,15 +397,17 @@ describe('`getReducedASTNode`', function () {
       })
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *   TSTypeAnnotation
          * }
          */
-        (/** @type {import('@typescript-eslint/types').TSESTree.Identifier} */
+        (/** @type {any} */
           (
             /**
              * @type {import('@typescript-eslint/types').TSESTree.
@@ -413,9 +437,11 @@ describe('`getReducedASTNode`', function () {
       }
       `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *   TSTypeAnnotation
@@ -447,9 +473,11 @@ describe('`getReducedASTNode`', function () {
         }
       `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *  TSTypeAnnotation
@@ -482,9 +510,11 @@ describe('`getReducedASTNode`', function () {
       }
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *   TSTypeAnnotation
@@ -501,7 +531,7 @@ describe('`getReducedASTNode`', function () {
              *   TSInterfaceDeclaration
              * }
              */ (
-              /** @type {import('@typescript-eslint/types').TSESTree.Program} */
+              /** @type {any} */
               (ast).body[0]
             ).body.body[0]
           ).typeAnnotation
@@ -519,9 +549,11 @@ describe('`getReducedASTNode`', function () {
       }
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *   TSTypeAnnotation
@@ -539,7 +571,7 @@ describe('`getReducedASTNode`', function () {
              *   TSInterfaceDeclaration}
              */
             (
-              /** @type {import('@typescript-eslint/types').TSESTree.Program} */
+              /** @type {any} */
               (ast).body[0]
             ).body.body[0]
           ).returnType).typeAnnotation
@@ -554,9 +586,11 @@ describe('`getReducedASTNode`', function () {
       function test(): (id: number) => string;
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *   TSTypeAnnotation
@@ -569,7 +603,7 @@ describe('`getReducedASTNode`', function () {
            * }
            */
           (
-            /** @type {import('@typescript-eslint/types').TSESTree.Program} */
+            /** @type {any} */
             (ast).body[0]
           ).returnType
         ).typeAnnotation
@@ -586,9 +620,11 @@ describe('`getReducedASTNode`', function () {
         }
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
     const parsed = getReducedASTNode(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *   TSTypeAnnotation
@@ -613,6 +649,241 @@ describe('`getReducedASTNode`', function () {
   });
 });
 
+describe('getReducedASTNode additional tests', function () {
+  it(
+    'handles TSFunctionType inside TSTypeAliasDeclaration ' +
+    '(ExportNamedDeclaration)',
+    function () {
+      const code = 'export type Foo = () => void;';
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+      const sourceCode = new SourceCode(
+        code, ast
+      );
+      const exportNamedDecl =
+        /**
+         * @type {import('@typescript-eslint/types').TSESTree.
+         *   ExportNamedDeclaration}
+         */ (ast.body[0]);
+      const tsTypeAliasDecl =
+        /**
+         * @type {import('@typescript-eslint/types').TSESTree.
+         *   TSTypeAliasDeclaration}
+         */ (exportNamedDecl.declaration);
+      const tsFunctionType = tsTypeAliasDecl.typeAnnotation;
+      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      expect(parsed.type).to.equal('ExportNamedDeclaration');
+    }
+  );
+
+  it(
+    'handles TSFunctionType in ArrowFunctionExpression ' +
+    '(variable declarator)',
+    function () {
+      const code = 'const foo = (): () => void => {};';
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+      const sourceCode = new SourceCode(
+        code, ast
+      );
+      const arrowFunc =
+        /** @type {any} */
+        (ast.body[0]).declarations[0].init;
+      const tsFunctionType = arrowFunc.returnType.typeAnnotation;
+      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      expect(parsed.type).to.equal('Program');
+    }
+  );
+
+  it(
+    'handles TSFunctionType in ArrowFunctionExpression ' +
+    '(not variable declarator)',
+    function () {
+      const code = 'export default (): () => void => {};';
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+      const sourceCode = new SourceCode(
+        code, ast
+      );
+      const arrowFunc =
+        /** @type {any} */
+        (ast.body[0]).declaration;
+      const tsFunctionType = arrowFunc.returnType.typeAnnotation;
+      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      expect(parsed.type).to.equal('TSFunctionType');
+    }
+  );
+
+  it(
+    'handles TSFunctionType in FunctionExpression (MethodDefinition)',
+    function () {
+      const code = 'class Foo { foo(): () => void {} }';
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+      const sourceCode = new SourceCode(
+        code, ast
+      );
+      const classDecl =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.ClassDeclaration}
+         */ ast.body[0];
+      const methodDef =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.MethodDefinition}
+         */ (classDecl.body.body[0]);
+      const funcExpr =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.FunctionExpression}
+         */ (methodDef.value);
+      const tsFunctionType =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.TSTypeAnnotation}
+         */ (funcExpr.returnType).typeAnnotation;
+      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      expect(parsed.type).to.equal('MethodDefinition');
+    }
+  );
+
+  it(
+    'handles TSFunctionType in Identifier in FunctionDeclaration',
+    function () {
+      const code = 'function foo(x: () => void) {}';
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+      const sourceCode = new SourceCode(
+        code, ast
+      );
+      const funcDecl =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.FunctionDeclaration}
+         */ (
+          ast.body[0]
+        );
+      const identifier =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.Identifier}
+         */ (funcDecl.params[0]);
+      const tsFunctionType =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.TSTypeAnnotation}
+         */ (
+          identifier.typeAnnotation
+        ).typeAnnotation;
+      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      expect(parsed.type).to.equal('FunctionDeclaration');
+    }
+  );
+
+  it('handles TSFunctionType in Identifier in VariableDeclarator', function () {
+    const code = 'let x: () => void;';
+    const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+    const sourceCode = new SourceCode(
+      code, ast
+    );
+    const varDecl =
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.
+       *   VariableDeclaration}
+       */ (ast.body[0]);
+    const varDeclarator = varDecl.declarations[0];
+    const identifier =
+      /**
+       * @type {import('@typescript-eslint/types').
+       *   TSESTree.Identifier}
+       */ (varDeclarator.id);
+    const tsFunctionType =
+      /**
+       * @type {import('@typescript-eslint/types').
+       *   TSESTree.TSTypeAnnotation}
+       */ (identifier.typeAnnotation).typeAnnotation;
+    const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+    expect(parsed.type).to.equal('VariableDeclaration');
+  });
+
+  it('handles TSFunctionType in Identifier in other', function () {
+    const code = 'try {} catch (e: () => void) {}';
+    const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+    const sourceCode = new SourceCode(
+      code, ast
+    );
+    const tryStatement =
+      /**
+       * @type {import('@typescript-eslint/types').
+       *   TSESTree.TryStatement}
+       */ (ast.body[0]);
+    const catchClause =
+      /**
+       * @type {import('@typescript-eslint/types').
+       *   TSESTree.CatchClause}
+       */ (tryStatement.handler);
+    const identifier =
+      /**
+       * @type {import('@typescript-eslint/types').
+       *   TSESTree.Identifier}
+       */ (catchClause.param);
+    const tsFunctionType =
+      /**
+       * @type {import('@typescript-eslint/types').
+       *   TSESTree.TSTypeAnnotation}
+       */ (identifier.typeAnnotation).typeAnnotation;
+    const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+    expect(parsed.type).to.equal('TSFunctionType');
+  });
+
+
+  it(
+    'handles TSFunctionType in FunctionExpression (not MethodDefinition)',
+    function () {
+      const code = 'const foo = function(): () => void {};';
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+      const sourceCode = new SourceCode(
+        code, ast
+      );
+      const varDecl2 =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.VariableDeclaration}
+         */ (ast.body[0]);
+      const funcExpr =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.FunctionExpression}
+         */ (varDecl2.declarations[0].init);
+      const tsFunctionType =
+        /**
+         * @type {import('@typescript-eslint/types').
+         *   TSESTree.TSTypeAnnotation}
+         */ (funcExpr.returnType).typeAnnotation;
+      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      // Actually wait, it falls through to default, which returns astNode
+      expect(parsed.type).to.equal('TSFunctionType');
+    }
+  );
+
+
+  it(
+    'handles TSFunctionType inside TSTypeAliasDeclaration ' +
+    '(not ExportNamedDeclaration)',
+    function () {
+      const code = 'type Foo = () => void;';
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+      const sourceCode = new SourceCode(
+        code, ast
+      );
+      const tsTypeAliasDecl =
+        /**
+         * @type {import('@typescript-eslint/types').TSESTree.
+         *   TSTypeAliasDeclaration}
+         */ (ast.body[0]);
+      const tsFunctionType = tsTypeAliasDecl.typeAnnotation;
+      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      // Should return astNode, which is TSFunctionType
+      expect(parsed.type).to.equal('TSFunctionType');
+    }
+  );
+});
 describe('`findJSDocComment', function () {
   it('gets JSDoc above decorator', function () {
     const code = `/**
@@ -684,7 +955,7 @@ describe('`findJSDocComment', function () {
     ).body.body[0];
 
     const comment = findJSDocComment(
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */
+      /** @type {any} */
       (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
@@ -708,7 +979,9 @@ describe('`getNonJsdocComment`', function () {
     const code = `// Test
 function quux () {}`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getNonJsdocComment(
       sourceCode,
@@ -725,7 +998,9 @@ function quux () {}`;
     const code = `/* Test */
 function quux () {}`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getNonJsdocComment(
       sourceCode,
@@ -742,7 +1017,9 @@ function quux () {}`;
     const code = `/** Test */
 function quux () {}`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getNonJsdocComment(
       sourceCode,
@@ -760,7 +1037,9 @@ describe('`getFollowingComment`', function () {
     const code = `function quux () {
 } // Test`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -774,7 +1053,9 @@ describe('`getFollowingComment`', function () {
     const code = `(function quux () {
 }) // Test`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -793,7 +1074,9 @@ describe('`getFollowingComment`', function () {
       }
   ) // Test`;
       const ast = parseAddingParents(code);
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
 
       const comment = getFollowingComment(
         sourceCode,
@@ -811,7 +1094,9 @@ describe('`getFollowingComment`', function () {
     }
 `;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -828,7 +1113,9 @@ describe('`getFollowingComment`', function () {
       } // Test
   )`;
       const ast = parseAddingParents(code);
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
 
       const comment = getFollowingComment(
         sourceCode,
@@ -843,7 +1130,9 @@ describe('`getFollowingComment`', function () {
     const code = `function quux () {
 } /* Test */`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -858,7 +1147,9 @@ describe('`getFollowingComment`', function () {
 }
 // Test`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -871,7 +1162,9 @@ describe('`getFollowingComment`', function () {
     const code = `function quux () {}
 /* Test */`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -883,7 +1176,9 @@ describe('`getFollowingComment`', function () {
   it('gets line comment after number in expression statement', function () {
     const code = `(5) // Test`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -897,7 +1192,9 @@ describe('`getFollowingComment`', function () {
     const code = `var a = function quux () {
 } // Test`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -913,7 +1210,9 @@ describe('`getFollowingComment`', function () {
   it('gets line comment after number variable declarator', function () {
     const code = `var a = 5; // Test`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -929,7 +1228,9 @@ describe('`getFollowingComment`', function () {
   it('gets line comment after number variable declaration', function () {
     const code = `var a = 5; // Test`;
     const ast = parseAddingParents(code);
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
@@ -947,11 +1248,13 @@ describe('`getFollowingComment`', function () {
       }
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *   TSTypeAnnotation
@@ -969,7 +1272,7 @@ describe('`getFollowingComment`', function () {
              *   TSInterfaceDeclaration
              * }
              */ (
-            /** @type {import('@typescript-eslint/types').TSESTree.Program} */
+            /** @type {any} */
               (ast).body[0]
             ).body.body[0]
           ).typeAnnotation
@@ -986,11 +1289,13 @@ describe('`getFollowingComment`', function () {
         }
     `;
     const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
-    const sourceCode = new SourceCode(code, ast);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
 
     const comment = getFollowingComment(
       sourceCode,
-      /** @type {import('@typescript-eslint/types').TSESTree.Node} */ (
+      /** @type {any} */ (
         /**
          * @type {import('@typescript-eslint/types').TSESTree.
          *   TSTypeAnnotation
@@ -1048,7 +1353,9 @@ describe('getJSDocComment', function () {
       /* eslint-enable @stylistic/max-len -- Long */
       const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
 
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
 
       const comment = getJSDocComment(
         sourceCode,
@@ -1112,7 +1419,9 @@ describe('getJSDocComment', function () {
       /* eslint-enable @stylistic/max-len -- Long */
       const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
 
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
 
       const comment = getJSDocComment(
         sourceCode,
@@ -1145,7 +1454,9 @@ describe('getJSDocComment', function () {
       `;
       const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
 
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
 
       const comment = getJSDocComment(
         sourceCode,
@@ -1185,7 +1496,9 @@ describe('getJSDocComment', function () {
       `;
       const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
 
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
 
       const comment = getJSDocComment(
         sourceCode,
@@ -1222,7 +1535,9 @@ describe('getJSDocComment', function () {
       `;
       const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
 
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
 
       const comment = getJSDocComment(
         sourceCode,
@@ -1251,7 +1566,9 @@ describe('getJSDocComment', function () {
       `;
       const ast = parseAddingParents(code);
 
-      const sourceCode = new SourceCode(code, ast);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
 
       const comment = getJSDocComment(
         sourceCode,

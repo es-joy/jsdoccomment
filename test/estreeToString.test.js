@@ -605,4 +605,103 @@ describe('`estreeToString`', function () {
       value: 'string'
     }, {preferRawType: true})).to.equal('');
   });
+
+  it('handles name on a separate line (no description lines)', function () {
+    const str = estreeToString({
+      type: 'JsdocBlock',
+      delimiter: '/**',
+      delimiterLineBreak: '\n',
+      description: '',
+      descriptionLines: [],
+      initial: '',
+      hasPreterminalDescription: 0,
+      terminal: '*/',
+      preterminalLineBreak: '\n',
+      endLine: 2,
+      lastDescriptionLine: 1,
+      lineEnd: '',
+      postDelimiter: '',
+      inlineTags: [],
+      tags: [
+        {
+          delimiter: '*',
+          description: '',
+          descriptionLines: [],
+          inlineTags: [],
+          name: 'Some',
+          parsedType: null,
+          postDelimiter: ' ',
+          postName: '',
+          postTag: '',
+          postType: '',
+          tag: 'param',
+          type: 'JsdocTag',
+          rawType: '',
+          initial: ' ',
+          typeLines: []
+        }
+      ]
+    });
+    expect(str).to.equal(`/**
+ * @param
+ * Some
+ */`);
+  });
+
+  it('handles name on a separate line (with description lines)', function () {
+    const str = estreeToString({
+      type: 'JsdocBlock',
+      delimiter: '/**',
+      delimiterLineBreak: '\n',
+      description: '',
+      descriptionLines: [],
+      initial: '',
+      hasPreterminalDescription: 0,
+      terminal: '*/',
+      preterminalLineBreak: '\n',
+      endLine: 3,
+      lastDescriptionLine: 2,
+      lineEnd: '',
+      postDelimiter: '',
+      inlineTags: [],
+      tags: [
+        {
+          delimiter: '*',
+          description: 'A description',
+          descriptionLines: [
+            {
+              delimiter: '',
+              description: '',
+              postDelimiter: '',
+              initial: '',
+              type: 'JsdocDescriptionLine'
+            },
+            {
+              delimiter: '*',
+              description: 'A description',
+              postDelimiter: ' ',
+              initial: ' ',
+              type: 'JsdocDescriptionLine'
+            }
+          ],
+          inlineTags: [],
+          name: 'Some',
+          parsedType: null,
+          postDelimiter: ' ',
+          postName: ' ',
+          postTag: '',
+          postType: '',
+          tag: 'param',
+          type: 'JsdocTag',
+          rawType: '',
+          initial: ' ',
+          typeLines: []
+        }
+      ]
+    });
+    expect(str).to.equal(`/**
+ * @param
+ * Some A description
+ */`);
+  });
 });

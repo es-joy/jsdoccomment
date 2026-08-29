@@ -167,6 +167,27 @@ const rule = {
 const ruleTester = new RuleTester();
 
 describe('`getJSDocComment` overload comments', function () {
+  it(
+    'handles ExportNamedDeclaration with VariableDeclaration ' +
+    'for getCurrentOverloadName',
+    function () {
+      const code = 'export const value = 1;';
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
+      const declaration =
+        /** @type {import('../src/jsdoccomment.js').ESLintOrTSNode} */ (
+          ast.body[0]
+        );
+      const comment = getJSDocComment(
+        sourceCode,
+        declaration,
+        overloadSettings,
+        {checkOverloads: true}
+      );
+      expect(comment).to.equal(null);
+    }
+  );
+
   it('gets a class method overload comment from a previous overload',
     function () {
       const code = `
@@ -179,7 +200,8 @@ describe('`getJSDocComment` overload comments', function () {
           }
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const implementation =
         /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[2];
 
@@ -202,7 +224,8 @@ describe('`getJSDocComment` overload comments', function () {
           abstract value(input: number): number;
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const overload =
         /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[1];
 
@@ -225,7 +248,8 @@ describe('`getJSDocComment` overload comments', function () {
           other(input: number): number;
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const method =
         /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[1];
 
@@ -252,7 +276,8 @@ describe('`getJSDocComment` overload comments', function () {
           }
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const method =
         /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[1];
 
@@ -279,7 +304,8 @@ describe('`getJSDocComment` overload comments', function () {
           }
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const setter =
         /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[1];
 
@@ -303,7 +329,8 @@ describe('`getJSDocComment` overload comments', function () {
           return input;
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
 
       const comment = getJSDocComment(
         sourceCode,
@@ -327,7 +354,8 @@ describe('`getJSDocComment` overload comments', function () {
           }
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const outer = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
       const implementation = outer.body.body[2];
 
@@ -348,7 +376,8 @@ describe('`getJSDocComment` overload comments', function () {
           return input;
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const declaration = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
       const {parent} = declaration;
       declaration.parent =
@@ -381,7 +410,8 @@ describe('`getJSDocComment` overload comments', function () {
           }
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const block =
         /** @type {TSStaticBlock} */ (
           /** @type {TSClassDeclaration} */ (ast.body[0]).body.body[0]
@@ -410,7 +440,8 @@ describe('`getJSDocComment` overload comments', function () {
           }
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const namespaceAst = /** @type {TSProgram} */ (ast);
       const namespace = /** @type {TSModuleDeclaration} */ (
         namespaceAst.body[0]
@@ -448,7 +479,8 @@ describe('`getJSDocComment` overload comments', function () {
           }
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const outer = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
       const classDeclaration =
         /** @type {TSClassDeclaration} */ (outer.body.body[0]);
@@ -473,7 +505,8 @@ describe('`getJSDocComment` overload comments', function () {
           function other(input: number): number;
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const outer = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
       const overload = outer.body.body[1];
 
@@ -498,7 +531,8 @@ describe('`getJSDocComment` overload comments', function () {
           function value(input: number): number;
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const outer = /** @type {TSFunctionDeclaration} */ (ast.body[0]);
       const overload = outer.body.body[1];
 
@@ -522,13 +556,75 @@ describe('`getJSDocComment` overload comments', function () {
           [key](input: number): number;
         }
       `;
-      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
       const method =
         /** @type {TSClassDeclaration} */ (ast.body[1]).body.body[1];
 
       const comment = getJSDocComment(
         sourceCode,
         /** @type {import('eslint').Rule.Node} */ (method),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment).to.equal(null);
+    });
+
+  it('does not use a previous computed method for a normal method',
+    function () {
+      const code = `
+        const key = 'value';
+        class Example {
+          /** Computed overload docs */
+          [key](input: string): string;
+          value(input: number): number;
+        }
+      `;
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
+      const method =
+        /** @type {TSClassDeclaration} */ (ast.body[1]).body.body[1];
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (method),
+        overloadSettings,
+        {checkOverloads: true}
+      );
+
+      expect(comment).to.equal(null);
+    });
+
+  it('does not use a previous export variable comment',
+    function () {
+      const code = `
+        namespace Example {
+          /** Namespace overload docs */
+          export const value = 1;
+          export function value(input: string | number): string | number {
+            return input;
+          }
+        }
+      `;
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
+      const namespaceAst = /** @type {TSProgram} */ (ast);
+      const namespace = /** @type {TSModuleDeclaration} */ (
+        namespaceAst.body[0]
+      );
+      const namespaceBody =
+        /** @type {TSModuleBlock} */ (namespace.body);
+      const implementation =
+        /** @type {TSFunctionDeclaration} */ (
+          /** @type {TSExportNamedDeclaration} */ (
+            namespaceBody.body[1]
+          ).declaration
+        );
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (implementation),
         overloadSettings,
         {checkOverloads: true}
       );

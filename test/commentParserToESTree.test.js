@@ -235,6 +235,98 @@ const singleTagWithInlineTag = ({
 });
 
 describe('commentParserToESTree', function () {
+  it('handles non-standard terminal without tag', function () {
+    const parsedComment = {
+      description: 'description',
+      tags: [],
+      inlineTags: [],
+      problems: [],
+      source: [
+        {
+          number: 1,
+          source: '/*** description ***/',
+          tokens: {
+            start: '',
+            delimiter: '/***',
+            postDelimiter: ' ',
+            tag: '',
+            postTag: '',
+            name: '',
+            postName: '',
+            type: '',
+            postType: '',
+            description: 'description',
+            end: '***/',
+            lineEnd: ''
+          }
+        }
+      ]
+    };
+    const ast = commentParserToESTree(parsedComment, 'jsdoc');
+    expect(ast.terminal).to.equal('***/');
+  });
+
+  it('handles non-standard terminal with tag', function () {
+    const parsedComment = {
+      description: '',
+      tags: [
+        {
+          tag: 'param',
+          name: 'name',
+          type: '',
+          optional: false,
+          description: '',
+          problems: [],
+          inlineTags: [],
+          source: [
+            {
+              number: 1,
+              source: '/*** @param name ***/',
+              tokens: {
+                start: '',
+                delimiter: '/***',
+                postDelimiter: ' ',
+                tag: '@param',
+                postTag: ' ',
+                name: 'name',
+                postName: ' ',
+                type: '',
+                postType: '',
+                description: '',
+                end: '***/',
+                lineEnd: ''
+              }
+            }
+          ]
+        }
+      ],
+      inlineTags: [],
+      problems: [],
+      source: [
+        {
+          number: 1,
+          source: '/*** @param name ***/',
+          tokens: {
+            start: '',
+            delimiter: '/***',
+            postDelimiter: ' ',
+            tag: '@param',
+            postTag: ' ',
+            name: 'name',
+            postName: ' ',
+            type: '',
+            postType: '',
+            description: '',
+            end: '***/',
+            lineEnd: ''
+          }
+        }
+      ]
+    };
+    const ast = commentParserToESTree(parsedComment, 'jsdoc');
+    expect(ast.terminal).to.equal('***/');
+  });
+
   it('handles single line jsdoc comment with tag', () => {
     const parsedComment = parseComment({
       value: `* @type {string} `
