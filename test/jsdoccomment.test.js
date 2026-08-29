@@ -353,35 +353,39 @@ describe('`getReducedASTNode`', function () {
       const sourceCode = new SourceCode(
         code, ast
       );
+      const tsAst =
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Program}
+       */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+        );
+      const rootNode = tsAst.body[0];
+      if (!rootNode || rootNode.type !== 'VariableDeclaration') {
+        throw new Error('Expected VariableDeclaration');
+      }
+      const {init} = rootNode.declarations[0];
+      if (!init || init.type !== 'ArrowFunctionExpression') {
+        throw new Error('Expected ArrowFunctionExpression');
+      }
+      const param = init.params[0];
+      if (!param || param.type !== 'Identifier') {
+        throw new Error('Expected Identifier');
+      }
+      const typeAnn = param.typeAnnotation;
+      if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+        throw new Error('Expected TSTypeAnnotation');
+      }
+      const innerAnn = typeAnn.typeAnnotation;
+      if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+        throw new Error('Expected TSFunctionType');
+      }
       const parsed = getReducedASTNode(
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (/** @type {any} */
-          (
-          /**
-           * @type {import('@typescript-eslint/types').TSESTree.
-           *   ArrowFunctionExpression
-           * }
-           */ (
-            /**
-             * @type {import('@typescript-eslint/types').TSESTree.
-             *   VariableDeclarator
-             * }
-             */ (
-              /**
-               * @type {import('@typescript-eslint/types').TSESTree.
-               *   VariableDeclaration
-               * }
-               */ (
-                  ast.body[0]
-                ).declarations[0]
-              ).init
-            ).params[0]
-          ).typeAnnotation
-        ).typeAnnotation,
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn),
         sourceCode
       );
       expect(parsed.type).to.equal('VariableDeclaration');
@@ -400,31 +404,38 @@ describe('`getReducedASTNode`', function () {
     const sourceCode = new SourceCode(
       code, ast
     );
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'ExpressionStatement') {
+      throw new Error('Expected ExpressionStatement');
+    }
+    const arrow = rootNode.expression;
+    if (!arrow || arrow.type !== 'ArrowFunctionExpression') {
+      throw new Error('Expected ArrowFunctionExpression');
+    }
+    const param = arrow.params[0];
+    if (!param || param.type !== 'Identifier') {
+      throw new Error('Expected Identifier');
+    }
+    const typeAnn = param.typeAnnotation;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const parsed = getReducedASTNode(
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (/** @type {any} */
-          (
-            /**
-             * @type {import('@typescript-eslint/types').TSESTree.
-             *   ArrowFunctionExpression
-             * }
-             */ (
-              /**
-               * @type {import('@typescript-eslint/types').TSESTree.
-               *   ExpressionStatement
-               * }
-               */ (
-                ast.body[0]
-              ).expression
-            ).params[0]
-          ).typeAnnotation
-        ).typeAnnotation
-      ),
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn),
       sourceCode
     );
     expect(parsed.type).to.equal('TSFunctionType');
@@ -440,27 +451,38 @@ describe('`getReducedASTNode`', function () {
     const sourceCode = new SourceCode(
       code, ast
     );
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'ClassDeclaration') {
+      throw new Error('Expected ClassDeclaration');
+    }
+    const methodDef = rootNode.body.body[0];
+    if (!methodDef || methodDef.type !== 'MethodDefinition') {
+      throw new Error('Expected MethodDefinition');
+    }
+    const funcExpr = methodDef.value;
+    if (!funcExpr || funcExpr.type !== 'FunctionExpression') {
+      throw new Error('Expected FunctionExpression');
+    }
+    const typeAnn = funcExpr.returnType;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const parsed = getReducedASTNode(
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (/**
-          * @type {import('@typescript-eslint/types').TSESTree.
-          *   MethodDefinition
-          * }
-          */ (
-          /**
-           * @type {import('@typescript-eslint/types').TSESTree.
-           *   ClassDeclaration
-           * }
-           */ (
-              ast.body[0]
-            ).body.body[0]
-          ).value.returnType).typeAnnotation
-      ),
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn),
       sourceCode
     );
     expect(parsed.type).to.equal('MethodDefinition');
@@ -476,28 +498,34 @@ describe('`getReducedASTNode`', function () {
     const sourceCode = new SourceCode(
       code, ast
     );
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'VariableDeclaration') {
+      throw new Error('Expected VariableDeclaration');
+    }
+    const {init} = rootNode.declarations[0];
+    if (!init || init.type !== 'ArrowFunctionExpression') {
+      throw new Error('Expected ArrowFunctionExpression');
+    }
+    const typeAnn = init.returnType;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const parsed = getReducedASTNode(
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *  TSTypeAnnotation
-         * }
-         */
-        (
-          /**
-           * @type {import('@typescript-eslint/types').TSESTree.
-           *   ArrowFunctionExpression
-           * }
-           */
-          (
-            /**
-             * @type {import('@typescript-eslint/types').TSESTree.
-             *   VariableDeclaration
-             * }
-             */ (
-              ast.body[0]
-            ).declarations[0].init).returnType).typeAnnotation
-      ),
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn),
       sourceCode
     );
     expect(parsed.type).to.equal('Program');
@@ -513,30 +541,34 @@ describe('`getReducedASTNode`', function () {
     const sourceCode = new SourceCode(
       code, ast
     );
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'TSInterfaceDeclaration') {
+      throw new Error('Expected TSInterfaceDeclaration');
+    }
+    const prop = rootNode.body.body[0];
+    if (!prop || prop.type !== 'TSPropertySignature') {
+      throw new Error('Expected TSPropertySignature');
+    }
+    const typeAnn = prop.typeAnnotation;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const parsed = getReducedASTNode(
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (/**
-          * @type {import('@typescript-eslint/types').TSESTree.
-          *   TSPropertySignature
-          * }
-          */
-          (
-            /**
-             * @type {import('@typescript-eslint/types').TSESTree.
-             *   TSInterfaceDeclaration
-             * }
-             */ (
-              /** @type {any} */
-              (ast).body[0]
-            ).body.body[0]
-          ).typeAnnotation
-        ).typeAnnotation
-      ),
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn),
       sourceCode
     );
     expect(parsed.type).to.equal('TSPropertySignature');
@@ -552,30 +584,34 @@ describe('`getReducedASTNode`', function () {
     const sourceCode = new SourceCode(
       code, ast
     );
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'TSInterfaceDeclaration') {
+      throw new Error('Expected TSInterfaceDeclaration');
+    }
+    const method = rootNode.body.body[0];
+    if (!method || method.type !== 'TSMethodSignature') {
+      throw new Error('Expected TSMethodSignature');
+    }
+    const typeAnn = method.returnType;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const parsed = getReducedASTNode(
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (
-          /**
-           * @type {import('@typescript-eslint/types').TSESTree.
-           *   TSMethodSignature
-           * }
-           */
-          (
-            /**
-             * @type {import('@typescript-eslint/types').TSESTree.
-             *   TSInterfaceDeclaration}
-             */
-            (
-              /** @type {any} */
-              (ast).body[0]
-            ).body.body[0]
-          ).returnType).typeAnnotation
-      ),
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn),
       sourceCode
     );
     expect(parsed.type).to.equal('TSMethodSignature');
@@ -589,25 +625,30 @@ describe('`getReducedASTNode`', function () {
     const sourceCode = new SourceCode(
       code, ast
     );
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'TSDeclareFunction') {
+      throw new Error('Expected TSDeclareFunction');
+    }
+    const typeAnn = rootNode.returnType;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const parsed = getReducedASTNode(
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (
-          /**
-           * @type {import('@typescript-eslint/types').TSESTree.
-           *   TSDeclareFunction
-           * }
-           */
-          (
-            /** @type {any} */
-            (ast).body[0]
-          ).returnType
-        ).typeAnnotation
-      ),
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn),
       sourceCode
     );
     expect(parsed.type).to.equal('TSDeclareFunction');
@@ -623,26 +664,34 @@ describe('`getReducedASTNode`', function () {
     const sourceCode = new SourceCode(
       code, ast
     );
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'ClassDeclaration') {
+      throw new Error('Expected ClassDeclaration');
+    }
+    const prop = rootNode.body.body[0];
+    if (!prop || prop.type !== 'PropertyDefinition') {
+      throw new Error('Expected PropertyDefinition');
+    }
+    const typeAnn = prop.typeAnnotation;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const parsed = getReducedASTNode(
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (/**
-          * @type {import('@typescript-eslint/types').TSESTree.
-          *   PropertyDefinition}
-          */ (
-          /**
-           * @type {import('@typescript-eslint/types').TSESTree.
-           *   ClassDeclaration}
-           */ (
-              ast.body[0]
-            ).body.body[0]
-          ).typeAnnotation
-        ).typeAnnotation
-      ),
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn),
       sourceCode
     );
     expect(parsed.type).to.equal('PropertyDefinition');
@@ -659,16 +708,24 @@ describe('getReducedASTNode additional tests', function () {
       const sourceCode = new SourceCode(
         code, ast
       );
-      const exportNamedDecl =
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   ExportNamedDeclaration}
-         */ (ast.body[0]);
-      const tsTypeAliasDecl =
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAliasDeclaration}
-         */ (exportNamedDecl.declaration);
+
+      const tsAst =
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Program}
+       */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+        );
+      const rootNode = tsAst.body[0];
+      if (!rootNode || rootNode.type !== 'ExportNamedDeclaration') {
+        throw new Error('Expected ExportNamedDeclaration');
+      }
+      const tsTypeAliasDecl = rootNode.declaration;
+      if (!tsTypeAliasDecl ||
+        tsTypeAliasDecl.type !== 'TSTypeAliasDeclaration') {
+        throw new Error('Expected TSTypeAliasDeclaration');
+      }
       const tsFunctionType = tsTypeAliasDecl.typeAnnotation;
       const parsed = getReducedASTNode(tsFunctionType, sourceCode);
       expect(parsed.type).to.equal('ExportNamedDeclaration');
@@ -684,11 +741,31 @@ describe('getReducedASTNode additional tests', function () {
       const sourceCode = new SourceCode(
         code, ast
       );
-      const arrowFunc =
-        /** @type {any} */
-        (ast.body[0]).declarations[0].init;
+      const tsAst =
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Program}
+       */ (
+        /**
+         * @type {import('@typescript-eslint/types').TSESTree.Node}
+         */ (ast)
+        );
+      const rootNode = tsAst.body[0];
+      if (!rootNode || rootNode.type !== 'VariableDeclaration') {
+        throw new Error('Expected VariableDeclaration');
+      }
+      const arrowFunc = rootNode.declarations[0].init;
+      if (!arrowFunc ||
+        arrowFunc.type !== 'ArrowFunctionExpression' || !arrowFunc.returnType) {
+        throw new Error('Expected ArrowFunctionExpression');
+      }
       const tsFunctionType = arrowFunc.returnType.typeAnnotation;
-      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      const parsed = getReducedASTNode(
+        /**
+         * @type {import('eslint').Rule.Node &
+         *   import('@typescript-eslint/types').TSESTree.Node}
+         */ (tsFunctionType),
+        sourceCode
+      );
       expect(parsed.type).to.equal('Program');
     }
   );
@@ -702,11 +779,31 @@ describe('getReducedASTNode additional tests', function () {
       const sourceCode = new SourceCode(
         code, ast
       );
-      const arrowFunc =
-        /** @type {any} */
-        (ast.body[0]).declaration;
+      const tsAst =
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Program}
+       */ (
+        /**
+         * @type {import('@typescript-eslint/types').TSESTree.Node}
+         */ (ast)
+        );
+      const rootNode = tsAst.body[0];
+      if (!rootNode || rootNode.type !== 'ExportDefaultDeclaration') {
+        throw new Error('Expected ExportDefaultDeclaration');
+      }
+      const arrowFunc = rootNode.declaration;
+      if (!arrowFunc ||
+        arrowFunc.type !== 'ArrowFunctionExpression' || !arrowFunc.returnType) {
+        throw new Error('Expected ArrowFunctionExpression');
+      }
       const tsFunctionType = arrowFunc.returnType.typeAnnotation;
-      const parsed = getReducedASTNode(tsFunctionType, sourceCode);
+      const parsed = getReducedASTNode(
+        /**
+         * @type {import('eslint').Rule.Node &
+         *   import('@typescript-eslint/types').TSESTree.Node}
+         */ (tsFunctionType),
+        sourceCode
+      );
       expect(parsed.type).to.equal('TSFunctionType');
     }
   );
@@ -719,11 +816,18 @@ describe('getReducedASTNode additional tests', function () {
       const sourceCode = new SourceCode(
         code, ast
       );
-      const classDecl =
-        /**
-         * @type {import('@typescript-eslint/types').
-         *   TSESTree.ClassDeclaration}
-         */ ast.body[0];
+      const tsAst =
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Program}
+       */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+        );
+      const classDecl = tsAst.body[0];
+      if (!classDecl || classDecl.type !== 'ClassDeclaration') {
+        throw new Error('Expected ClassDeclaration');
+      }
       const methodDef =
         /**
          * @type {import('@typescript-eslint/types').
@@ -872,11 +976,19 @@ describe('getReducedASTNode additional tests', function () {
       const sourceCode = new SourceCode(
         code, ast
       );
-      const tsTypeAliasDecl =
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAliasDeclaration}
-         */ (ast.body[0]);
+      const tsAst =
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Program}
+       */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+        );
+      const rootNode = tsAst.body[0];
+      if (!rootNode || rootNode.type !== 'TSTypeAliasDeclaration') {
+        throw new Error('Expected TSTypeAliasDeclaration');
+      }
+      const tsTypeAliasDecl = rootNode;
       const tsFunctionType = tsTypeAliasDecl.typeAnnotation;
       const parsed = getReducedASTNode(tsFunctionType, sourceCode);
       // Should return astNode, which is TSFunctionType
@@ -949,24 +1061,39 @@ describe('`findJSDocComment', function () {
       code, /** @type {import('eslint').AST.Program} */ (ast)
     );
 
-    const propertyDef = /** @type {import('estree').ClassDeclaration} */ (
-      /** @type {import('estree').ExportNamedDeclaration} */
-      (ast.body[0]).declaration
-    ).body.body[0];
 
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'ExportNamedDeclaration') {
+      throw new Error('Expected ExportNamedDeclaration');
+    }
+    const classDecl = rootNode.declaration;
+    if (!classDecl || classDecl.type !== 'ClassDeclaration') {
+      throw new Error('Expected ClassDeclaration');
+    }
+    const prop = classDecl.body.body[0];
+    if (!prop || prop.type !== 'PropertyDefinition') {
+      throw new Error('Expected PropertyDefinition');
+    }
+    const dec = prop.decorators?.[0];
+    if (!dec) {
+      throw new Error('Expected Decorator');
+    }
     const comment = findJSDocComment(
-      /** @type {any} */
-      (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   PropertyDefinition}
-         */ (
-          propertyDef
-        ).decorators[0]
-      ),
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (dec),
       sourceCode,
       {
-        minLines: 0, maxLines: 1
+        maxLines: 1,
+        minLines: 0
       }
     );
     expect(comment?.type).to.equal('Block');
@@ -1252,32 +1379,35 @@ describe('`getFollowingComment`', function () {
       code, ast
     );
 
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'TSInterfaceDeclaration') {
+      throw new Error('Expected TSInterfaceDeclaration');
+    }
+    const prop = rootNode.body.body[0];
+    if (!prop || prop.type !== 'TSPropertySignature') {
+      throw new Error('Expected TSPropertySignature');
+    }
+    const typeAnn = prop.typeAnnotation;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const comment = getFollowingComment(
       sourceCode,
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSPropertySignature
-         * }
-         */
-          (
-            /**
-             * @type {import('@typescript-eslint/types').TSESTree.
-             *   TSInterfaceDeclaration
-             * }
-             */ (
-            /** @type {any} */
-              (ast).body[0]
-            ).body.body[0]
-          ).typeAnnotation
-        ).typeAnnotation
-      )
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn)
     );
     expect(comment?.type).to.equal('Line');
     expect(comment?.value).to.equal(' Test');
@@ -1293,28 +1423,35 @@ describe('`getFollowingComment`', function () {
       code, ast
     );
 
+    const tsAst = /**
+                   * @type {import('@typescript-eslint/types').TSESTree.Program}
+                   */ (
+      /**
+       * @type {import('@typescript-eslint/types').TSESTree.Node}
+       */ (ast)
+      );
+    const rootNode = tsAst.body[0];
+    if (!rootNode || rootNode.type !== 'ClassDeclaration') {
+      throw new Error('Expected ClassDeclaration');
+    }
+    const prop = rootNode.body.body[0];
+    if (!prop || prop.type !== 'PropertyDefinition') {
+      throw new Error('Expected PropertyDefinition');
+    }
+    const typeAnn = prop.typeAnnotation;
+    if (!typeAnn || typeAnn.type !== 'TSTypeAnnotation') {
+      throw new Error('Expected TSTypeAnnotation');
+    }
+    const innerAnn = typeAnn.typeAnnotation;
+    if (!innerAnn || innerAnn.type !== 'TSFunctionType') {
+      throw new Error('Expected TSFunctionType');
+    }
     const comment = getFollowingComment(
       sourceCode,
-      /** @type {any} */ (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   TSTypeAnnotation
-         * }
-         */
-        (
-        /**
-         * @type {import('@typescript-eslint/types').TSESTree.
-         *   PropertyDefinition}
-         */ (
-          /**
-           * @type {import('@typescript-eslint/types').TSESTree.
-           *   ClassDeclaration}
-           */ (
-              ast.body[0]
-            ).body.body[0]
-          ).typeAnnotation
-        ).typeAnnotation
-      )
+      /**
+       * @type {import('eslint').Rule.Node &
+       *   import('@typescript-eslint/types').TSESTree.Node}
+       */ (innerAnn)
     );
     expect(comment?.type).to.equal('Line');
     expect(comment?.value).to.equal(' Test');
