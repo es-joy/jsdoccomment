@@ -1,5 +1,8 @@
-import { Prism as PrismType } from 'prismjs';
+// We do this because @types/prismjs is for some reason defining it as ESM,
+//   despite prismjs not exporting ESM.
 
 declare global {
-  var Prism: PrismType
+  var Prism: any
 }
+
+export {};
