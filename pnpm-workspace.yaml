@@ -1,10 +1,7 @@
 allowBuilds:
   esbuild: false
+  is-hidden-file: true
   unrs-resolver: false
-
-ignoredBuiltDependencies:
-  - rollup
-  - unrs-resolver
 
 minimumReleaseAgeExclude:
   - comment-parser@1.4.7 || 1.4.8
@@ -25,7 +22,3 @@ minimumReleaseAgeExclude:
   - '@typescript-eslint/utils@8.67.0'
   - '@typescript-eslint/visitor-keys@8.67.0'
   - typescript-eslint@8.67.0
-
-onlyBuiltDependencies:
-  - esbuild
-  - rollup
