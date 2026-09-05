@@ -19,6 +19,22 @@
  */
 
 /**
+ * The type accepted in node parameter positions of the public comment-finding
+ * helpers. It is deliberately looser than {@link ESLintOrTSNode}: callers pass
+ * nodes typed against their own copy of `@typescript-eslint/types`, and when
+ * that copy differs from the one resolved here the two `TSESTree` unions are
+ * nominally distinct and, being large and recursive, can exceed the
+ * type-checker's comparison depth. Requiring only `type` lets any AST node
+ * through while the helpers narrow internally; return types keep the precise
+ * {@link ESLintOrTSNode}.
+ *
+ * `ESLintOrTSNode` is deliberately *not* part of this union: including it makes
+ * the checker relate arguments against the full recursive `TSESTree.Node` union
+ * anyway, which is what overflows.
+ * @typedef {{type: string}} ESLintOrTSNodeInput
+ */
+
+/**
  * @typedef {number} int
  */
 
@@ -202,15 +218,16 @@ const allowableCommentNode = new Set([
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
  *
- * @param {ESLintOrTSNode} node An AST node.
+ * @param {ESLintOrTSNodeInput} nodeInput An AST node.
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode.
  * @param {Settings} [settings]
  * @returns {ESLintOrTSNode} The AST node that
  *   can be evaluated for appropriate JSDoc comments.
  */
-const getReducedASTNode = function (node, sourceCode, settings) {
+const getReducedASTNode = function (nodeInput, sourceCode, settings) {
+  const node = /** @type {ESLintOrTSNode} */ (nodeInput);
   let {parent} = node;
-  switch (/** @type {ESLintOrTSNode} */ (node).type) {
+  switch (node.type) {
   case 'TSFunctionType':
     return getTSFunctionComment(node);
   case 'TSInterfaceDeclaration':
@@ -296,7 +313,7 @@ const getReducedASTNode = function (node, sourceCode, settings) {
 /**
  * Checks for the presence of a JSDoc comment for the given node and returns it.
  *
- * @param {ESLintOrTSNode} astNode The AST node to get
+ * @param {ESLintOrTSNodeInput} astNode The AST node to get
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
@@ -309,7 +326,7 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
   const {minLines, maxLines} = settings;
 
   /** @type {ESLintOrTSNode|import('estree').Comment} */
-  let currentNode = astNode;
+  let currentNode = /** @type {ESLintOrTSNode} */ (astNode);
   let tokenBefore = null;
   let parenthesisToken = null;
 
@@ -557,7 +574,7 @@ const getPreviousOverloadSibling = (node) => {
  * Retrieves the JSDoc comment for a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {ESLintOrTSNode} node The AST node to get
+ * @param {ESLintOrTSNodeInput} node The AST node to get
  *   the comment for.
  * @param {Settings} settings The settings in context
  * @param {{checkOverloads?: boolean}} [opts]
@@ -592,7 +609,7 @@ const getJSDocComment = function (sourceCode, node, settings, opts = {}) {
  * Retrieves the comment preceding a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {ESLintOrTSNode} node The AST node to get
+ * @param {ESLintOrTSNodeInput} node The AST node to get
  *   the comment for.
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
  *   settings in context
@@ -629,12 +646,13 @@ const compareLocEndToStart = (nodeA, nodeB) => {
  * This method is experimental.
  *
  * @param {import('eslint').SourceCode} sourceCode
- * @param {ESLintOrTSNode} astNode The AST node to get
+ * @param {ESLintOrTSNodeInput} astNodeInput The AST node to get
  *   the comment for.
  * @returns {Token|null} The comment token containing the comment
  *    for the given node or null if not found.
  */
-const getFollowingComment = function (sourceCode, astNode) {
+const getFollowingComment = function (sourceCode, astNodeInput) {
+  const astNode = /** @type {ESLintOrTSNode} */ (astNodeInput);
   /**
    * @param {ESLintOrTSNode} node The
    *   AST node to get the comment for.

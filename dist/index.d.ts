@@ -82,9 +82,9 @@ type CommentParserToESTreeOptions = {
    * By default, empty lines are
    * compacted; set to 'preserve' to preserve empty comment lines.
    */
-  spacing?: 'compact' | 'preserve';
-  throwOnTypeParsingErrors?: boolean;
-  jsdocTypePrattParserArgs?: JtppOptions;
+  spacing?: 'preserve' | 'compact' | undefined;
+  throwOnTypeParsingErrors?: boolean | undefined;
+  jsdocTypePrattParserArgs?: JtppOptions | undefined;
 };
 /**
  * @typedef {{
@@ -116,10 +116,10 @@ declare function commentParserToESTree(
 ): JsdocBlock;
 declare namespace jsdocVisitorKeys {
   let JsdocBlock: string[];
-  let JsdocDescriptionLine: any[];
-  let JsdocTypeLine: any[];
+  let JsdocDescriptionLine: never[];
+  let JsdocTypeLine: never[];
   let JsdocTag: string[];
-  let JsdocInlineTag: any[];
+  let JsdocInlineTag: never[];
 }
 
 /**
@@ -168,6 +168,23 @@ type Token =
       value: string;
     };
 type ESLintOrTSNode = eslint.Rule.Node | _typescript_eslint_types.TSESTree.Node;
+/**
+ * The type accepted in node parameter positions of the public comment-finding
+ * helpers. It is deliberately looser than {@link ESLintOrTSNode}: callers pass
+ * nodes typed against their own copy of `@typescript-eslint/types`, and when
+ * that copy differs from the one resolved here the two `TSESTree` unions are
+ * nominally distinct and, being large and recursive, can exceed the
+ * type-checker's comparison depth. Requiring only `type` lets any AST node
+ * through while the helpers narrow internally; return types keep the precise
+ * {@link ESLintOrTSNode}.
+ *
+ * `ESLintOrTSNode` is deliberately *not* part of this union: including it makes
+ * the checker relate arguments against the full recursive `TSESTree.Node` union
+ * anyway, which is what overflows.
+ */
+type ESLintOrTSNodeInput = {
+  type: string;
+};
 type int = number;
 type DecoratedNode =
   | ESLintOrTSNode
@@ -194,14 +211,14 @@ type Settings = {
  * Reduces the provided node to the appropriate node for evaluating
  * JSDoc comment status.
  *
- * @param {ESLintOrTSNode} node An AST node.
+ * @param {ESLintOrTSNodeInput} nodeInput An AST node.
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode.
  * @param {Settings} [settings]
  * @returns {ESLintOrTSNode} The AST node that
  *   can be evaluated for appropriate JSDoc comments.
  */
 declare function getReducedASTNode(
-  node: ESLintOrTSNode,
+  nodeInput: ESLintOrTSNodeInput,
   sourceCode: eslint.SourceCode,
   settings?: Settings,
 ): ESLintOrTSNode;
@@ -209,7 +226,7 @@ declare function getReducedASTNode(
  * Retrieves the JSDoc comment for a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {ESLintOrTSNode} node The AST node to get
+ * @param {ESLintOrTSNodeInput} node The AST node to get
  *   the comment for.
  * @param {Settings} settings The settings in context
  * @param {{checkOverloads?: boolean}} [opts]
@@ -220,7 +237,7 @@ declare function getReducedASTNode(
  */
 declare function getJSDocComment(
   sourceCode: eslint.SourceCode,
-  node: ESLintOrTSNode,
+  node: ESLintOrTSNodeInput,
   settings: Settings,
   opts?: {
     checkOverloads?: boolean;
@@ -230,7 +247,7 @@ declare function getJSDocComment(
  * Retrieves the comment preceding a given node.
  *
  * @param {import('eslint').SourceCode} sourceCode The ESLint SourceCode
- * @param {ESLintOrTSNode} node The AST node to get
+ * @param {ESLintOrTSNodeInput} node The AST node to get
  *   the comment for.
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings The
  *   settings in context
@@ -241,7 +258,7 @@ declare function getJSDocComment(
  */
 declare function getNonJsdocComment(
   sourceCode: eslint.SourceCode,
-  node: ESLintOrTSNode,
+  node: ESLintOrTSNodeInput,
   settings: {
     maxLines: int;
     minLines: int;
@@ -263,7 +280,7 @@ declare function getDecorator(node: DecoratedNode): _typescript_eslint_types.TSE
 /**
  * Checks for the presence of a JSDoc comment for the given node and returns it.
  *
- * @param {ESLintOrTSNode} astNode The AST node to get
+ * @param {ESLintOrTSNodeInput} astNode The AST node to get
  *   the comment for.
  * @param {import('eslint').SourceCode} sourceCode
  * @param {{maxLines: int, minLines: int, [name: string]: any}} settings
@@ -272,7 +289,7 @@ declare function getDecorator(node: DecoratedNode): _typescript_eslint_types.TSE
  *    for the given node or null if not found.
  */
 declare function findJSDocComment(
-  astNode: ESLintOrTSNode,
+  astNode: ESLintOrTSNodeInput,
   sourceCode: eslint.SourceCode,
   settings: {
     maxLines: int;
@@ -290,12 +307,12 @@ declare function findJSDocComment(
  * This method is experimental.
  *
  * @param {import('eslint').SourceCode} sourceCode
- * @param {ESLintOrTSNode} astNode The AST node to get
+ * @param {ESLintOrTSNodeInput} astNodeInput The AST node to get
  *   the comment for.
  * @returns {Token|null} The comment token containing the comment
  *    for the given node or null if not found.
  */
-declare function getFollowingComment(sourceCode: eslint.SourceCode, astNode: ESLintOrTSNode): Token | null;
+declare function getFollowingComment(sourceCode: eslint.SourceCode, astNodeInput: ESLintOrTSNodeInput): Token | null;
 
 declare function hasSeeWithLink(spec: comment_parser.Spec): boolean;
 declare const defaultNoTypes: string[];
@@ -321,8 +338,8 @@ declare function getTokenizers({
   noTypes,
   noNames,
 }?: {
-  noTypes?: string[];
-  noNames?: string[];
+  noTypes?: string[] | undefined;
+  noNames?: string[] | undefined;
 }): CommentParserTokenizer[];
 /**
  * Accepts a comment token or complete comment string and converts it into
@@ -408,6 +425,7 @@ export type {
   CommentParserTokenizer,
   DecoratedNode,
   ESLintOrTSNode,
+  ESLintOrTSNodeInput,
   ESTreeToStringOptions,
   InlineTag,
   Integer,

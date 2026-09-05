@@ -64,7 +64,9 @@ function parseDescription (description) {
         mtch
       );
     const {tag, namepathOrURL, text} = match.groups;
-    const [start, end] = match.indices[0];
+    // `indices[0]` (the whole-match span) is always present for a successful
+    // match under the `d` flag, though the type includes `undefined`.
+    const [start, end] = /** @type {[number, number]} */ (match.indices[0]);
     const format = determineFormat(match);
     const decodedText = decodeInlineTagText(text, format);
 
