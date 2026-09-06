@@ -8,7 +8,8 @@ export default [
       'docs',
       'dist',
       'html',
-      'demo/vendor'
+      'demo/vendor',
+      '.vitest'
     ]
   },
   ...ashNazg(['sauron']),

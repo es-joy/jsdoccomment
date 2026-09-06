@@ -22,3 +22,4 @@ minimumReleaseAgeExclude:
   - '@typescript-eslint/utils@8.67.0'
   - '@typescript-eslint/visitor-keys@8.67.0'
   - typescript-eslint@8.67.0
+  - '@webcoder49/code-input@2.8.4'

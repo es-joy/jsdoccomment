@@ -3,3 +3,4 @@ coverage
 /.dts
 /html
 /.idea
+.vitest
