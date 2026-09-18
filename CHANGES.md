@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 0.98.0
+
+- chore: update typescript-eslint/types, comment-parser, jsdoc-type-pratt-parser, devDeps
+
 ## 0.97.0
 
 - fix: accept any AST node in the public comment-finding helpers regardless of `@typescript-eslint/types` version
