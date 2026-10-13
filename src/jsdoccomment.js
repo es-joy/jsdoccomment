@@ -90,12 +90,12 @@ const looksLikeExport = function (astNode) {
  */
 const getTSFunctionComment = function (astNode) {
   const {parent} = astNode;
-  /* v8 ignore next 3 */
+  /* v8 ignore next 3 -- Defensive: nodes are expected to have a parent */
   if (!parent) {
     return astNode;
   }
   const grandparent = parent.parent;
-  /* v8 ignore next 3 */
+  /* v8 ignore next 3 -- Defensive: parent is expected to have a parent */
   if (!grandparent) {
     return astNode;
   }
@@ -106,10 +106,10 @@ const getTSFunctionComment = function (astNode) {
       grandparent.type === 'ExportNamedDeclaration'
     ) {
       return grandparent;
-    /* v8 ignore start */
+    /* v8 ignore start -- Defensive: other node types not expected here */
     }
     return astNode;
-    /* v8 ignore stop */
+    /* v8 ignore stop -- End of defensive fallback */
   }
 
   const greatGrandparent = grandparent.parent;
@@ -123,7 +123,8 @@ const getTSFunctionComment = function (astNode) {
   case 'TSPropertySignature':
     return grandparent;
   case 'ArrowFunctionExpression':
-    /* v8 ignore next 3 */
+    // eslint-disable-next-line @stylistic/max-len -- Long
+    /* v8 ignore next 3 -- Defensive: arrow functions are expected to be nested */
     if (!greatGrandparent) {
       return astNode;
     }
@@ -133,17 +134,17 @@ const getTSFunctionComment = function (astNode) {
 
     // && greatGreatGrandparent.parent.type === 'VariableDeclaration'
     ) {
-      /* v8 ignore next 3 */
-      if (!greatGreatGrandparent || !greatGreatGrandparent.parent) {
-        return astNode;
-      }
-      return greatGreatGrandparent.parent;
-    /* v8 ignore start */
+      /* v8 ignore next 3 -- Defensive: missing ancestors are not expected */
+      return !greatGreatGrandparent || !greatGreatGrandparent.parent
+        ? astNode
+        : greatGreatGrandparent.parent;
+    /* v8 ignore start -- Defensive: other parent types not expected here */
     }
     return astNode;
-    /* v8 ignore stop */
+    /* v8 ignore stop -- End of defensive fallback */
   case 'FunctionExpression':
-    /* v8 ignore next 3 */
+    // eslint-disable-next-line @stylistic/max-len -- Long
+    /* v8 ignore next 3 -- Defensive: function expressions are expected to be nested */
     if (!greatGreatGrandparent) {
       return astNode;
     }
@@ -153,38 +154,36 @@ const getTSFunctionComment = function (astNode) {
 
   // Fallthrough
   default:
-    /* v8 ignore next 3 */
+    // eslint-disable-next-line @stylistic/max-len -- Long
+    /* v8 ignore next 3 -- Defensive: other grandparent types not expected here */
     if (grandparent.type !== 'Identifier') {
       return astNode;
     }
   }
 
-  /* v8 ignore next 3 */
+  /* v8 ignore next 3 -- Defensive: ancestor is expected to exist */
   if (!greatGreatGrandparent) {
     return astNode;
   }
 
   switch (greatGrandparent.type) {
   case 'ArrowFunctionExpression':
-    if (
-      greatGreatGrandparent.type === 'VariableDeclarator' &&
+    return greatGreatGrandparent.type === 'VariableDeclarator' &&
       greatGreatGrandparent.parent.type === 'VariableDeclaration'
-    ) {
-      return greatGreatGrandparent.parent;
-    }
-
-    return astNode;
+      ? greatGreatGrandparent.parent
+      : astNode;
   case 'FunctionDeclaration':
     return greatGrandparent;
   case 'VariableDeclarator':
-    /* v8 ignore next */
+    // eslint-disable-next-line @stylistic/max-len -- Long
+    /* v8 ignore next -- Else branch (non-declaration) not expected for variable declarators */
     if (greatGreatGrandparent.type === 'VariableDeclaration') {
       return greatGreatGrandparent;
     }
-    /* v8 ignore next 2 */
+    /* v8 ignore next 2 -- Defensive fallthrough to default */
     // Fallthrough
   default:
-    /* v8 ignore next 3 */
+    /* v8 ignore next 3 -- Defensive default; unreachable in practice */
     return astNode;
   }
 };
@@ -235,7 +234,8 @@ const getReducedASTNode = function (nodeInput, sourceCode, settings) {
   case 'TSEnumDeclaration':
   case 'ClassDeclaration':
   case 'FunctionDeclaration':
-    /* v8 ignore next 3 */
+    // eslint-disable-next-line @stylistic/max-len -- Long
+    /* v8 ignore next 3 -- Defensive: declarations are expected to have a parent */
     if (!parent) {
       return node;
     }
@@ -247,7 +247,8 @@ const getReducedASTNode = function (nodeInput, sourceCode, settings) {
   case 'ArrowFunctionExpression':
   case 'TSEmptyBodyFunctionExpression':
   case 'FunctionExpression':
-    /* v8 ignore next 3 */
+    // eslint-disable-next-line @stylistic/max-len -- Long
+    /* v8 ignore next 3 -- Defensive: function expressions are expected to have a parent */
     if (!parent) {
       return node;
     }
@@ -295,11 +296,10 @@ const getReducedASTNode = function (nodeInput, sourceCode, settings) {
       if (parent && parent.type !== 'FunctionDeclaration' &&
         parent.type !== 'Program'
       ) {
-        if (parent.parent && parent.parent.type === 'ExportNamedDeclaration') {
-          return parent.parent;
-        }
-
-        return parent;
+        return parent.parent &&
+          parent.parent.type === 'ExportNamedDeclaration'
+          ? parent.parent
+          : parent;
       }
     }
 
@@ -365,7 +365,8 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
     break;
   }
 
-  /* v8 ignore next 3 */
+  // eslint-disable-next-line @stylistic/max-len -- Long
+  /* v8 ignore next 3 -- Defensive: tokens and locations are expected to exist */
   if (!tokenBefore || !currentNode.loc || !tokenBefore.loc) {
     return null;
   }
@@ -635,7 +636,8 @@ const getNonJsdocComment = function (sourceCode, node, settings) {
  *   AST node or token to compare
  */
 const compareLocEndToStart = (nodeA, nodeB) => {
-  /* v8 ignore next */
+  // eslint-disable-next-line @stylistic/max-len -- Long
+  /* v8 ignore next -- Defensive: fallback only for nodes lacking location info */
   return (nodeA.loc?.end.line ?? 0) === (nodeB.loc?.start.line ?? 0);
 };
 
@@ -708,7 +710,7 @@ const getFollowingComment = function (sourceCode, astNodeInput) {
       );
       break;
 
-    /* v8 ignore next 3 */
+    /* v8 ignore next 3 -- Defensive: no other node types expected */
     default:
       break;
     }

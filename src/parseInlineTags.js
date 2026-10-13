@@ -21,10 +21,7 @@ function determineFormat (match) {
   if (separator === '|') {
     return 'pipe';
   }
-  if (textEnd < tagStart) {
-    return 'prefix';
-  }
-  return 'space';
+  return textEnd < tagStart ? 'prefix' : 'space';
 }
 
 /**

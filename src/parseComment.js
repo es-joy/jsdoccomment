@@ -73,11 +73,7 @@ const getTokenizers = ({
      * @returns {import('comment-parser').Spec}
      */
     (spec) => {
-      if (noTypes.includes(spec.tag)) {
-        return spec;
-      }
-
-      return preserveTypeTokenizer(spec);
+      return noTypes.includes(spec.tag) ? spec : preserveTypeTokenizer(spec);
     },
 
     /**
@@ -127,11 +123,9 @@ const getTokenizers = ({
         return spec;
       }
 
-      if (noNames.includes(spec.tag) || hasSeeWithLink(spec)) {
-        return spec;
-      }
-
-      return plainNameTokenizer(spec);
+      return noNames.includes(spec.tag) || hasSeeWithLink(spec)
+        ? spec
+        : plainNameTokenizer(spec);
     },
 
     /**

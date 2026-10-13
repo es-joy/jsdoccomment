@@ -492,17 +492,19 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
     }
 
     // Clean-up where last line itself has tag content
-    if (end && tag) {
-      ast.terminal = end;
-      ast.hasPreterminalTagDescription = 1;
-
-      // Remove terminal line break at end when tag is defined on last line.
-      if (ast.terminal === '*/') {
-        ast.preterminalLineBreak = '';
-      }
-
-      cleanUpLastTag(/** @type {JsdocTag} */ (lastTag));
+    if (!end || !tag) {
+      return;
     }
+
+    ast.terminal = end;
+    ast.hasPreterminalTagDescription = 1;
+
+    // Remove terminal line break at end when tag is defined on last line.
+    if (ast.terminal === '*/') {
+      ast.preterminalLineBreak = '';
+    }
+
+    cleanUpLastTag(/** @type {JsdocTag} */ (lastTag));
   });
 
   ast.lastDescriptionLine = lastDescriptionLine;

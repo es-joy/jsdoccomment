@@ -159,14 +159,14 @@ function JsdocTag (node, opts) {
 
       result += '}';
     }
-    /* v8 ignore start */
+    /* v8 ignore start -- Not covered by tests; JSDoc-specific type handling */
   } else if (parsedType?.type.startsWith('JsdocType')) {
     result += `{${prattStringify(
       /** @type {import('jsdoc-type-pratt-parser').RootResult} */ (
         parsedType
       )
     )}}`;
-    /* v8 ignore stop */
+    /* v8 ignore stop -- End of untested JSDoc-specific type handling */
   }
 
   // Check if the name appears on a separate line from the tag/type
@@ -178,7 +178,8 @@ function JsdocTag (node, opts) {
 
     if (descriptionLines.length > 0) {
       const firstDescLine = descriptionLines[0];
-      /* v8 ignore next 3 */
+      /* v8 ignore next 4 -- Defensive: blank first line not
+          expected in practice */
       if (firstDescLine.description === '' && firstDescLine.delimiter === '' &&
           firstDescLine.postDelimiter === '' && firstDescLine.initial === '') {
         // Empty first line, check if there's a second line with formatting
@@ -193,21 +194,22 @@ function JsdocTag (node, opts) {
           }`;
           nameLineOffset = 2;
         } else {
-          /* v8 ignore start */
+          /* v8 ignore start -- Fallback is not expected to occur normally */
           // Fallback: just add name (shouldn't normally happen)
           result += name + postName;
           nameLineOffset = 1;
-          /* v8 ignore stop */
+          /* v8 ignore stop -- End of fallback */
         }
       } else {
-        /* v8 ignore start */
+        // eslint-disable-next-line @stylistic/max-len -- Long
+        /* v8 ignore start -- Not covered by tests; first description line with content */
         // First description line has content, use it for the name line
         const nameLine = descriptionLines[0];
         result += `${nameLine.initial}${
           nameLine.delimiter
         }${nameLine.postDelimiter}${name}${postName}${nameLine.description}`;
         nameLineOffset = 1;
-        /* v8 ignore stop */
+        /* v8 ignore stop -- End of untested branch */
       }
     } else {
       // No description lines, need to construct the name line
