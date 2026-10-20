@@ -1,8 +1,17 @@
 import {
+  generate
+} from '@es-joy/escodegen';
+import {
   commentParserToESTree,
   estreeToString,
   parseComment
 } from '../src/index.js';
+
+/* eslint-disable jsdoc/reject-any-type -- Testing */
+/**
+ * @typedef {any} BadArgument
+ */
+/* eslint-enable jsdoc/reject-any-type -- Testing */
 
 /** @type {import('../src/commentParserToESTree.js').JsdocBlock} */
 const singleLineWithTag = {
@@ -581,12 +590,7 @@ describe('`estreeToString`', function () {
 
   it('throws upon encountering an unhandled node type', function () {
     expect(() => {
-      /* eslint-disable jsdoc/reject-any-type -- Testing */
-      /**
-       * @typedef {any} BadArgument
-       */
       estreeToString(/** @type {BadArgument} */ ({
-        /* eslint-enable jsdoc/reject-any-type -- Testing */
         type: 'UnknownType'
       }));
     }).to.throw('Unhandled node type: UnknownType');
@@ -703,5 +707,68 @@ describe('`estreeToString`', function () {
  * @param
  * Some A description
  */`);
+  });
+
+  it('handles custom stringification rules', () => {
+    const str = estreeToString({
+      type: 'JsdocTypeObject',
+      meta: {
+        separator: 'comma'
+      },
+      elements: [
+        {
+          type: 'JsdocTypeObjectField',
+          optional: false,
+          readonly: false,
+          meta: {
+            quote: undefined
+          },
+          key: {
+            type: 'JsdocTypeComputedProperty',
+            value: {
+              type: 'Program',
+              start: 0,
+              end: 18,
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  start: 0,
+                  end: 18,
+                  expression: {
+                    type: 'MemberExpression',
+                    start: 0,
+                    end: 18,
+                    object: {
+                      type: 'Identifier',
+                      // @ts-expect-error Ok
+                      start: 0,
+                      end: 6,
+                      name: 'Symbol'
+                    },
+                    property: {
+                      type: 'Identifier',
+                      // @ts-expect-error Ok
+                      start: 7,
+                      end: 18,
+                      name: 'hasInstance'
+                    },
+                    computed: false
+                  }
+                }
+              ],
+              sourceType: 'script'
+            }
+          },
+          right: {
+            type: 'JsdocTypeName',
+            value: 'string'
+          }
+        }
+      ]
+    }, {
+      jtppStringificationRules: generate
+    });
+
+    expect(str).to.equal('{{[Symbol.hasInstance]: string}}');
   });
 });

@@ -68,6 +68,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
+    "@es-joy/escodegen": "^4.2.0",
     "@node-static/node-static": "^0.10.0",
     "@types/esquery": "^1.5.4",
     "@types/estraverse": "^5.1.7",
