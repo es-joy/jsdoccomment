@@ -683,6 +683,19 @@ const getFollowingComment = function (sourceCode, astNodeInput) {
    *   AST node to get the comment for.
    */
   const tokenAfterIgnoringSemis = (node) => {
+    // Skip the token search if the rest of the line has no comment start
+    //   (`//`, `/*` or `<!--`)
+    if (node.loc) {
+      const {end} = node.loc;
+      const line = sourceCode.lines[end.line - 1];
+      if (
+        !line.includes('/', end.column) &&
+        !line.includes('<', end.column)
+      ) {
+        return null;
+      }
+    }
+
     const tokenAfter = getTokensAfterIgnoringSemis(node);
     return (
       tokenAfter &&

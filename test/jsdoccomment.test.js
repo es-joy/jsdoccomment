@@ -37,7 +37,8 @@ const parseTypeScriptForESLint = /** @type {ParseTypeScriptForESLint} */ (
  *   comment: boolean,
  *   tokens: boolean,
  *   range: boolean,
- *   loc: boolean
+ *   loc: boolean,
+ *   sourceType?: 'script'|'module'
  * }} config
  * @param {{parser?: string}} cfg
  * @returns {import('eslint').AST.Program}
@@ -1283,6 +1284,57 @@ describe('`getFollowingComment`', function () {
       /** @type {import('eslint').Rule.Node} */ (ast.body[0])
     );
     expect(comment).to.equal(null);
+  });
+
+  it('gets HTML-like comment after statement in script', function () {
+    const code = `foo(); <!-- Test`;
+    const ast = parseAddingParents(code, {
+      ...ESPREE_DEFAULT_CONFIG,
+      sourceType: 'script'
+    });
+    const sourceCode = new SourceCode(
+      code, ast
+    );
+
+    const comment = getFollowingComment(
+      sourceCode,
+      /** @type {import('eslint').Rule.Node} */ (ast.body[0])
+    );
+    expect(comment?.type).to.equal('Line');
+    expect(comment?.value).to.equal(' Test');
+  });
+
+  it('gets line comment after statement lacking location info', function () {
+    const code = `foo; // Test`;
+    const ast = parseAddingParents(code);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
+    const [statement] = ast.body;
+    delete statement.loc;
+
+    const comment = getFollowingComment(
+      sourceCode,
+      /** @type {import('eslint').Rule.Node} */ (statement)
+    );
+    expect(comment?.type).to.equal('Line');
+    expect(comment?.value).to.equal(' Test');
+  });
+
+  it('avoids `<` and `/` operators after node on same line', function () {
+    const code = `foo; a < b; c / d;`;
+    const ast = parseAddingParents(code);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
+
+    for (const node of ast.body) {
+      const comment = getFollowingComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (node)
+      );
+      expect(comment).to.equal(null);
+    }
   });
 
   it('avoids block comment on line following function', function () {
