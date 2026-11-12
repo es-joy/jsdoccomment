@@ -61,18 +61,18 @@
   },
   "dependencies": {
     "@types/estree": "^1.0.10",
-    "@typescript-eslint/types": "^8.72.1",
+    "@typescript-eslint/types": "^8.72.2",
     "comment-parser": "1.4.9",
     "esquery": "^1.7.0",
     "jsdoc-type-pratt-parser": "~9.5.0"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
-    "@es-joy/escodegen": "^4.2.0",
+    "@es-joy/escodegen": "^5.0.1",
     "@node-static/node-static": "^0.10.0",
     "@types/esquery": "^1.5.4",
     "@types/estraverse": "^5.1.7",
-    "@typescript-eslint/visitor-keys": "^8.72.1",
+    "@typescript-eslint/visitor-keys": "^8.72.2",
     "@typhonjs-build-test/esm-d-ts": "0.4.0",
     "@typhonjs-typedoc/typedoc-pkg": "^0.4.2",
     "@vitest/coverage-v8": "^5.1.0",
@@ -80,13 +80,13 @@
     "@webcoder49/code-input": "^2.9.0",
     "eslint": "^10.14.0",
     "eslint-config-ash-nazg": "43.2.4",
-    "eslint-plugin-jsdoc": "^65.4.2",
+    "eslint-plugin-jsdoc": "^65.4.5",
     "espree": "^11.2.0",
     "estraverse": "^5.3.0",
     "prismjs": "^1.30.0",
     "typedoc": "^0.28.20",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.72.1",
+    "typescript-eslint": "^8.72.2",
     "vitest": "^5.1.0"
   },
   "files": [
