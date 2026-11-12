@@ -1,5 +1,13 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 1.2.0
+
+- perf: skip token search in `getFollowingComment` when no comment can follow (@christopher-buss)
+- chore: update typescript-eslint/types, devDeps
+- ci: check Node 26 but drop macos and reduce windows test to one
+- ci: drop Node 20.19.0 from the test matrix (@morgan-coded)
+- ci: check TypeScript in a separate job (@morgan-coded)
+
 ## 1.1.0
 
 - chore: update types/estree, typescript-eslint/types, jsdoc-type-pratt-parser, devDeps.
