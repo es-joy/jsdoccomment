@@ -550,6 +550,31 @@ compactResultsPratt.push(compactResults.at(-1));
 preserveResults.push(commentBlocks.at(-1));
 preserveResultsPratt.push(preserveResults.at(-1));
 
+// First tag on the opening line; later tags keep their delimiter.
+
+commentBlocks.push(`/** @param foo
+ * @param bar
+ */`);
+
+compactResults.push(commentBlocks.at(-1));
+compactResultsPratt.push(compactResults.at(-1));
+
+preserveResults.push(commentBlocks.at(-1));
+preserveResultsPratt.push(preserveResults.at(-1));
+
+// First tag on the opening line with a continued description.
+
+commentBlocks.push(`/** @param foo - description
+ * continued.
+ * @param bar
+ */`);
+
+compactResults.push(commentBlocks.at(-1));
+compactResultsPratt.push(compactResults.at(-1));
+
+preserveResults.push(commentBlocks.at(-1));
+preserveResultsPratt.push(preserveResults.at(-1));
+
 export {
   commentBlocks,
   compactResults,
