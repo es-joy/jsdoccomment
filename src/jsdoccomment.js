@@ -232,6 +232,7 @@ const getReducedASTNode = function (nodeInput, sourceCode, settings) {
   case 'TSInterfaceDeclaration':
   case 'TSTypeAliasDeclaration':
   case 'TSEnumDeclaration':
+  case 'TSModuleDeclaration':
   case 'ClassDeclaration':
   case 'FunctionDeclaration':
     // eslint-disable-next-line @stylistic/max-len -- Long
@@ -332,7 +333,14 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
 
   while (currentNode) {
     const decorator = getDecorator(currentNode);
-    if (decorator) {
+    // A decorator after `export` (`export @dec class A {}`) does not stand
+    //   in front of the export declaration, so the comment is before `export`
+    if (
+      decorator &&
+      decorator.range[0] < /** @type {[number, number]} */ (
+        currentNode.range
+      )[0]
+    ) {
       const dec = /** @type {unknown} */ (decorator);
       currentNode = /** @type {import('eslint').Rule.Node} */ (dec);
     }

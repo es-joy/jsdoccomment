@@ -680,3 +680,62 @@ ruleTester.run('getJSDocComment', rule, {
     `
   }]
 });
+
+describe('`getJSDocComment` exported declarations', function () {
+  /**
+   * @param {string} code
+   * @returns {ReturnType<typeof getJSDocComment>}
+   */
+  const getExportedDeclarationComment = (code) => {
+    const {ast, sourceCode} = getTypeScriptSourceCode(code);
+    const exportDeclaration =
+      /** @type {TSExportNamedDeclaration} */ (
+        /** @type {TSProgram} */ (ast).body[0]
+      );
+
+    return getJSDocComment(
+      sourceCode,
+      /** @type {import('eslint').Rule.Node} */ (
+        /** @type {unknown} */ (exportDeclaration.declaration)
+      ),
+      overloadSettings
+    );
+  };
+
+  it('gets the comment of an exported namespace', function () {
+    const comment = getExportedDeclarationComment(`
+      /** Namespace docs */
+      export namespace Example {}
+    `);
+
+    expect(comment?.value).to.contain('Namespace docs');
+  });
+
+  it('gets the comment of an exported declared namespace', function () {
+    const comment = getExportedDeclarationComment(`
+      /** Declared namespace docs */
+      export declare namespace Example {}
+    `);
+
+    expect(comment?.value).to.contain('Declared namespace docs');
+  });
+
+  it('gets the comment of a class decorated after `export`', function () {
+    const comment = getExportedDeclarationComment(`
+      /** Class docs */
+      export @Entity('users') class User {}
+    `);
+
+    expect(comment?.value).to.contain('Class docs');
+  });
+
+  it('gets the comment of a class decorated after `export default`',
+    function () {
+      const comment = getExportedDeclarationComment(`
+        /** Default class docs */
+        export default @Entity('users') class User {}
+      `);
+
+      expect(comment?.value).to.contain('Default class docs');
+    });
+});
