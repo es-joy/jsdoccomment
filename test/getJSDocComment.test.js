@@ -633,6 +633,52 @@ describe('`getJSDocComment` overload comments', function () {
     });
 });
 
+describe('`getJSDocComment` exported variable declarations', function () {
+  it('gets the comment before `export` of an exported variable',
+    function () {
+      const code = `
+        /** Value docs */
+        export const value = 1;
+      `;
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
+      const program = /** @type {TSProgram} */ (ast);
+      const {declaration} = /** @type {TSExportNamedDeclaration} */ (
+        program.body[0]
+      );
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (declaration),
+        overloadSettings
+      );
+
+      expect(comment?.value).to.equal('* Value docs ');
+    });
+
+  it('gets the comment before `export` of an exported declared variable',
+    function () {
+      const code = `
+        /** Value docs */
+        export declare const value: number;
+      `;
+      const {ast, sourceCode} =
+        getTypeScriptSourceCode(code);
+      const program = /** @type {TSProgram} */ (ast);
+      const {declaration} = /** @type {TSExportNamedDeclaration} */ (
+        program.body[0]
+      );
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (declaration),
+        overloadSettings
+      );
+
+      expect(comment?.value).to.equal('* Value docs ');
+    });
+});
+
 ruleTester.run('getJSDocComment', rule, {
   invalid: [{
     code: 'var a = {};',
