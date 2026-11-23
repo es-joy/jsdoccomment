@@ -1,5 +1,11 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 1.2.1
+
+- fix(`commentParserToESTree`): keep the delimiter of tags after a tag on the opening line (@SulimanAbdulrazzaq)
+- fix(`getJSDocComment`): find the comment before `export` of an exported variable declaration (@SulimanAbdulrazzaq)
+- fix(`getJSDocComment`): find the comment of exported namespaces and of classes decorated after `export` (@SulimanAbdulrazzaq)
+
 ## 1.2.0
 
 - perf: skip token search in `getFollowingComment` when no comment can follow (@christopher-buss)
