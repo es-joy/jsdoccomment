@@ -428,7 +428,7 @@ var codeInput = {
             value += "\n"; // Placeholder for next line
 
             // Update code
-            resultElement.innerHTML = this.escapeHtml(value);
+            resultElement.textContent = value;
             this.pluginEvt("beforeHighlight");
 
             // Syntax Highlight
@@ -539,12 +539,20 @@ var codeInput = {
         }
 
         /**
-         * HTML-escape an arbitrary string.
-         * @param {string} text - The original, unescaped text
-         * @returns {string} - The new, HTML-escaped text
+         * @deprecated Avoid setting/modifying innerHTML; instead set the textContent
+         * attribute of an HTML element to insert text inside it, and use DOM functionns
+         * like createElement, appendChild, and setProperty.
          */
         escapeHtml(text) {
-            return text.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;"); /* Global RegExp */
+            // Thanks https://stackoverflow.com/a/7382028 for this extended version
+            // of the function, that should work inside quoted attribute values as well as
+            // the content of most tags.
+            return String(text)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#39;");
         }
 
         /**
@@ -634,7 +642,7 @@ var codeInput = {
                 // Sync value
                 value = fallbackTextarea.value;
                 // Backwards compatibility with plugins
-                this.innerHTML = this.escapeHtml(value);
+                this.textContent = value;
             } else {
                 value = this.unescapeHtml(this.innerHTML);
             }
@@ -646,7 +654,6 @@ var codeInput = {
             const lang = this.getAttribute("language") || this.getAttribute("lang");
             const placeholder = this.getAttribute("placeholder") || lang || "";
 
-
             this.initialValue = value; // For form reset
 
             // Create textarea
@@ -655,7 +662,7 @@ var codeInput = {
             if(value != "") {
                 textarea.value = value;
             }
-            textarea.innerHTML = this.innerHTML;
+            textarea.textContent = this.innerHTML; // Updates textarea's innerHTML to escaped version of this.innerHTML, for some backwards compatibility while preventing any source of cross-site scripting
             if(!this.hasAttribute("spellcheck")) {
                 // For backwards compatibility:
                 textarea.setAttribute("spellcheck", "false");
@@ -689,12 +696,13 @@ var codeInput = {
                 }, 0);
             });
 
-            this.innerHTML = ""; // Clear Content
+            // Clear Content
+            this.innerHTML = ""; // textContent doesn't always clear content properly; innerHTML OK here because no user-provided input'
 
             // Add internal style as non-externally-overridable alternative to style attribute for e.g. syncing color
             this.classList.add("code-input_styles_" + codeInput.stylesheetI);
             const stylesheet = document.createElement("style");
-            stylesheet.innerHTML = "code-input.code-input_styles_" + codeInput.stylesheetI + " {}";
+            stylesheet.textContent = "code-input.code-input_styles_" + codeInput.stylesheetI + " {}";
             this.appendChild(stylesheet);
             this.internalStyle = stylesheet.sheet.cssRules[0].style;
             codeInput.stylesheetI++;
@@ -1251,7 +1259,7 @@ var codeInput = {
             if(this.setTextareaProperty("value", val, false)) {
                 if(this.textareaElement) this.scheduleHighlight();
             } else {
-                this.innerHTML = val;
+                super.textContent = val; // since this.textContent sets the initial value
             }
         }
         get willValidate() { return this.getTextareaProperty("willValidate", this.disabled || this.readOnly); }

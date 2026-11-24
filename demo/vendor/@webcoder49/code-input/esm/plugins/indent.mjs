@@ -83,7 +83,7 @@ plugins.Indent = class extends Plugin {
             codeInput.appendChild(testIndentationWidthPre); // Styled like first pre, but first pre found to update
         }
 
-        testIndentationWidthSpan.innerHTML = codeInput.escapeHtml(this.indentation);
+        testIndentationWidthSpan.textContent = this.indentation;
         let indentationWidthPx = testIndentationWidthSpan.offsetWidth;
         codeInput.removeChild(testIndentationWidthPre);
 
