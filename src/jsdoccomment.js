@@ -386,7 +386,12 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
     const tokenBeforeComment = sourceCode.getTokenBefore(tokenBefore, {
       includeComments: true
     });
-    if (tokenBeforeComment?.loc.end.line === tokenBefore.loc.start.line) {
+    if (
+      tokenBeforeComment &&
+      /** @type {import('eslint').AST.SourceLocation} */ (
+        tokenBeforeComment.loc
+      ).end.line === tokenBefore.loc.start.line
+    ) {
       return null;
     }
   }
