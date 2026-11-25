@@ -1130,6 +1130,15 @@ describe('parseComment (string)', function () {
       inlineTags: []
     });
   });
+
+  it('Keeps the CRLF line end of `@template` lines', function () {
+    const parsed = parseComment({
+      value: '*\r\n * @template T\r\n * @template U Desc.\r\n '
+    });
+    expect(parsed.tags.map(({source}) => {
+      return source[0].tokens.lineEnd;
+    })).to.deep.equal(['\r', '\r']);
+  });
 });
 
 describe('parseComment (error)', function () {

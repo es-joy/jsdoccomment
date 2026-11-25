@@ -118,7 +118,8 @@ const getTokenizers = ({
         tokens.name = name;
         tokens.postName = postName;
         tokens.description = description;
-        tokens.lineEnd = lineEnd || '';
+        // `comment-parser` already moved a CRLF line's `\r` to `lineEnd`
+        tokens.lineEnd = lineEnd || tokens.lineEnd;
 
         return spec;
       }
