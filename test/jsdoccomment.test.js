@@ -1158,6 +1158,48 @@ function quux () {}`;
     );
     expect(comment).to.equal(null);
   });
+
+  it('ignores a comment after code on its line', function () {
+    for (const code of [
+      `doSomething(); // done for the side effect
+function quux () {}`,
+      `function other () {} // end of other
+function quux () {}`
+    ]) {
+      const ast = parseAddingParents(code);
+      const sourceCode = new SourceCode(
+        code, ast
+      );
+
+      const comment = getNonJsdocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (ast.body[1]),
+        {
+          minLines: 0, maxLines: 1
+        }
+      );
+      expect(comment).to.equal(null);
+    }
+  });
+
+  it('gets a comment on its own line after code', function () {
+    const code = `doSomething();
+// Test
+function quux () {}`;
+    const ast = parseAddingParents(code);
+    const sourceCode = new SourceCode(
+      code, ast
+    );
+
+    const comment = getNonJsdocComment(
+      sourceCode,
+      /** @type {import('eslint').Rule.Node} */ (ast.body[1]),
+      {
+        minLines: 0, maxLines: 1
+      }
+    );
+    expect(comment?.value).to.equal(' Test');
+  });
 });
 
 describe('`getFollowingComment`', function () {

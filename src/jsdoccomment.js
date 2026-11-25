@@ -380,6 +380,17 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
     return null;
   }
 
+  // A comment after code on its line (`doSomething(); // done`) belongs to
+  //   that code, not to the node after it
+  if (nonJSDoc) {
+    const tokenBeforeComment = sourceCode.getTokenBefore(tokenBefore, {
+      includeComments: true
+    });
+    if (tokenBeforeComment?.loc.end.line === tokenBefore.loc.start.line) {
+      return null;
+    }
+  }
+
   if (
     (
       (nonJSDoc && (tokenBefore.type !== 'Block' ||
