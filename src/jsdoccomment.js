@@ -210,8 +210,26 @@ const allowableCommentNode = new Set([
   'ObjectProperty',
   'ClassProperty',
   'PropertyDefinition',
+  'AccessorProperty',
+  'TSAbstractMethodDefinition',
+  'TSAbstractPropertyDefinition',
+  'TSAbstractAccessorProperty',
   'ExportDefaultDeclaration',
   'ReturnStatement'
+]);
+
+/**
+ * Containers of items (e.g., `[() => {}]`, the functions in a template
+ * literal of styled-components, or the members of a class or namespace),
+ * whose comment does not document the functions within them.
+ */
+const itemContainers = new Set([
+  'ArrayExpression',
+  'BlockStatement',
+  'ClassBody',
+  'StaticBlock',
+  'TemplateLiteral',
+  'TSModuleBlock'
 ]);
 
 /**
@@ -299,6 +317,10 @@ const getReducedASTNode = function (nodeInput, sourceCode, settings) {
         !(/Function/v).test(parent.type) &&
         !allowableCommentNode.has(parent.type)
       ) {
+        if (itemContainers.has(parent.type)) {
+          return node;
+        }
+
         ({parent} = parent);
 
         if (!parent) {
