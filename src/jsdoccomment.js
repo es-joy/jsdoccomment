@@ -49,6 +49,16 @@ const isCommentToken = (token) => {
 };
 
 /**
+ * Checks if the given token is a JSDoc block (`/** ...`).
+ *
+ * @param {Token|import('estree').Comment} token - The token to check.
+ * @returns {boolean} `true` if the token is a JSDoc block.
+ */
+const isJsdocBlock = (token) => {
+  return token.type === 'Block' && (/^\*\s/v).test(token.value);
+};
+
+/**
  * @typedef {(
  *   ESLintOrTSNode|
  *   import('estree').Comment|
@@ -389,8 +399,10 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
     if (!tokenBefore || !isCommentToken(tokenBefore)) {
       return null;
     }
-    if (!nonJSDoc && tokenBefore.type === 'Line') {
-      currentNode = tokenBefore;
+    // A JSDoc may be before other comments (e.g., `// eslint-disable` or
+    //   `/* istanbul ignore next */`)
+    if (!nonJSDoc && !isJsdocBlock(tokenBefore)) {
+      currentNode = /** @type {import('estree').Comment} */ (tokenBefore);
       continue;
     }
     break;
@@ -400,6 +412,22 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
   /* v8 ignore next 3 -- Defensive: tokens and locations are expected to exist */
   if (!tokenBefore || !currentNode.loc || !tokenBefore.loc) {
     return null;
+  }
+
+  // A comment after code on its line (`doSomething(); // done`) belongs to
+  //   that code, not to the node after it
+  if (nonJSDoc) {
+    const tokenBeforeComment = sourceCode.getTokenBefore(tokenBefore, {
+      includeComments: true
+    });
+    if (
+      tokenBeforeComment &&
+      /** @type {import('eslint').AST.SourceLocation} */ (
+        tokenBeforeComment.loc
+      ).end.line === tokenBefore.loc.start.line
+    ) {
+      return null;
+    }
   }
 
   if (

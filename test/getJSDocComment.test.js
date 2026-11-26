@@ -410,6 +410,27 @@ describe('`getJSDocComment` overload comments', function () {
       expect(comment?.value).to.contain('Function overload docs');
     });
 
+  it('gets a comment before other block comments', function () {
+    for (const hint of [
+      '/* istanbul ignore next */', '/*! #__NO_SIDE_EFFECTS__ */'
+    ]) {
+      const code = `
+        /** Function docs */
+        ${hint}
+        export function value () {}
+      `;
+      const {ast, sourceCode} = getTypeScriptSourceCode(code);
+
+      const comment = getJSDocComment(
+        sourceCode,
+        /** @type {import('eslint').Rule.Node} */ (ast.body[0]),
+        {maxLines: 1, minLines: 0}
+      );
+
+      expect(comment?.value).to.contain('Function docs');
+    }
+  });
+
   it('gets a nested function overload comment from a previous overload',
     function () {
       const code = `

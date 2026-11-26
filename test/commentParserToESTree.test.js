@@ -348,6 +348,23 @@ description`
     expect(ast).to.deep.equal(singleLineWithMultilineTag);
   });
 
+  it('keeps the line of a type ending on the closing line', () => {
+    for (const [value, rawType] of [
+      ['* @type {{\n *   a: string\n * }} ', '{\n  a: string\n}'],
+      [
+        '*\n * @param {{a: string,\n *   b: number}} opts The options. ',
+        '{a: string,\n  b: number}'
+      ]
+    ]) {
+      const [tag] = commentParserToESTree(
+        parseComment({value}), 'typescript'
+      ).tags;
+
+      expect(tag.rawType).to.equal(rawType);
+      expect(tag.parsedType?.type).to.equal('JsdocTypeObject');
+    }
+  });
+
   it('handles name jsdoc comment with tag', () => {
     const code = `*
  * @local
