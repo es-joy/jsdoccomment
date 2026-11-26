@@ -1,5 +1,12 @@
 import { Markers } from '../primitives.js';
 import { seedTokens, splitSpace, splitCR } from '../util.js';
+// end marker overlaps the start marker, e.g. "/**/" is an empty plain comment
+const isEmptyComment = (source, markers) => {
+    if (markers.start.includes(markers.end))
+        return false;
+    const end = source.indexOf(markers.end, 1);
+    return end !== -1 && end < markers.start.length;
+};
 export default function getParser({ startLine = 0, markers = Markers, } = {}) {
     let block = null;
     let num = startLine;
@@ -10,7 +17,8 @@ export default function getParser({ startLine = 0, markers = Markers, } = {}) {
         [tokens.start, rest] = splitSpace(rest);
         if (block === null &&
             rest.startsWith(markers.start) &&
-            !rest.startsWith(markers.nostart)) {
+            !rest.startsWith(markers.nostart) &&
+            !isEmptyComment(rest, markers)) {
             block = [];
             tokens.delimiter = rest.slice(0, markers.start.length);
             rest = rest.slice(markers.start.length);

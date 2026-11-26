@@ -1,5 +1,37 @@
 import { splitSpace, isSpace } from '../../util.js';
-const isQuoted = (s) => s && s.startsWith('"') && s.endsWith('"');
+const QUOTES = ['"', "'", '`'];
+// strip quoted text, then look for an "=" that is not part of
+// "==", "===", "!=", "!==", "<=", ">=" or "=>"
+const hasBareEqual = (s) => /(^|[^=!<>])=(?![=>])/.test(s.replace(/"[^"]*"|'[^']*'|`[^`]*`/g, ''));
+/**
+ * Reads the name token: a non-space string or anything wrapped into brackets.
+ * With `skipQuotes`, brackets inside quotes within the brackets are not counted.
+ * Returns `undefined` if a quote is left open.
+ */
+const scanName = (source, skipQuotes) => {
+    let brackets = 0;
+    let name = '';
+    let quote;
+    for (const ch of source) {
+        if (brackets === 0 && isSpace(ch))
+            break;
+        if (quote !== undefined) {
+            if (ch === quote)
+                quote = undefined;
+        }
+        else if (skipQuotes && brackets > 0 && QUOTES.includes(ch)) {
+            quote = ch;
+        }
+        else if (ch === '[') {
+            brackets++;
+        }
+        else if (ch === ']') {
+            brackets--;
+        }
+        name += ch;
+    }
+    return quote === undefined ? { name, brackets } : undefined;
+};
 /**
  * Splits remaining `spec.lines[].tokens.description` into `name` and `descriptions` tokens,
  * and populates the `spec.name`
@@ -33,20 +65,13 @@ export default function nameTokenizer() {
             [tokens.postName, tokens.description] = splitSpace(source.slice(tokens.name.length));
             return spec;
         }
-        let brackets = 0;
-        let name = '';
         let optional = false;
         let defaultValue;
-        // assume name is non-space string or anything wrapped into brackets
-        for (const ch of source) {
-            if (brackets === 0 && isSpace(ch))
-                break;
-            if (ch === '[')
-                brackets++;
-            if (ch === ']')
-                brackets--;
-            name += ch;
-        }
+        // if skipping quotes leaves brackets unbalanced (e.g. apostrophes), quotes are plain characters
+        const quoted = scanName(source, true);
+        const scanned = (quoted === null || quoted === void 0 ? void 0 : quoted.brackets) === 0 ? quoted : scanName(source, false);
+        let name = scanned.name;
+        const brackets = scanned.brackets;
         if (brackets !== 0) {
             spec.problems.push({
                 code: 'spec:name:unpaired-brackets',
@@ -82,8 +107,8 @@ export default function nameTokenizer() {
                 });
                 return spec;
             }
-            // has "=" and is not a string, except for "=>"
-            if (!isQuoted(defaultValue) && /=(?!>)/.test(defaultValue || '')) {
+            // has "=" outside of quotes, except for "=>" and comparisons
+            if (defaultValue !== undefined && hasBareEqual(defaultValue)) {
                 spec.problems.push({
                     code: 'spec:name:invalid-default',
                     message: 'invalid default value syntax',
@@ -118,7 +143,7 @@ export default function nameTokenizer() {
                 }
                 // Only match with JS identifier (or dots) before "="
                 if (/^[\p{ID_Start}$_\.][\p{ID_Continue}$_\u200c\u200d\.]*=/u.test(name)) {
-                    if (!isQuoted(postEqual) && /=(?!>)/.test(postEqual)) {
+                    if (hasBareEqual(postEqual)) {
                         spec.problems.push({
                             code: 'spec:name:invalid-default',
                             message: 'invalid default value syntax',
