@@ -7,7 +7,7 @@ import TSVisitorKeys from '@typescript-eslint/visitor-keys';
 import {
   getReducedASTNode,
   getJSDocComment,
-  // getDecorator,
+  getDecorator,
   findJSDocComment,
   getNonJsdocComment,
   getFollowingComment
@@ -1816,4 +1816,20 @@ describe('getJSDocComment', function () {
       expect(comment?.type).to.equal('Block');
     }
   );
+});
+
+describe('`getDecorator`', function () {
+  it('gets a decorator in front of an export, not one after it', function () {
+    for (const {code, found} of [
+      {code: '@dec export class A {}', found: true},
+      {code: 'export @dec class A {}', found: false},
+      {code: 'export default @dec class A {}', found: false}
+    ]) {
+      const ast = parseAddingParents(code, undefined, {parser: 'typescript'});
+
+      expect(Boolean(getDecorator(
+        /** @type {import('eslint').Rule.Node} */ (ast.body[0])
+      )), code).to.equal(found);
+    }
+  });
 });

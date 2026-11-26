@@ -70,10 +70,24 @@ const isJsdocBlock = (token) => {
  * @returns {import('@typescript-eslint/types').TSESTree.Decorator|undefined}
  */
 const getDecorator = (node) => {
+  /** @type {import('@typescript-eslint/types').TSESTree.Decorator|undefined} */
   // @ts-expect-error -- Loose checking for decorator presence across node kinds
-  return node?.declaration?.decorators?.[0] ||
-    // @ts-expect-error -- Loose checking
-    node?.decorators?.[0] ||
+  const declarationDecorator = node?.declaration?.decorators?.[0];
+
+  // Only a decorator in front of the export (`@dec export class A {}`), not
+  //   one after it (`export @dec class A {}`), where the comment is before
+  //   `export`
+  if (
+    declarationDecorator &&
+    declarationDecorator.range[0] < /** @type {[number, number]} */ (
+      /** @type {import('eslint').Rule.Node} */ (node).range
+    )[0]
+  ) {
+    return declarationDecorator;
+  }
+
+  // @ts-expect-error -- Loose checking
+  return node?.decorators?.[0] ||
     // @ts-expect-error -- Loose checking
     node?.parent?.decorators?.[0];
 };
