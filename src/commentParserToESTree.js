@@ -262,6 +262,42 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
       type: rawType
     } = tokens;
 
+    /**
+     * Adds the line's part of the type to the last tag (whose type brackets
+     *   are stripped once the tag is complete).
+     * @returns {void}
+     */
+    const addTypeLine = () => {
+      /** @type {JsdocTag} */ (lastTag).typeLines.push(
+        /** @type {JsdocTag} */ (lastTag).typeLines.length
+          ? {
+            delimiter,
+            postDelimiter,
+            rawType,
+            initial,
+            type: 'JsdocTypeLine'
+          }
+          : {
+            delimiter: '',
+            postDelimiter: '',
+            rawType,
+            initial: '',
+            type: 'JsdocTypeLine'
+          }
+      );
+      /** @type {JsdocTag} */ (lastTag).rawType += /** @type {JsdocTag} */ (
+        lastTag
+      ).rawType
+        ? '\n' + rawType
+        : rawType;
+    };
+
+    // A type of the last tag may end on the closing line, which is handled
+    //   (and the tag cleaned up) below without reaching the type lines
+    if (end && !tag && rawType && lastTag) {
+      addTypeLine();
+    }
+
     if (!tag && description && descLineStateOpen) {
       if (ast.descriptionStartLine === undefined) {
         ast.descriptionStartLine = idx;
@@ -394,29 +430,7 @@ const commentParserToESTree = (jsdoc, mode = 'typescript', {
     }
 
     if (rawType) {
-      // Will strip rawType brackets after this tag
-      /** @type {JsdocTag} */ (lastTag).typeLines.push(
-        /** @type {JsdocTag} */ (lastTag).typeLines.length
-          ? {
-            delimiter,
-            postDelimiter,
-            rawType,
-            initial,
-            type: 'JsdocTypeLine'
-          }
-          : {
-            delimiter: '',
-            postDelimiter: '',
-            rawType,
-            initial: '',
-            type: 'JsdocTypeLine'
-          }
-      );
-      /** @type {JsdocTag} */ (lastTag).rawType += /** @type {JsdocTag} */ (
-        lastTag
-      ).rawType
-        ? '\n' + rawType
-        : rawType;
+      addTypeLine();
     }
 
     // In `compact` mode skip processing if `description` is an empty string
