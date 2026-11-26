@@ -102,6 +102,27 @@ const overloadSettings = {
 };
 
 /**
+ * @param {import('eslint').AST.Program} program
+ * @param {string} type
+ * @returns {import('eslint').Rule.Node}
+ */
+const findFirstNode = (program, type) => {
+  /** @type {import('estree').Node|undefined} */
+  let found;
+  traverse(program, {
+    enter (node) {
+      if (!found && node.type === type) {
+        found = node;
+      }
+    },
+    keys: /** @type {Record<string, string[]>} */ (
+      TSVisitorKeys.visitorKeys
+    )
+  });
+  return /** @type {import('eslint').Rule.Node} */ (found);
+};
+
+/**
  * @param {import('eslint').Rule.RuleContext} ctxt
  */
 const getSettings = (ctxt) => {
@@ -341,6 +362,52 @@ describe('`getJSDocComment` overload comments', function () {
 
       expect(comment?.value).to.contain('Function overload docs');
     });
+
+  it('does not use the comment of a container for functions within it',
+    function () {
+      for (const [code, type] of [
+        [
+          `/** A button. */\nconst B = styled.button\`color: \${(p) => p.c};\`;`,
+          'ArrowFunctionExpression'
+        ],
+        [
+          '/** The handlers. */\nconst handlers = [(x) => x];',
+          'ArrowFunctionExpression'
+        ],
+        [
+          '/** The module. */\ndeclare module "m" {\n' +
+            '  export function f(a: string): string;\n}',
+          'TSDeclareFunction'
+        ],
+        [
+          '/** The class. */\nclass A {\n  accessor f = (a: string) => a;\n}',
+          'ArrowFunctionExpression'
+        ],
+        [
+          '/** The class. */\nabstract class A {\n' +
+            '  abstract m(a: string): string;\n}',
+          'TSEmptyBodyFunctionExpression'
+        ]
+      ]) {
+        const {ast, sourceCode} = getTypeScriptSourceCode(code);
+
+        expect(getJSDocComment(
+          sourceCode, findFirstNode(ast, type), overloadSettings
+        ), code).to.equal(null);
+      }
+    });
+
+  it('gets the comment of an abstract method', function () {
+    const code = 'abstract class A {\n  /** The method. */\n' +
+      '  abstract m(a: string): string;\n}';
+    const {ast, sourceCode} = getTypeScriptSourceCode(code);
+
+    expect(getJSDocComment(
+      sourceCode,
+      findFirstNode(ast, 'TSEmptyBodyFunctionExpression'),
+      overloadSettings
+    )?.value).to.contain('The method.');
+  });
 
   it('gets a nested function overload comment from a previous overload',
     function () {
