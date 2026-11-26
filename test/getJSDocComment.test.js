@@ -367,7 +367,8 @@ describe('`getJSDocComment` overload comments', function () {
     function () {
       for (const [code, type] of [
         [
-          `/** A button. */\nconst B = styled.button\`color: \${(p) => p.c};\`;`,
+          '/** A button. */\n' +
+            `const B = styled.button\`color: \${(p) => p.c};\`;`,
           'ArrowFunctionExpression'
         ],
         [
