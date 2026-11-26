@@ -49,6 +49,16 @@ const isCommentToken = (token) => {
 };
 
 /**
+ * Checks if the given token is a JSDoc block (`/** ...`).
+ *
+ * @param {Token|import('estree').Comment} token - The token to check.
+ * @returns {boolean} `true` if the token is a JSDoc block.
+ */
+const isJsdocBlock = (token) => {
+  return token.type === 'Block' && (/^\*\s/v).test(token.value);
+};
+
+/**
  * @typedef {(
  *   ESLintOrTSNode|
  *   import('estree').Comment|
@@ -367,8 +377,10 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
     if (!tokenBefore || !isCommentToken(tokenBefore)) {
       return null;
     }
-    if (!nonJSDoc && tokenBefore.type === 'Line') {
-      currentNode = tokenBefore;
+    // A JSDoc may be before other comments (e.g., `// eslint-disable` or
+    //   `/* istanbul ignore next */`)
+    if (!nonJSDoc && !isJsdocBlock(tokenBefore)) {
+      currentNode = /** @type {import('estree').Comment} */ (tokenBefore);
       continue;
     }
     break;
