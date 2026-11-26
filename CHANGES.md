@@ -1,5 +1,15 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 1.2.2
+
+- fix(`getNonJsdocComment`): do not take a comment after code on its line as the comment of the next node (@SulimanAbdulrazzaq)
+- fix(`parseComment`): keep the CRLF line end of `@template` lines (@SulimanAbdulrazzaq)
+- fix(`commentParserToESTree`): keep the part of a type on the closing line (@SulimanAbdulrazzaq)
+- fix(`getJSDocComment`): find a JSDoc before other block comments, as before line comments (@SulimanAbdulrazzaq)
+- fix(`getReducedASTNode`): do not use the comment of an array, template literal, class or namespace for the functions within it (@SulimanAbdulrazzaq)
+- fix(`getDecorator`): do not return a decorator after `export`, before which the comment goes (@SulimanAbdulrazzaq)
+- chore: update typescript-eslint/types, devDeps
+
 ## 1.2.1
 
 - fix(`commentParserToESTree`): keep the delimiter of tags after a tag on the opening line (@SulimanAbdulrazzaq)
