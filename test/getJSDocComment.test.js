@@ -431,6 +431,27 @@ describe('`getJSDocComment` overload comments', function () {
     }
   });
 
+  it('does not get a comment above another comment and a blank line',
+    function () {
+      for (const directive of ['/* global jQuery */', '// Helpers']) {
+        const code = `
+          /** @file Page setup helpers. */
+          ${directive}
+
+          export function init () {}
+        `;
+        const {ast, sourceCode} = getTypeScriptSourceCode(code);
+
+        const comment = getJSDocComment(
+          sourceCode,
+          /** @type {import('eslint').Rule.Node} */ (ast.body[0]),
+          {maxLines: 1, minLines: 0}
+        );
+
+        expect(comment).to.equal(null);
+      }
+    });
+
   it('gets a nested function overload comment from a previous overload',
     function () {
       const code = `
