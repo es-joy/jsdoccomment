@@ -416,6 +416,19 @@ const findJSDocComment = (astNode, sourceCode, settings, opts = {}) => {
     // A JSDoc may be before other comments (e.g., `// eslint-disable` or
     //   `/* istanbul ignore next */`)
     if (!nonJSDoc && !isJsdocBlock(tokenBefore)) {
+      // A comment further from the code than `maxLines` (e.g., a
+      //   `/* global x */` after a file header, then a blank line) does not
+      //   connect the code to a JSDoc above it
+      if (
+        /** @type {import('eslint').AST.SourceLocation} */ (
+          currentNode.loc
+        ).start.line -
+        /** @type {import('eslint').AST.SourceLocation} */ (
+          tokenBefore.loc
+        ).end.line > maxLines
+      ) {
+        return null;
+      }
       currentNode = /** @type {import('estree').Comment} */ (tokenBefore);
       continue;
     }

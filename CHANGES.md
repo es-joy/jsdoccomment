@@ -1,5 +1,9 @@
 # CHANGES for `@es-joy/jsdoccomment`
 
+## 1.2.3
+
+- fix(`getJSDocComment`): do not get a JSDoc across another comment more than `maxLines` from the code (@SulimanAbdulrazzaq)
+
 ## 1.2.2
 
 - fix(`getNonJsdocComment`): do not take a comment after code on its line as the comment of the next node (@SulimanAbdulrazzaq)
